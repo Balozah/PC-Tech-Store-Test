@@ -91,7 +91,11 @@ create table if not exists reviews (
 
 -- Review spam guard ------------------------------------------------------
 -- Anyone can insert reviews through the public API, so throttling has to live here,
--- not in the Next.js server action.
+-- not in the Next.js server action. Limits are per product so flooding one product
+-- can't block reviews on the rest; the global pending cap only bounds table growth.
+
+create index if not exists reviews_product_created_idx on reviews (product_id, created_at);
+create index if not exists reviews_pending_idx on reviews (product_id) where status = 'pending';
 
 create or replace function private.guard_review_insert() returns trigger
 language plpgsql security definer set search_path = '' as $$
@@ -103,8 +107,11 @@ begin
   new.status := 'pending';
   new.created_at := now();
 
-  if (select count(*) from public.reviews where created_at > now() - interval '1 minute') >= 5
-     or (select count(*) from public.reviews where status = 'pending') >= 200 then
+  if (select count(*) from public.reviews
+        where product_id = new.product_id and created_at > now() - interval '10 minutes') >= 3
+     or (select count(*) from public.reviews
+        where product_id = new.product_id and status = 'pending') >= 20
+     or (select count(*) from public.reviews where status = 'pending') >= 1000 then
     raise exception 'rate_limited' using errcode = 'P0001';
   end if;
 

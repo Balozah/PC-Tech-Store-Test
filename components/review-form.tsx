@@ -7,7 +7,7 @@ import { submitReview } from "@/app/actions/reviews";
 export function ReviewForm({ productId }: { productId: string }) {
   const t = useTranslations("product");
   const [rating, setRating] = useState(5);
-  const [status, setStatus] = useState<"idle" | "sent" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "sent" | "error" | "rate_limited">("idle");
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -15,7 +15,7 @@ export function ReviewForm({ productId }: { productId: string }) {
       action={(formData) => {
         startTransition(async () => {
           const result = await submitReview(formData);
-          setStatus(result.ok ? "sent" : "error");
+          setStatus(result.ok ? "sent" : result.error === "rate_limited" ? "rate_limited" : "error");
         });
       }}
       className="mt-6 space-y-4 rounded-2xl border border-[var(--color-border)] p-5"
@@ -101,6 +101,9 @@ export function ReviewForm({ productId }: { productId: string }) {
       )}
       {status === "error" && (
         <p className="text-sm text-[var(--color-destructive)]">{t("reviewError")}</p>
+      )}
+      {status === "rate_limited" && (
+        <p className="text-sm text-[var(--color-destructive)]">{t("reviewRateLimited")}</p>
       )}
     </form>
   );

@@ -38,6 +38,7 @@
     "reviewSubmit": "Submit",
     "reviewSubmitted": "Thanks! Your review will appear after approval.",
     "reviewError": "Something went wrong, try again",
+    "reviewRateLimited": "This product got a lot of reviews just now, try again in a few minutes",
     "orderUnavailable": "WhatsApp ordering isn't available yet",
     "latest": "Latest products"
   },
