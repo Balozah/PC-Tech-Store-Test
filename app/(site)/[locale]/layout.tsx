@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: { default: "Tech RT", template: "%s" },
 };
 
+// Dashboard actions revalidate instantly; this catches edits made directly in Supabase.
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
