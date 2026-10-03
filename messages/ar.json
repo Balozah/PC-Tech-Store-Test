@@ -1,0 +1,58 @@
+{
+  "brand": {
+    "name": "Tech RT"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "categories": "الأقسام",
+    "contact": "تواصل معنا"
+  },
+  "hero": {
+    "eyebrow": "قطع كمبيوتر وتجميعات وإكسسوارات",
+    "title": "جهّز حاسوبك الجاي من عند Tech RT",
+    "subtitle": "قطع أصلية، تجميعات جاهزة، وأسعار بالدولار والليرة — اطلب مباشرة عبر واتساب.",
+    "cta": "تصفح المنتجات"
+  },
+  "spotlight": {
+    "eyebrow": "مميز",
+    "title": "أحدث التجميعات الجاهزة",
+    "cta": "شوف التفاصيل"
+  },
+  "categories": {
+    "title": "تسوق حسب القسم"
+  },
+  "product": {
+    "available": "متوفر",
+    "unavailable": "غير متوفر",
+    "priceOnRequest": "السعر عند الطلب",
+    "selectOption": "اختر {option}",
+    "order": "اطلب عبر واتساب",
+    "orderDisabled": "اختر كل الخيارات أولاً",
+    "related": "منتجات ذات صلة",
+    "reviews": "آراء الزبائن",
+    "noReviews": "لا توجد تقييمات بعد — كن أول من يقيّم",
+    "addReview": "أضف تقييمك",
+    "reviewName": "الاسم",
+    "reviewRating": "التقييم",
+    "reviewComment": "تعليقك",
+    "reviewSubmit": "إرسال",
+    "reviewSubmitted": "تم إرسال تقييمك، رح يظهر بعد المراجعة",
+    "reviewError": "صار في خطأ، حاول مرة ثانية"
+  },
+  "footer": {
+    "contact": "تواصل معنا",
+    "address": "العنوان",
+    "hours": "ساعات الدوام",
+    "whatsappTodo": "رقم الواتساب — TODO",
+    "addressTodo": "العنوان — TODO",
+    "hoursTodo": "ساعات الدوام — TODO",
+    "rights": "جميع الحقوق محفوظة"
+  },
+  "whatsappMessage": {
+    "greeting": "مرحباً، بدي اطلب:",
+    "product": "المنتج",
+    "price": "السعر",
+    "link": "الرابط",
+    "onRequest": "عند الطلب"
+  }
+}

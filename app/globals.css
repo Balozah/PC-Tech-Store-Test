@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --color-background: #0a0a0f;
+  --color-foreground: #f4f4f5;
+  --color-card: #141419;
+  --color-card-foreground: #f4f4f5;
+  --color-card-light: #ffffff;
+  --color-card-light-foreground: #0a0a0f;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+  --color-accent: #f97316;
+  --color-accent-foreground: #0a0a0f;
+  --color-success: #22c55e;
+  --color-destructive: #ef4444;
+  --color-muted: #1e1e26;
+  --color-muted-foreground: #9ca3af;
+  --color-border: #27272f;
+
+  --font-heading-latin: var(--font-heading-latin-next), sans-serif;
+  --font-body-latin: var(--font-body-latin-next), sans-serif;
+  --font-arabic: var(--font-arabic-next), sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-card: var(--color-card);
+  --color-card-foreground: var(--color-card-foreground);
+  --color-card-light: var(--color-card-light);
+  --color-card-light-foreground: var(--color-card-light-foreground);
+  --color-primary: var(--color-primary);
+  --color-primary-foreground: var(--color-primary-foreground);
+  --color-accent: var(--color-accent);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-success: var(--color-success);
+  --color-destructive: var(--color-destructive);
+  --color-muted: var(--color-muted);
+  --color-muted-foreground: var(--color-muted-foreground);
+  --color-border: var(--color-border);
+  --font-heading: var(--font-heading-latin);
+  --font-body: var(--font-body-latin);
+  --font-arabic: var(--font-arabic);
+}
+
+html[dir="rtl"] {
+  --font-heading-active: var(--font-arabic);
+  --font-body-active: var(--font-arabic);
+}
+
+html[dir="ltr"] {
+  --font-heading-active: var(--font-heading-latin);
+  --font-body-active: var(--font-body-latin);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body-active, var(--font-body-latin));
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading-active, var(--font-heading-latin));
+}
+
+/* Arabic text should never get Latin letter-spacing */
+html[dir="rtl"] * {
+  letter-spacing: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

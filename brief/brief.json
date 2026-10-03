@@ -1,0 +1,126 @@
+{
+  "package": "asas",
+  "design_skill": "ui-ux-pro-max",
+  "date": "2026-10-03",
+  "delivery_date": null,
+  "project": {
+    "name_ar": "Tech RT",
+    "name_en": "Tech RT",
+    "business_type": "PC parts, laptops, pre-built PCs, and PC accessories retailer",
+    "visitor_goal": "Browse products by category and order via WhatsApp",
+    "audience": "Syrians interested in PCs and gaming hardware",
+    "tagline": null,
+    "about": null
+  },
+  "brand": {
+    "logo": null,
+    "colors": {
+      "primary": "#2563EB",
+      "secondary": "#F97316",
+      "surface": "#141419",
+      "background": "#0A0A0F",
+      "foreground": "#F4F4F5",
+      "card": "#141419",
+      "card_light": "#FFFFFF",
+      "muted_foreground": "#9CA3AF",
+      "border": "#27272F",
+      "success": "#22C55E",
+      "destructive": "#EF4444",
+      "text": "#F4F4F5",
+      "source": "proposed by ui-ux-pro-max, client deferred color choice"
+    },
+    "fonts": {
+      "heading_latin": "Space Grotesk",
+      "body_latin": "DM Sans",
+      "arabic": "IBM Plex Sans Arabic"
+    },
+    "theme": "mixed-dark-first"
+  },
+  "design": {
+    "source": "ui-ux-pro-max",
+    "client_fixed": [
+      "reference image: PC Builder style site (monochrome, bold typography, category grid, light->dark section rhythm)",
+      "animation_level: rich, explicitly requested",
+      "no cart / no login / no builder configurator / no blog (out of Asas scope)"
+    ],
+    "style": "bold tech monochrome-with-blue-accent",
+    "decisions": [
+      "oversized bold headings (Space Grotesk 700-900)",
+      "full-bleed black featured-product section echoing reference's 'Brand new beast'",
+      "category icon grid (10 categories) echoing reference's component grid",
+      "light/white product cards over dark page background to make product photos pop"
+    ],
+    "references": [
+      {
+        "source": "brief/assets/ref-1.png (client-provided, 'PC Builder' style site)",
+        "take": "monochrome bold aesthetic, oversized typography, category icon grid pattern, light-to-dark section rhythm",
+        "avoid": "cart, login/accounts, interactive PC builder configurator, blog & FAQ system"
+      }
+    ],
+    "avoid": [
+      "shopping cart / checkout",
+      "visitor login/accounts",
+      "interactive builder configurator",
+      "blog/FAQ as a core section"
+    ]
+  },
+  "animation": {
+    "level": "rich",
+    "effects": [
+      { "element": "hero headline", "trigger": "load", "motion": "character stagger reveal", "duration": "~600ms", "easing": "expo.out" },
+      { "element": "section entrance", "trigger": "scroll into view", "motion": "fade + rise", "duration": "300-400ms", "easing": "power1.out" },
+      { "element": "category grid", "trigger": "scroll into view", "motion": "staggered card reveal", "duration": "250-350ms", "easing": "power1.out" },
+      { "element": "product card", "trigger": "hover", "motion": "lift + subtle glow", "duration": "200-300ms" }
+    ],
+    "reduced_motion": "required"
+  },
+  "content": {
+    "sections": [
+      "hero",
+      "featured-product-spotlight (full-bleed dark)",
+      "category-grid",
+      "reviews (if available)",
+      "contact-footer"
+    ],
+    "services": [],
+    "products": [],
+    "team": []
+  },
+  "contact": {
+    "whatsapp": null,
+    "whatsapp_message": null,
+    "address_ar": null,
+    "address_en": null,
+    "maps_url": null,
+    "hours": [],
+    "socials": {},
+    "domain": null
+  },
+  "package_specific": {
+    "categories": [
+      "Processors", "Graphics Cards", "Motherboards", "RAM", "Storage",
+      "Power Supply", "Cooling", "Laptops", "Pre-Built PCs", "Accessories"
+    ],
+    "currency": ["SYP", "USD"],
+    "pricing_mode": "price_on_request_for_some",
+    "pricing_reason": "exchange rate instability (SYP/USD)",
+    "product_count_at_launch": null,
+    "product_source": "placeholder stock/internet images until real photos are provided",
+    "owner_dashboard_email": null
+  },
+  "todo": [
+    { "item": "Real WhatsApp number for orders", "owner": "client", "due": null },
+    { "item": "Owner email for dashboard login", "owner": "client", "due": null },
+    { "item": "Logo and final brand colors (if provided later, revisit palette)", "owner": "client", "due": null },
+    { "item": "Address, map link, business hours, social links", "owner": "client", "due": null },
+    { "item": "Real product photos to replace temporary stock placeholders", "owner": "client", "due": null },
+    { "item": "Domain name", "owner": "client", "due": null },
+    { "item": "Tagline and about text", "owner": "client_or_ahmad", "due": null }
+  ],
+  "out_of_scope": [
+    { "request": "Shopping cart + electronic checkout (from reference)", "verdict": "not_offered", "decision": "pending" },
+    { "request": "Visitor login/accounts (from reference)", "verdict": "not_offered", "decision": "pending" },
+    { "request": "Interactive PC builder configurator (from reference)", "verdict": "paid_addon", "decision": "pending" },
+    { "request": "Blog & Articles system (from reference)", "verdict": "not_offered", "decision": "pending" }
+  ]
+}

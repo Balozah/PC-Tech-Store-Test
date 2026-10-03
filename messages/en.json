@@ -1,0 +1,58 @@
+{
+  "brand": {
+    "name": "Tech RT"
+  },
+  "nav": {
+    "home": "Home",
+    "categories": "Categories",
+    "contact": "Contact"
+  },
+  "hero": {
+    "eyebrow": "PC parts, builds & accessories",
+    "title": "Build your next PC with Tech RT",
+    "subtitle": "Genuine parts, ready-made builds, priced in USD and SYP — order directly on WhatsApp.",
+    "cta": "Browse products"
+  },
+  "spotlight": {
+    "eyebrow": "Featured",
+    "title": "Latest pre-built rigs",
+    "cta": "See details"
+  },
+  "categories": {
+    "title": "Shop by category"
+  },
+  "product": {
+    "available": "In stock",
+    "unavailable": "Out of stock",
+    "priceOnRequest": "Price on request",
+    "selectOption": "Select {option}",
+    "order": "Order on WhatsApp",
+    "orderDisabled": "Select all options first",
+    "related": "Related products",
+    "reviews": "Customer reviews",
+    "noReviews": "No reviews yet — be the first",
+    "addReview": "Add your review",
+    "reviewName": "Name",
+    "reviewRating": "Rating",
+    "reviewComment": "Your comment",
+    "reviewSubmit": "Submit",
+    "reviewSubmitted": "Thanks! Your review will appear after approval.",
+    "reviewError": "Something went wrong, try again"
+  },
+  "footer": {
+    "contact": "Contact us",
+    "address": "Address",
+    "hours": "Hours",
+    "whatsappTodo": "WhatsApp number — TODO",
+    "addressTodo": "Address — TODO",
+    "hoursTodo": "Hours — TODO",
+    "rights": "All rights reserved"
+  },
+  "whatsappMessage": {
+    "greeting": "Hi, I'd like to order:",
+    "product": "Product",
+    "price": "Price",
+    "link": "Link",
+    "onRequest": "on request"
+  }
+}
