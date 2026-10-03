@@ -43,3 +43,6 @@ next-env.d.ts
 
 # local tool config, not project source
 .claude/settings.local.json
+
+# supabase cli
+supabase/.temp

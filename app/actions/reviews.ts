@@ -1,25 +1,13 @@
 "use server";
 
-import { headers } from "next/headers";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export type SubmitReviewResult = { ok: true } | { ok: false; error: string };
-
-// Simple in-memory rate limit (per server instance): 1 review per IP per 60s.
-// Good enough to blunt casual spam; not a substitute for a real queue/WAF.
-const lastSubmission = new Map<string, number>();
-const RATE_LIMIT_MS = 60_000;
 
 export async function submitReview(formData: FormData): Promise<SubmitReviewResult> {
   // Honeypot: real users never fill this hidden field.
   if (formData.get("company")) {
     return { ok: true }; // silently drop bot submissions, no error leaked
-  }
-
-  const ip = (await headers()).get("x-forwarded-for") ?? "unknown";
-  const last = lastSubmission.get(ip);
-  if (last && Date.now() - last < RATE_LIMIT_MS) {
-    return { ok: false, error: "rate_limited" };
   }
 
   const productId = String(formData.get("productId") ?? "");
@@ -51,7 +39,7 @@ export async function submitReview(formData: FormData): Promise<SubmitReviewResu
     status: "pending",
   });
 
-  if (error) return { ok: false, error: "server" };
-  lastSubmission.set(ip, Date.now());
+  // Throttling lives in a DB trigger (supabase/schema.sql) so it also covers direct API inserts.
+  if (error) return { ok: false, error: error.message.includes("rate_limited") ? "rate_limited" : "server" };
   return { ok: true };
 }

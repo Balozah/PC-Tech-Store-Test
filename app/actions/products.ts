@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
 
 function slugify(input: string) {
   return input
@@ -43,7 +43,8 @@ export type ProductFormInput = {
 };
 
 export async function saveProduct(productId: string | null, input: ProductFormInput) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
 
   if (!input.name_ar.trim()) return { error: "اسم المنتج بالعربي مطلوب" };
   if (!input.price_on_request && (input.price_usd == null || input.price_syp == null)) {
@@ -120,7 +121,8 @@ export async function saveProduct(productId: string | null, input: ProductFormIn
 }
 
 export async function deleteProduct(id: string) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
 
   const { data: images } = await supabase.from("product_images").select("path").eq("product_id", id);
   const storagePaths = (images ?? []).map((i) => i.path).filter((p) => !p.startsWith("http"));
@@ -137,7 +139,8 @@ export async function deleteProduct(id: string) {
 }
 
 export async function addProductImage(productId: string, path: string, sortOrder: number) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
   const { error } = await supabase
     .from("product_images")
     .insert({ product_id: productId, path, sort_order: sortOrder });
@@ -147,7 +150,8 @@ export async function addProductImage(productId: string, path: string, sortOrder
 }
 
 export async function deleteProductImage(imageId: string, path: string) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
   if (!path.startsWith("http")) {
     await supabase.storage.from("products").remove([path]);
   }

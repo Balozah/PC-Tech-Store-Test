@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
 
 function slugify(input: string) {
   return input
@@ -12,7 +12,8 @@ function slugify(input: string) {
 }
 
 export async function createCategory(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
   const name_ar = String(formData.get("name_ar") ?? "").trim();
   const name_en = String(formData.get("name_en") ?? "").trim() || null;
   const slug = String(formData.get("slug") ?? "").trim() || slugify(name_en ?? name_ar);
@@ -40,7 +41,8 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(id: string, formData: FormData) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
   const name_ar = String(formData.get("name_ar") ?? "").trim();
   const name_en = String(formData.get("name_en") ?? "").trim() || null;
   const slug = String(formData.get("slug") ?? "").trim();
@@ -55,14 +57,16 @@ export async function updateCategory(id: string, formData: FormData) {
 }
 
 export async function reorderCategory(id: string, sort_order: number) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
   await supabase.from("categories").update({ sort_order }).eq("id", id);
   revalidatePath("/dashboard/categories");
   revalidatePath("/[locale]", "layout");
 }
 
 export async function deleteCategory(id: string) {
-  const supabase = await createClient();
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/dashboard/categories");

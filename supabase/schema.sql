@@ -7,10 +7,15 @@ create table if not exists admins (
   user_id uuid primary key references auth.users on delete cascade
 );
 
-create or replace function is_admin() returns boolean
-language sql stable security definer set search_path = public as $$
-  select exists (select 1 from admins where user_id = auth.uid());
+-- Lives in a schema the REST API doesn't expose, so it can't be called as /rpc/is_admin.
+create schema if not exists private;
+grant usage on schema private to anon, authenticated;
+
+create or replace function private.is_admin() returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.admins where user_id = (select auth.uid()));
 $$;
+grant execute on function private.is_admin() to anon, authenticated;
 
 create table if not exists site_settings (
   id int primary key default 1 check (id = 1),
@@ -84,7 +89,44 @@ create table if not exists reviews (
   created_at timestamptz default now()
 );
 
+-- Review spam guard ------------------------------------------------------
+-- Anyone can insert reviews through the public API, so throttling has to live here,
+-- not in the Next.js server action.
+
+create or replace function private.guard_review_insert() returns trigger
+language plpgsql security definer set search_path = '' as $$
+begin
+  if private.is_admin() then
+    return new;
+  end if;
+
+  new.status := 'pending';
+  new.created_at := now();
+
+  if (select count(*) from public.reviews where created_at > now() - interval '1 minute') >= 5
+     or (select count(*) from public.reviews where status = 'pending') >= 200 then
+    raise exception 'rate_limited' using errcode = 'P0001';
+  end if;
+
+  return new;
+end $$;
+
+drop trigger if exists guard_review_insert on reviews;
+create trigger guard_review_insert before insert on reviews
+  for each row execute function private.guard_review_insert();
+
 -- RLS ------------------------------------------------------------------
+-- Re-runnable: drops every existing policy on these tables, then recreates them.
+
+do $$
+declare p record;
+begin
+  for p in select policyname, tablename from pg_policies where schemaname = 'public' and tablename in
+    ('site_settings','categories','products','product_images','option_groups','option_values','admins','reviews')
+  loop
+    execute format('drop policy %I on public.%I', p.policyname, p.tablename);
+  end loop;
+end $$;
 
 alter table site_settings enable row level security;
 alter table categories enable row level security;
@@ -93,35 +135,52 @@ alter table product_images enable row level security;
 alter table option_groups enable row level security;
 alter table option_values enable row level security;
 alter table admins enable row level security;
+alter table reviews enable row level security;
 
 create policy "public read" on site_settings for select using (true);
-create policy "admin write" on site_settings for all using (is_admin()) with check (is_admin());
+create policy "admin write" on site_settings for all using (private.is_admin()) with check (private.is_admin());
 
 create policy "public read" on categories for select using (true);
-create policy "admin write" on categories for all using (is_admin()) with check (is_admin());
+create policy "admin write" on categories for all using (private.is_admin()) with check (private.is_admin());
 
 create policy "public read" on products for select using (true);
-create policy "admin write" on products for all using (is_admin()) with check (is_admin());
+create policy "admin write" on products for all using (private.is_admin()) with check (private.is_admin());
 
 create policy "public read" on product_images for select using (true);
-create policy "admin write" on product_images for all using (is_admin()) with check (is_admin());
+create policy "admin write" on product_images for all using (private.is_admin()) with check (private.is_admin());
 
 create policy "public read" on option_groups for select using (true);
-create policy "admin write" on option_groups for all using (is_admin()) with check (is_admin());
+create policy "admin write" on option_groups for all using (private.is_admin()) with check (private.is_admin());
 
 create policy "public read" on option_values for select using (true);
-create policy "admin write" on option_values for all using (is_admin()) with check (is_admin());
+create policy "admin write" on option_values for all using (private.is_admin()) with check (private.is_admin());
 
-create policy "admin reads admins" on admins for select using (is_admin());
+create policy "admin reads admins" on admins for select using (private.is_admin());
 
-alter table reviews enable row level security;
-create policy "read approved" on reviews for select using (status = 'approved' or is_admin());
+create policy "read approved" on reviews for select using (status = 'approved' or private.is_admin());
 create policy "anyone submits pending" on reviews for insert with check (status = 'pending');
-create policy "admin manages" on reviews for update using (is_admin()) with check (is_admin());
-create policy "admin deletes" on reviews for delete using (is_admin());
+create policy "admin manages" on reviews for update using (private.is_admin()) with check (private.is_admin());
+create policy "admin deletes" on reviews for delete using (private.is_admin());
 
 -- Storage ----------------------------------------------------------------
--- Run in the Supabase dashboard (Storage) or via the API:
---   create bucket 'products', public read.
--- Then add policies on storage.objects:
---   insert/update/delete only when bucket_id = 'products' and is_admin()
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('products', 'products', true, 5242880, array['image/webp','image/jpeg','image/png'])
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "products admin insert" on storage.objects;
+drop policy if exists "products admin update" on storage.objects;
+drop policy if exists "products admin delete" on storage.objects;
+
+create policy "products admin insert" on storage.objects for insert
+  with check (bucket_id = 'products' and private.is_admin());
+create policy "products admin update" on storage.objects for update
+  using (bucket_id = 'products' and private.is_admin())
+  with check (bucket_id = 'products' and private.is_admin());
+create policy "products admin delete" on storage.objects for delete
+  using (bucket_id = 'products' and private.is_admin());
+
+drop function if exists public.is_admin();

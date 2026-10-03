@@ -1,4 +1,5 @@
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { isSupabaseConfigured } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import * as placeholder from "@/lib/placeholder-data";
 import type { Database } from "@/lib/database.types";
 
@@ -20,7 +21,7 @@ export { isSupabaseConfigured };
 
 export async function getSiteSettings() {
   if (!isSupabaseConfigured()) return placeholder.siteSettings;
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase.from("site_settings").select("*").eq("id", 1).single();
   return data ?? placeholder.siteSettings;
 }
@@ -29,7 +30,7 @@ export async function getCategories(): Promise<Category[]> {
   if (!isSupabaseConfigured()) {
     return [...placeholder.categories].sort((a, b) => a.sort_order - b.sort_order);
   }
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase.from("categories").select("*").order("sort_order");
   return data ?? [];
 }
@@ -48,7 +49,7 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
     }
     return list.sort((a, b) => a.sort_order - b.sort_order);
   }
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   let query = supabase.from("products").select("*").order("sort_order");
   if (categorySlug) {
     const cat = await getCategoryBySlug(categorySlug);
@@ -73,7 +74,7 @@ export async function getProductBySlug(slug: string): Promise<ProductWithRelatio
     return { ...product, images, optionGroups, category, reviews: [] };
   }
 
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data: product } = await supabase.from("products").select("*").eq("slug", slug).single();
   if (!product) return null;
 
@@ -110,7 +111,7 @@ export async function getProductById(id: string): Promise<ProductWithRelations |
     const product = placeholder.products.find((p) => p.id === id);
     return product ? getProductBySlug(product.slug) : null;
   }
-  const supabase = await createClient();
+  const supabase = createPublicClient();
   const { data } = await supabase.from("products").select("slug").eq("id", id).single();
   return data ? getProductBySlug(data.slug) : null;
 }

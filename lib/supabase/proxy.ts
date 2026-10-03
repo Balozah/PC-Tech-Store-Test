@@ -41,13 +41,23 @@ export async function updateSession(request: NextRequest) {
 
   const isLoginPage = request.nextUrl.pathname === "/dashboard/login";
 
-  if (!user && !isLoginPage) {
+  let isAdmin = false;
+  if (user) {
+    const { data } = await supabase
+      .from("admins")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    isAdmin = Boolean(data);
+  }
+
+  if (!isAdmin && !isLoginPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard/login";
     return NextResponse.redirect(url);
   }
 
-  if (user && isLoginPage) {
+  if (isAdmin && isLoginPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
