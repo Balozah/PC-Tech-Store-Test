@@ -39,12 +39,29 @@ export const categories: Category[] = [
   { id: "accessories", slug: "accessories", name_ar: "إكسسوارات", name_en: "Accessories", sort_order: 10, created_at: "" },
 ];
 
-function img(slug: string, nameEn: string): ProductImage[] {
+// Real (generic, non-branded-to-a-competitor) Unsplash stock photos, one per
+// category, so the catalog looks like an actual store instead of text boxes
+// while real product photography isn't ready yet (see brief/brief.md TODO).
+const CATEGORY_STOCK_PHOTO: Record<string, string> = {
+  processors: "https://images.unsplash.com/photo-1555617981-dac3880eac6e",
+  "graphics-cards": "https://images.unsplash.com/photo-1591488320449-011701bb6704",
+  motherboards: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+  ram: "https://images.unsplash.com/photo-1562976540-1502c2145186",
+  storage: "https://images.unsplash.com/photo-1573164713988-8665fc963095",
+  "power-supply": "https://images.unsplash.com/photo-1555680202-c86f0e12f086",
+  cooling: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b",
+  laptops: "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed",
+  "pre-built-pcs": "https://images.unsplash.com/photo-1587202372775-e229f172b9d7",
+  accessories: "https://images.unsplash.com/photo-1587831990711-23ca6441447b",
+};
+
+function img(slug: string, categoryId: string | null): ProductImage[] {
+  const base = (categoryId && CATEGORY_STOCK_PHOTO[categoryId]) || CATEGORY_STOCK_PHOTO.accessories;
   return [
     {
       id: `${slug}-img-0`,
       product_id: slug,
-      path: `https://placehold.co/800x800/141419/F4F4F5.png?text=${nameEn.replace(/ /g, "+")}`,
+      path: `${base}?w=800&h=800&q=80&fit=crop&auto=format`,
       sort_order: 0,
     },
   ];
@@ -65,7 +82,7 @@ export const products: Product[] = [
 ];
 
 export const productImages: Record<string, ProductImage[]> = Object.fromEntries(
-  products.map((p) => [p.slug, img(p.slug, p.name_en ?? p.name_ar)])
+  products.map((p) => [p.slug, img(p.slug, p.category_id)])
 );
 
 export const optionGroups: Record<string, OptionGroup[]> = {

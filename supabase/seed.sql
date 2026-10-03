@@ -121,10 +121,24 @@ select id, 'mechanical-keyboard-placeholder', 'كيبورد ميكانيكي (ن
 from categories where slug = 'accessories'
 on conflict (slug) do nothing;
 
--- Cover image (placehold.co) for every placeholder product
+-- Cover image for every placeholder product: one generic (non-branded-to-a-
+-- competitor) Unsplash stock photo per category, until real product photos
+-- are supplied (see brief/brief.md TODO).
 insert into product_images (product_id, path, sort_order)
-select id,
-  'https://placehold.co/800x800/141419/F4F4F5.png?text=' || replace(name_en, ' ', '+'),
+select p.id,
+  (case c.slug
+    when 'processors' then 'https://images.unsplash.com/photo-1555617981-dac3880eac6e'
+    when 'graphics-cards' then 'https://images.unsplash.com/photo-1591488320449-011701bb6704'
+    when 'motherboards' then 'https://images.unsplash.com/photo-1518770660439-4636190af475'
+    when 'ram' then 'https://images.unsplash.com/photo-1562976540-1502c2145186'
+    when 'storage' then 'https://images.unsplash.com/photo-1573164713988-8665fc963095'
+    when 'power-supply' then 'https://images.unsplash.com/photo-1555680202-c86f0e12f086'
+    when 'cooling' then 'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b'
+    when 'laptops' then 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed'
+    when 'pre-built-pcs' then 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7'
+    else 'https://images.unsplash.com/photo-1587831990711-23ca6441447b'
+  end) || '?w=800&h=800&q=80&fit=crop&auto=format',
   0
-from products
+from products p
+left join categories c on c.id = p.category_id
 on conflict do nothing;

@@ -2,6 +2,8 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { HeroTitle } from "@/components/hero-title";
 import { Spotlight } from "@/components/spotlight";
+import { Spotlight as GlowSpotlight } from "@/components/ui/spotlight";
+import { HeroTiltCard } from "@/components/hero-tilt-card";
 import { CategoryGrid } from "@/components/category-grid";
 import { ProductCard } from "@/components/product-card";
 import { AnimatedSection } from "@/components/animated-section";
@@ -50,25 +52,36 @@ export default async function HomePage({
 
   return (
     <>
-      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-        <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-primary)]">
-          {t("eyebrow")}
-        </p>
-        <HeroTitle
-          text={t("title")}
-          className="mt-3 max-w-3xl font-[var(--font-heading)] text-4xl font-extrabold leading-tight sm:text-6xl"
-        />
-        <AnimatedSection delay={0.3}>
-          <p className="mt-6 max-w-xl text-lg text-[var(--color-muted-foreground)]">
-            {t("subtitle")}
+      <section className="relative mx-auto grid max-w-6xl items-center gap-10 overflow-hidden px-4 py-16 sm:px-6 sm:py-24 md:grid-cols-2 md:gap-16">
+        <GlowSpotlight className="-top-20 start-1/4" size={420} />
+
+        <div className="relative z-10">
+          <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-primary)]">
+            {t("eyebrow")}
           </p>
-          <Link
-            href="/#categories"
-            className="mt-8 inline-block rounded-full bg-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-white transition-transform hover:scale-105"
-          >
-            {t("cta")}
-          </Link>
-        </AnimatedSection>
+          <HeroTitle
+            text={t("title")}
+            className="mt-3 font-[var(--font-heading)] text-4xl font-extrabold leading-tight sm:text-6xl"
+          />
+          <AnimatedSection delay={0.3}>
+            <p className="mt-6 max-w-xl text-lg text-[var(--color-muted-foreground)]">
+              {t("subtitle")}
+            </p>
+            <Link
+              href="/#categories"
+              className="mt-8 inline-block rounded-full bg-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-white transition-transform hover:scale-105"
+            >
+              {t("cta")}
+            </Link>
+          </AnimatedSection>
+        </div>
+
+        <div className="relative z-10">
+          <HeroTiltCard
+            src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=900&h=900&q=80&fit=crop&auto=format"
+            alt={locale === "ar" ? "تجميعة كمبيوتر بإضاءة RGB" : "RGB gaming PC build"}
+          />
+        </div>
       </section>
 
       {featured && <Spotlight product={featured} image={imagesByProduct[featured.slug]} locale={locale} />}
