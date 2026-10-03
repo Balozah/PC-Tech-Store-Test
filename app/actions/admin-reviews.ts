@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateEverything } from "@/lib/revalidate";
 import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
 
 export async function approveReview(id: string) {
@@ -8,8 +8,7 @@ export async function approveReview(id: string) {
   if (!supabase) return { error: NOT_AUTHORIZED };
   const { error } = await supabase.from("reviews").update({ status: "approved" }).eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/reviews");
-  revalidatePath("/[locale]/products/[slug]", "page");
+  revalidateEverything();
   return { ok: true };
 }
 
@@ -18,7 +17,6 @@ export async function deleteReview(id: string) {
   if (!supabase) return { error: NOT_AUTHORIZED };
   const { error } = await supabase.from("reviews").delete().eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/reviews");
-  revalidatePath("/[locale]/products/[slug]", "page");
+  revalidateEverything();
   return { ok: true };
 }

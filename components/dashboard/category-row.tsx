@@ -62,7 +62,11 @@ export function CategoryRow({ category }: { category: Category }) {
         </button>
         <button
           onClick={() => {
-            if (confirm("حذف هذا القسم؟")) startTransition(async () => { await deleteCategory(category.id); });
+            if (!confirm("حذف هذا القسم؟ المنتجات يلي فيه بتضل بس بدون قسم.")) return;
+            startTransition(async () => {
+              const result = await deleteCategory(category.id);
+              if (result?.error) alert(result.error);
+            });
           }}
           className="cursor-pointer text-sm text-[var(--color-destructive)]"
         >

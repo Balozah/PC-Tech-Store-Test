@@ -14,7 +14,11 @@ export function DeleteProductButton({ id }: { id: string }) {
       onClick={() => {
         if (!confirm("حذف هذا المنتج نهائياً؟")) return;
         startTransition(async () => {
-          await deleteProduct(id);
+          const result = await deleteProduct(id);
+          if (result?.error) {
+            alert(result.error);
+            return;
+          }
           router.push("/dashboard/products");
         });
       }}

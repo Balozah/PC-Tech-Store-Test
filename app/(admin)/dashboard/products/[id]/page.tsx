@@ -5,10 +5,13 @@ import { getCategories, getProductById } from "@/lib/data";
 
 export default async function EditProductPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ created?: string }>;
 }) {
   const { id } = await params;
+  const { created } = await searchParams;
   const [product, categories] = await Promise.all([getProductById(id), getCategories()]);
   if (!product) notFound();
 
@@ -18,7 +21,7 @@ export default async function EditProductPage({
         <h1 className="text-2xl font-bold">تعديل منتج</h1>
         <DeleteProductButton id={product.id} />
       </div>
-      <ProductForm product={product} categories={categories} />
+      <ProductForm product={product} categories={categories} justCreated={created === "1"} />
     </div>
   );
 }

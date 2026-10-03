@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateEverything } from "@/lib/revalidate";
 import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
 import { DAYS, SOCIAL_PLATFORMS } from "@/lib/site-settings";
 
@@ -90,8 +90,6 @@ export async function updateSettings(formData: FormData) {
   const { error } = await supabase.from("site_settings").upsert(payload);
   if (error) return { error: error.message };
 
-  revalidatePath("/dashboard/settings");
-  revalidatePath("/[locale]", "layout");
-  revalidatePath("/api/og");
+  revalidateEverything();
   return { ok: true };
 }

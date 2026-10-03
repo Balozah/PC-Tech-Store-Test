@@ -26,14 +26,27 @@ export function ReviewRow({
       <div className="mt-3 flex gap-3">
         <button
           disabled={isPending}
-          onClick={() => startTransition(async () => { await approveReview(review.id); router.refresh(); })}
+          onClick={() =>
+            startTransition(async () => {
+              const result = await approveReview(review.id);
+              if (result?.error) alert(result.error);
+              router.refresh();
+            })
+          }
           className="cursor-pointer rounded-full bg-[var(--color-success)] px-3 py-1 text-xs font-semibold text-black"
         >
           موافقة
         </button>
         <button
           disabled={isPending}
-          onClick={() => startTransition(async () => { await deleteReview(review.id); router.refresh(); })}
+          onClick={() => {
+            if (!confirm("حذف هالتقييم؟")) return;
+            startTransition(async () => {
+              const result = await deleteReview(review.id);
+              if (result?.error) alert(result.error);
+              router.refresh();
+            });
+          }}
           className="cursor-pointer rounded-full bg-[var(--color-destructive)] px-3 py-1 text-xs font-semibold text-white"
         >
           حذف

@@ -56,14 +56,19 @@ function toDraftGroups(product: ProductWithRelations | null): OptionGroupDraft[]
 export function ProductForm({
   product,
   categories,
+  justCreated = false,
 }: {
   product: ProductWithRelations | null;
   categories: Category[];
+  justCreated?: boolean;
 }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(
+    justCreated ? "✓ انحفظ المنتج. هلق ضيف صوره من تحت." : null
+  );
   const [uploading, setUploading] = useState(false);
 
   const [nameAr, setNameAr] = useState(product?.name_ar ?? "");
@@ -102,6 +107,7 @@ export function ProductForm({
     if (!files.length || !product) return;
     setUploading(true);
     setError(null);
+    setNotice(null);
     try {
       let nextOrder = product.images.length;
       for (const file of files) {
@@ -112,6 +118,7 @@ export function ProductForm({
           break;
         }
       }
+      setNotice(files.length > 1 ? `✓ انرفعت ${files.length} صور.` : "✓ انرفعت الصورة.");
       router.refresh();
     } catch {
       setError("فشل رفع الصورة");
@@ -135,6 +142,7 @@ export function ProductForm({
 
   function handleSubmit() {
     setError(null);
+    setNotice(null);
     const input: ProductFormInput = {
       category_id: categoryId || null,
       name_ar: nameAr,
@@ -170,8 +178,9 @@ export function ProductForm({
         return;
       }
       if (!product) {
-        router.push(`/dashboard/products/${result.id}`);
+        router.push(`/dashboard/products/${result.id}?created=1`);
       } else {
+        setNotice("✓ انحفظت التعديلات وطلعت عالموقع.");
         router.refresh();
       }
     });
@@ -419,7 +428,16 @@ export function ProductForm({
         <p className="text-sm text-[var(--color-muted-foreground)]">احفظ المنتج أولاً لتتمكن من رفع الصور.</p>
       )}
 
-      {error && <p className="text-sm text-[var(--color-destructive)]">{error}</p>}
+      {error && (
+        <p role="alert" className="rounded-lg bg-[var(--color-destructive)]/10 px-3 py-2 text-sm text-[var(--color-destructive)]">
+          {error}
+        </p>
+      )}
+      {notice && (
+        <p role="status" className="rounded-lg bg-[var(--color-success)]/10 px-3 py-2 text-sm text-[var(--color-success)]">
+          {notice}
+        </p>
+      )}
 
       <button
         type="button"

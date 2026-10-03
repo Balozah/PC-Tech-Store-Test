@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateEverything } from "@/lib/revalidate";
 import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
 
 function slugify(input: string) {
@@ -114,9 +114,7 @@ export async function saveProduct(productId: string | null, input: ProductFormIn
     }
   }
 
-  revalidatePath("/dashboard/products");
-  revalidatePath("/[locale]", "layout");
-  revalidatePath(`/[locale]/products/${slug}`, "page");
+  revalidateEverything();
   return { ok: true, id, slug };
 }
 
@@ -133,8 +131,7 @@ export async function deleteProduct(id: string) {
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) return { error: error.message };
 
-  revalidatePath("/dashboard/products");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }
 
@@ -145,8 +142,7 @@ export async function addProductImage(productId: string, path: string, sortOrder
     .from("product_images")
     .insert({ product_id: productId, path, sort_order: sortOrder });
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/products");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }
 
@@ -162,8 +158,7 @@ export async function reorderProductImages(productId: string, orderedIds: string
   const failed = results.find((r) => r.error);
   if (failed?.error) return { error: failed.error.message };
 
-  revalidatePath("/dashboard/products");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }
 
@@ -175,7 +170,6 @@ export async function deleteProductImage(imageId: string, path: string) {
   }
   const { error } = await supabase.from("product_images").delete().eq("id", imageId);
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/products");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }

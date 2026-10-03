@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidateEverything } from "@/lib/revalidate";
 import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
 
 function slugify(input: string) {
@@ -35,8 +35,7 @@ export async function createCategory(formData: FormData) {
   });
 
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/categories");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }
 
@@ -51,8 +50,7 @@ export async function updateCategory(id: string, formData: FormData) {
 
   const { error } = await supabase.from("categories").update({ name_ar, name_en, slug }).eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/categories");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }
 
@@ -60,8 +58,7 @@ export async function reorderCategory(id: string, sort_order: number) {
   const supabase = await requireAdmin();
   if (!supabase) return { error: NOT_AUTHORIZED };
   await supabase.from("categories").update({ sort_order }).eq("id", id);
-  revalidatePath("/dashboard/categories");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
 }
 
 export async function deleteCategory(id: string) {
@@ -69,7 +66,6 @@ export async function deleteCategory(id: string) {
   if (!supabase) return { error: NOT_AUTHORIZED };
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) return { error: error.message };
-  revalidatePath("/dashboard/categories");
-  revalidatePath("/[locale]", "layout");
+  revalidateEverything();
   return { ok: true };
 }
