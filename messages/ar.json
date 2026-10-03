@@ -37,16 +37,28 @@
     "reviewComment": "تعليقك",
     "reviewSubmit": "إرسال",
     "reviewSubmitted": "تم إرسال تقييمك، رح يظهر بعد المراجعة",
-    "reviewError": "صار في خطأ، حاول مرة ثانية"
+    "reviewError": "صار في خطأ، حاول مرة ثانية",
+    "orderUnavailable": "الطلب عبر واتساب غير متاح حالياً"
   },
   "footer": {
     "contact": "تواصل معنا",
     "address": "العنوان",
     "hours": "ساعات الدوام",
-    "whatsappTodo": "رقم الواتساب — TODO",
-    "addressTodo": "العنوان — TODO",
-    "hoursTodo": "ساعات الدوام — TODO",
-    "rights": "جميع الحقوق محفوظة"
+    "rights": "جميع الحقوق محفوظة",
+    "whatsapp": "واتساب",
+    "openInMaps": "افتح بالخريطة",
+    "mapTitle": "موقع المتجر على الخريطة",
+    "follow": "تابعنا",
+    "closed": "مسكّر",
+    "days": {
+      "sat": "السبت",
+      "sun": "الأحد",
+      "mon": "الاثنين",
+      "tue": "الثلاثاء",
+      "wed": "الأربعاء",
+      "thu": "الخميس",
+      "fri": "الجمعة"
+    }
   },
   "whatsappMessage": {
     "greeting": "مرحباً، بدي اطلب:",

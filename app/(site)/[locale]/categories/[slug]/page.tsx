@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
 import { AnimatedStagger, AnimatedStaggerItem } from "@/components/animated-section";
-import { getCategories, getCategoryBySlug, getProducts, getProductImages } from "@/lib/data";
+import { getCategories, getCategoryBySlug, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
+import { pageAlternates } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
@@ -16,10 +17,16 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = (await params) as { locale: Locale; slug: string };
-  const category = await getCategoryBySlug(slug);
+  const [category, settings] = await Promise.all([getCategoryBySlug(slug), getSiteSettings()]);
   if (!category) return {};
   const name = locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar;
-  return { title: `${name} — Tech RT`, openGraph: { locale } };
+  const brand = locale === "ar" ? settings.business_name_ar : settings.business_name_en || settings.business_name_ar;
+  const title = `${name} — ${brand}`;
+  return {
+    title,
+    alternates: pageAlternates(locale, `/categories/${slug}`),
+    openGraph: { title, locale, siteName: brand },
+  };
 }
 
 export default async function CategoryPage({
@@ -32,11 +39,7 @@ export default async function CategoryPage({
   if (!category) notFound();
 
   const products = await getProducts(slug);
-  const imagesByProduct = Object.fromEntries(
-    await Promise.all(
-      products.map(async (p) => [p.slug, (await getProductImages(p.slug))[0]])
-    )
-  );
+  const extras = await getCardExtras(products);
 
   const name = locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar;
 
@@ -51,7 +54,12 @@ export default async function CategoryPage({
         <AnimatedStagger className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
           {products.map((product) => (
             <AnimatedStaggerItem key={product.id}>
-              <ProductCard product={product} image={imagesByProduct[product.slug]} locale={locale} />
+              <ProductCard
+                product={product}
+                image={extras[product.slug]?.image}
+                rating={extras[product.slug]?.rating}
+                locale={locale}
+              />
             </AnimatedStaggerItem>
           ))}
         </AnimatedStagger>

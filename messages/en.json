@@ -37,16 +37,28 @@
     "reviewComment": "Your comment",
     "reviewSubmit": "Submit",
     "reviewSubmitted": "Thanks! Your review will appear after approval.",
-    "reviewError": "Something went wrong, try again"
+    "reviewError": "Something went wrong, try again",
+    "orderUnavailable": "WhatsApp ordering isn't available yet"
   },
   "footer": {
     "contact": "Contact us",
     "address": "Address",
     "hours": "Hours",
-    "whatsappTodo": "WhatsApp number — TODO",
-    "addressTodo": "Address — TODO",
-    "hoursTodo": "Hours — TODO",
-    "rights": "All rights reserved"
+    "rights": "All rights reserved",
+    "whatsapp": "WhatsApp",
+    "openInMaps": "Open in Maps",
+    "mapTitle": "Store location map",
+    "follow": "Follow us",
+    "closed": "Closed",
+    "days": {
+      "sat": "Saturday",
+      "sun": "Sunday",
+      "mon": "Monday",
+      "tue": "Tuesday",
+      "wed": "Wednesday",
+      "thu": "Thursday",
+      "fri": "Friday"
+    }
   },
   "whatsappMessage": {
     "greeting": "Hi, I'd like to order:",

@@ -20,7 +20,6 @@ const plexArabic = IBM_Plex_Sans_Arabic({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),
   title: { default: "Tech RT", template: "%s" },
-  icons: { icon: "/favicon.ico" },
 };
 
 export function generateStaticParams() {

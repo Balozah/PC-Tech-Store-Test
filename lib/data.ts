@@ -116,10 +116,32 @@ export async function getProductById(id: string): Promise<ProductWithRelations |
   return data ? getProductBySlug(data.slug) : null;
 }
 
-export async function getProductImages(productSlug: string): Promise<ProductImage[]> {
-  if (!isSupabaseConfigured()) return placeholder.productImages[productSlug] ?? [];
-  const product = await getProductBySlug(productSlug);
-  return product?.images ?? [];
+export type CardExtras = { image?: ProductImage; rating: { average: number; count: number } };
+
+// Cover image + rating for a list of cards in two queries instead of one per product.
+export async function getCardExtras(products: Product[]): Promise<Record<string, CardExtras>> {
+  const empty = { average: 0, count: 0 };
+  if (!products.length) return {};
+
+  if (!isSupabaseConfigured()) {
+    return Object.fromEntries(
+      products.map((p) => [p.slug, { image: placeholder.productImages[p.slug]?.[0], rating: empty }])
+    );
+  }
+
+  const supabase = createPublicClient();
+  const ids = products.map((p) => p.id);
+  const [{ data: images }, { data: reviews }] = await Promise.all([
+    supabase.from("product_images").select("*").in("product_id", ids).order("sort_order"),
+    supabase.from("reviews").select("product_id, rating").in("product_id", ids).eq("status", "approved"),
+  ]);
+
+  return Object.fromEntries(
+    products.map((p) => {
+      const ratings = (reviews ?? []).filter((r) => r.product_id === p.id) as Review[];
+      return [p.slug, { image: (images ?? []).find((i) => i.product_id === p.id), rating: getProductRating(ratings) }];
+    })
+  );
 }
 
 export { productImageUrl } from "@/lib/product-image";

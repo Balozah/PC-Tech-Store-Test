@@ -53,6 +53,8 @@ export function ProductOrder({
     locale,
   });
 
+  const canOrder = Boolean(orderUrl) && product.is_available && allSelected;
+
   return (
     <div>
       {product.optionGroups.map((group) => (
@@ -93,18 +95,20 @@ export function ProductOrder({
       />
 
       <a
-        href={product.is_available && allSelected ? orderUrl : undefined}
+        href={canOrder && orderUrl ? orderUrl : undefined}
         target="_blank"
         rel="noopener noreferrer"
-        aria-disabled={!product.is_available || !allSelected}
+        aria-disabled={!canOrder}
         className={`mt-6 flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-sm font-semibold transition-transform ${
-          product.is_available && allSelected
+          canOrder
             ? "cursor-pointer bg-[var(--color-success)] text-black hover:scale-[1.02]"
             : "cursor-not-allowed bg-[var(--color-muted)] text-[var(--color-muted-foreground)]"
         }`}
       >
         {!product.is_available
           ? t("unavailable")
+          : !orderUrl
+          ? t("orderUnavailable")
           : allSelected
           ? t("order")
           : t("orderDisabled")}

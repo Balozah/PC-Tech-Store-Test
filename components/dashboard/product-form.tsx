@@ -3,7 +3,13 @@
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { saveProduct, addProductImage, deleteProductImage, type ProductFormInput } from "@/app/actions/products";
+import {
+  saveProduct,
+  addProductImage,
+  deleteProductImage,
+  reorderProductImages,
+  type ProductFormInput,
+} from "@/app/actions/products";
 import { uploadProductImage } from "@/lib/upload-image";
 import { productImageUrl } from "@/lib/product-image";
 import type { Category, ProductWithRelations } from "@/lib/data";
@@ -92,21 +98,39 @@ export function ProductForm({
   }
 
   async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file || !product) return;
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length || !product) return;
     setUploading(true);
     setError(null);
     try {
-      const path = await uploadProductImage(product.id, file);
-      const result = await addProductImage(product.id, path, product.images.length);
-      if (result?.error) setError(result.error);
-      else router.refresh();
+      let nextOrder = product.images.length;
+      for (const file of files) {
+        const path = await uploadProductImage(product.id, file);
+        const result = await addProductImage(product.id, path, nextOrder++);
+        if (result?.error) {
+          setError(result.error);
+          break;
+        }
+      }
+      router.refresh();
     } catch {
       setError("فشل رفع الصورة");
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  }
+
+  function moveImage(from: number, to: number) {
+    if (!product || to < 0 || to >= product.images.length) return;
+    const ids = product.images.map((img) => img.id);
+    const [moved] = ids.splice(from, 1);
+    ids.splice(to, 0, moved);
+    startTransition(async () => {
+      const result = await reorderProductImages(product.id, ids);
+      if (result?.error) setError(result.error);
+      router.refresh();
+    });
   }
 
   function handleSubmit() {
@@ -311,25 +335,85 @@ export function ProductForm({
 
       {product ? (
         <div>
-          <h3 className="mb-2 font-semibold">الصور</h3>
+          <h3 className="mb-1 font-semibold">الصور</h3>
+          <p className="mb-3 text-xs text-[var(--color-muted-foreground)]">
+            أول صورة هي الغلاف يلي بتظهر ببطاقة المنتج. استخدم الأسهم لتغيير الترتيب.
+          </p>
           <div className="flex flex-wrap gap-3">
-            {product.images.map((img) => (
-              <div key={img.id} className="relative h-24 w-24 overflow-hidden rounded-lg border border-[var(--color-border)]">
-                <Image src={productImageUrl(img.path)} alt="" fill sizes="96px" className="object-cover" />
-                <button
-                  type="button"
-                  onClick={() => startTransition(async () => {
-                    await deleteProductImage(img.id, img.path);
-                    router.refresh();
-                  })}
-                  className="absolute right-1 top-1 cursor-pointer rounded-full bg-black/70 px-1.5 text-xs text-white"
+            {product.images.map((img, index) => (
+              <div key={img.id} className="w-28">
+                <div
+                  className={`relative h-28 w-28 overflow-hidden rounded-lg border-2 ${
+                    index === 0 ? "border-[var(--color-primary)]" : "border-[var(--color-border)]"
+                  }`}
                 >
-                  ×
-                </button>
+                  <Image src={productImageUrl(img.path)} alt="" fill sizes="112px" className="object-cover" />
+                  {index === 0 && (
+                    <span className="absolute bottom-1 start-1 rounded-full bg-[var(--color-primary)] px-2 py-0.5 text-[10px] font-semibold text-white">
+                      الغلاف
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    aria-label="حذف الصورة"
+                    onClick={() => {
+                      if (!confirm("أكيد بدك تحذف هالصورة؟")) return;
+                      startTransition(async () => {
+                        const result = await deleteProductImage(img.id, img.path);
+                        if (result?.error) setError(result.error);
+                        router.refresh();
+                      });
+                    }}
+                    className="absolute end-1 top-1 h-7 w-7 cursor-pointer rounded-full bg-black/70 text-sm text-white"
+                  >
+                    ×
+                  </button>
+                </div>
+                <div className="mt-1 flex items-center justify-between gap-1">
+                  <button
+                    type="button"
+                    aria-label="تحريك للأمام"
+                    disabled={isPending || index === 0}
+                    onClick={() => moveImage(index, index - 1)}
+                    className="h-8 flex-1 cursor-pointer rounded-md border border-[var(--color-border)] text-sm disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    →
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="تحريك للخلف"
+                    disabled={isPending || index === product.images.length - 1}
+                    onClick={() => moveImage(index, index + 1)}
+                    className="h-8 flex-1 cursor-pointer rounded-md border border-[var(--color-border)] text-sm disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    ←
+                  </button>
+                </div>
+                {index !== 0 && (
+                  <button
+                    type="button"
+                    disabled={isPending}
+                    onClick={() => moveImage(index, 0)}
+                    className="mt-1 w-full cursor-pointer text-[11px] text-[var(--color-primary)] disabled:opacity-40"
+                  >
+                    اجعلها الغلاف
+                  </button>
+                )}
               </div>
             ))}
           </div>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUpload} disabled={uploading} className="mt-3 text-sm" />
+          <label className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-full border border-[var(--color-border)] px-4 py-2 text-sm font-medium hover:border-[var(--color-primary)]">
+            {uploading ? "جاري الرفع..." : "+ إضافة صور"}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleUpload}
+              disabled={uploading}
+              className="sr-only"
+            />
+          </label>
         </div>
       ) : (
         <p className="text-sm text-[var(--color-muted-foreground)]">احفظ المنتج أولاً لتتمكن من رفع الصور.</p>

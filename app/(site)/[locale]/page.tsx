@@ -7,7 +7,8 @@ import { HeroTiltCard } from "@/components/hero-tilt-card";
 import { CategoryGrid } from "@/components/category-grid";
 import { ProductCard } from "@/components/product-card";
 import { AnimatedSection } from "@/components/animated-section";
-import { getCategories, getProducts, getProductImages } from "@/lib/data";
+import { getCategories, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
+import { pageAlternates } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
@@ -17,7 +18,9 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = (await params) as { locale: Locale };
-  const title = locale === "ar" ? "Tech RT — قطع كمبيوتر وتجميعات" : "Tech RT — PC Parts & Builds";
+  const settings = await getSiteSettings();
+  const brand = locale === "ar" ? settings.business_name_ar : settings.business_name_en || settings.business_name_ar;
+  const title = locale === "ar" ? `${brand} — قطع كمبيوتر وتجميعات` : `${brand} — PC Parts & Builds`;
   const description =
     locale === "ar"
       ? "قطع كمبيوتر، لابتوبات، تجميعات جاهزة وإكسسوارات — اطلب عبر واتساب."
@@ -25,7 +28,15 @@ export async function generateMetadata({
   return {
     title,
     description,
-    openGraph: { title, description, locale },
+    alternates: pageAlternates(locale, ""),
+    openGraph: {
+      title,
+      description,
+      locale,
+      siteName: brand,
+      type: "website",
+      images: [{ url: "/api/og", width: 1200, height: 630 }],
+    },
   };
 }
 
@@ -41,14 +52,7 @@ export default async function HomePage({
   const featured = products.find((p) => p.sort_order === 1 && p.price_on_request) ?? products[0];
   const gridProducts = products.filter((p) => p.id !== featured?.id).slice(0, 8);
 
-  const imagesByProduct = Object.fromEntries(
-    await Promise.all(
-      [featured, ...gridProducts].filter(Boolean).map(async (p) => {
-        const images = await getProductImages(p!.slug);
-        return [p!.slug, images[0]];
-      })
-    )
-  );
+  const extras = await getCardExtras(featured ? [featured, ...gridProducts] : gridProducts);
 
   return (
     <>
@@ -84,7 +88,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      {featured && <Spotlight product={featured} image={imagesByProduct[featured.slug]} locale={locale} />}
+      {featured && <Spotlight product={featured} image={extras[featured.slug]?.image} locale={locale} />}
 
       <CategoryGrid categories={categories} locale={locale} />
 
@@ -95,7 +99,8 @@ export default async function HomePage({
               <ProductCard
                 key={product.id}
                 product={product}
-                image={imagesByProduct[product.slug]}
+                image={extras[product.slug]?.image}
+                rating={extras[product.slug]?.rating}
                 locale={locale}
               />
             ))}

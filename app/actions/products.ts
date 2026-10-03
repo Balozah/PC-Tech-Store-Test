@@ -146,6 +146,24 @@ export async function addProductImage(productId: string, path: string, sortOrder
     .insert({ product_id: productId, path, sort_order: sortOrder });
   if (error) return { error: error.message };
   revalidatePath("/dashboard/products");
+  revalidatePath("/[locale]", "layout");
+  return { ok: true };
+}
+
+export async function reorderProductImages(productId: string, orderedIds: string[]) {
+  const supabase = await requireAdmin();
+  if (!supabase) return { error: NOT_AUTHORIZED };
+
+  const results = await Promise.all(
+    orderedIds.map((id, index) =>
+      supabase.from("product_images").update({ sort_order: index }).eq("id", id).eq("product_id", productId)
+    )
+  );
+  const failed = results.find((r) => r.error);
+  if (failed?.error) return { error: failed.error.message };
+
+  revalidatePath("/dashboard/products");
+  revalidatePath("/[locale]", "layout");
   return { ok: true };
 }
 
@@ -158,5 +176,6 @@ export async function deleteProductImage(imageId: string, path: string) {
   const { error } = await supabase.from("product_images").delete().eq("id", imageId);
   if (error) return { error: error.message };
   revalidatePath("/dashboard/products");
+  revalidatePath("/[locale]", "layout");
   return { ok: true };
 }

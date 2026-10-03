@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
+import { DAYS, SOCIAL_PLATFORMS } from "@/lib/site-settings";
 
 function isHttpsUrl(value: unknown): value is string {
   if (typeof value !== "string") return false;
@@ -35,12 +36,26 @@ export async function updateSettings(formData: FormData) {
     return { error: "صيغة روابط السوشال غير صحيحة" };
   }
 
-  if (!Array.isArray(hours)) return { error: "صيغة ساعات الدوام غير صحيحة" };
+  const time = /^([01]\d|2[0-3]):[0-5]\d$/;
+  if (
+    !Array.isArray(hours) ||
+    !hours.every(
+      (h) =>
+        h &&
+        DAYS.includes(h.day) &&
+        typeof h.closed === "boolean" &&
+        (h.closed || (time.test(h.open) && time.test(h.close)))
+    )
+  ) {
+    return { error: "ساعات الدوام غير صحيحة" };
+  }
+
+  const platformKeys: string[] = SOCIAL_PLATFORMS.map((p) => p.key);
   if (
     !socials ||
     typeof socials !== "object" ||
     Array.isArray(socials) ||
-    !Object.values(socials).every(isHttpsUrl)
+    !Object.entries(socials).every(([k, v]) => platformKeys.includes(k) && isHttpsUrl(v))
   ) {
     return { error: "روابط السوشال لازم تكون روابط كاملة تبدأ بـ https://" };
   }

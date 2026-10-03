@@ -8,11 +8,13 @@ import { ProductCard } from "@/components/product-card";
 import {
   getProducts,
   getProductBySlug,
-  getProductImages,
+  getCardExtras,
   getProductRating,
   getSiteSettings,
 } from "@/lib/data";
 import type { Locale } from "@/i18n/routing";
+import { productImageUrl } from "@/lib/product-image";
+import { pageAlternates } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export async function generateStaticParams() {
@@ -26,20 +28,23 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = (await params) as { locale: Locale; slug: string };
-  const product = await getProductBySlug(slug);
+  const [product, settings] = await Promise.all([getProductBySlug(slug), getSiteSettings()]);
   if (!product) return {};
+  const brand = locale === "ar" ? settings.business_name_ar : settings.business_name_en || settings.business_name_ar;
   const name = locale === "ar" ? product.name_ar : product.name_en ?? product.name_ar;
   const description = locale === "ar" ? product.description_ar : product.description_en ?? product.description_ar;
   const image = product.images[0];
 
   return {
-    title: `${name} — Tech RT`,
+    title: `${name} — ${brand}`,
     description: description ?? undefined,
+    alternates: pageAlternates(locale, `/products/${slug}`),
     openGraph: {
       title: name,
       description: description ?? undefined,
       locale,
-      images: image ? [{ url: image.path }] : undefined,
+      siteName: brand,
+      images: image ? [{ url: productImageUrl(image.path) }] : undefined,
     },
   };
 }
@@ -64,9 +69,7 @@ export default async function ProductPage({
   const related = product.category_id
     ? (await getProducts(product.category?.slug)).filter((p) => p.id !== product.id).slice(0, 4)
     : [];
-  const relatedImages = Object.fromEntries(
-    await Promise.all(related.map(async (p) => [p.slug, (await getProductImages(p.slug))[0]]))
-  );
+  const relatedExtras = await getCardExtras(related);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
@@ -129,7 +132,13 @@ export default async function ProductPage({
           <h2 className="mb-4 font-[var(--font-heading)] text-2xl font-bold">{t("related")}</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {related.map((p) => (
-              <ProductCard key={p.id} product={p} image={relatedImages[p.slug]} locale={locale} />
+              <ProductCard
+                key={p.id}
+                product={p}
+                image={relatedExtras[p.slug]?.image}
+                rating={relatedExtras[p.slug]?.rating}
+                locale={locale}
+              />
             ))}
           </div>
         </section>

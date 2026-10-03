@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Price } from "@/components/price";
+import { StarRating } from "@/components/star-rating";
 import type { Product, ProductImage } from "@/lib/data";
 import { productImageUrl } from "@/lib/product-image";
 import type { Locale } from "@/i18n/routing";
@@ -9,10 +10,12 @@ import type { Locale } from "@/i18n/routing";
 export function ProductCard({
   product,
   image,
+  rating,
   locale,
 }: {
   product: Product;
   image?: ProductImage;
+  rating?: { average: number; count: number };
   locale: Locale;
 }) {
   const t = useTranslations("product");
@@ -48,6 +51,11 @@ export function ProductCard({
           locale={locale}
           className="mt-1 block text-sm font-medium text-[var(--color-primary)]"
         />
+        {rating && rating.count > 0 && (
+          <div className="mt-1.5">
+            <StarRating value={rating.average} count={rating.count} size={13} />
+          </div>
+        )}
       </div>
     </Link>
   );

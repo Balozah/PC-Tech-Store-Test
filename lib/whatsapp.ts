@@ -32,7 +32,12 @@ export function buildWhatsAppOrderUrl(opts: {
     `${isAr ? "الرابط" : "Link"}: ${productUrl}`,
   ];
 
-  const text = encodeURIComponent(lines.join("\n"));
-  const number = whatsappNumber?.replace(/\D/g, "") || "000000000000"; // TODO: real WhatsApp number pending
-  return `https://wa.me/${number}?text=${text}`;
+  const number = whatsappNumber?.replace(/\D/g, "");
+  if (!number) return null;
+  return `https://wa.me/${number}?text=${encodeURIComponent(lines.join("\n"))}`;
+}
+
+export function whatsAppChatUrl(whatsappNumber: string | null) {
+  const number = whatsappNumber?.replace(/\D/g, "");
+  return number ? `https://wa.me/${number}` : null;
 }
