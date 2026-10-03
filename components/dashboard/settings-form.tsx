@@ -4,6 +4,8 @@ import { useState, useTransition } from "react";
 import { updateSettings } from "@/app/actions/settings";
 import type { Database } from "@/lib/database.types";
 import { DAYS, SOCIAL_PLATFORMS, type Day, type Hours } from "@/lib/site-settings";
+import { Card, Icon, Spinner, Switch, buttonClass, hintClass, inputClass, labelClass } from "@/components/dashboard/ui";
+import { cn } from "@/lib/utils";
 
 type SiteSettings = Database["public"]["Tables"]["site_settings"]["Row"];
 
@@ -16,9 +18,6 @@ const DAY_LABELS: Record<Day, string> = {
   thu: "الخميس",
   fri: "الجمعة",
 };
-
-const inputClass =
-  "w-full rounded-lg border border-[var(--color-border)] bg-transparent px-3 py-2.5 text-base sm:text-sm";
 
 function initialHours(saved: unknown): Hours[] {
   const list = Array.isArray(saved) ? (saved as Hours[]) : [];
@@ -53,25 +52,25 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
           setStatus(result?.error ? { type: "error", message: result.error } : { type: "saved" });
         });
       }}
-      className="max-w-2xl space-y-8"
+      className="space-y-4 pb-24"
     >
       <input type="hidden" name="hours" value={JSON.stringify(showHours ? hours : [])} />
       <input type="hidden" name="socials" value={JSON.stringify(cleanSocials)} />
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">معلومات المتجر</h2>
+      <Card title="معلومات المتجر">
+        <div className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">اسم المتجر بالعربي</label>
+            <label className={labelClass}>اسم المتجر بالعربي</label>
             <input name="business_name_ar" defaultValue={settings.business_name_ar} className={inputClass} />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Store name (English)</label>
+            <label className={labelClass}>Store name (English)</label>
             <input name="business_name_en" defaultValue={settings.business_name_en ?? ""} dir="ltr" className={inputClass} />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">رقم الواتساب</label>
+          <label className={labelClass}>رقم الواتساب</label>
           <input
             name="whatsapp"
             type="tel"
@@ -81,50 +80,46 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
             placeholder="963912345678"
             className={inputClass}
           />
-          <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
+          <p className={hintClass}>
             مع رمز الدولة وبدون صفر بالأول. عليه بتوصل كل الطلبات، وإذا تركته فاضي بيتسكّر زر الطلب.
           </p>
         </div>
-      </section>
+        </div>
+      </Card>
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">العنوان والخريطة</h2>
+      <Card title="العنوان والخريطة">
+        <div className="space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">العنوان بالعربي</label>
+            <label className={labelClass}>العنوان بالعربي</label>
             <input name="address_ar" defaultValue={settings.address_ar ?? ""} className={inputClass} />
           </div>
           <div>
-            <label className="mb-1 block text-sm font-medium">Address (English)</label>
+            <label className={labelClass}>Address (English)</label>
             <input name="address_en" defaultValue={settings.address_en ?? ""} dir="ltr" className={inputClass} />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">رابط المحل على Google Maps</label>
+          <label className={labelClass}>رابط المحل على Google Maps</label>
           <input name="maps_url" type="url" dir="ltr" defaultValue={settings.maps_url ?? ""} placeholder="https://maps.app.goo.gl/..." className={inputClass} />
-          <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">من Google Maps: مشاركة ← نسخ الرابط.</p>
+          <p className={hintClass}>من Google Maps: مشاركة ← نسخ الرابط.</p>
         </div>
         <div>
-          <label className="mb-1 block text-sm font-medium">رابط تضمين الخريطة (اختياري)</label>
+          <label className={labelClass}>رابط تضمين الخريطة (اختياري)</label>
           <input name="maps_embed_url" type="url" dir="ltr" defaultValue={settings.maps_embed_url ?? ""} placeholder="https://www.google.com/maps/embed?pb=..." className={inputClass} />
-          <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
+          <p className={hintClass}>
             من Google Maps: مشاركة ← تضمين خريطة ← انسخ الرابط يلي جوا src=&quot;...&quot; بس.
           </p>
         </div>
-      </section>
-
-      <section className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
-          <h2 className="text-lg font-semibold">ساعات الدوام</h2>
-          <label className="flex cursor-pointer items-center gap-2 text-sm">
-            <input type="checkbox" checked={showHours} onChange={(e) => setShowHours(e.target.checked)} className="h-4 w-4" />
-            اعرضها بالموقع
-          </label>
         </div>
+      </Card>
+
+      <Card title="ساعات الدوام">
+        <Switch checked={showHours} onChange={setShowHours} label="اعرض ساعات الدوام بالموقع" />
         {showHours && (
-          <div className="divide-y divide-[var(--color-border)] rounded-xl border border-[var(--color-border)]">
+          <div className="mt-3 divide-y divide-[var(--color-border)] rounded-xl border border-[var(--color-border)] bg-[var(--color-background)]">
             {hours.map((h) => (
-              <div key={h.day} className="flex flex-wrap items-center gap-3 p-3">
+              <div key={h.day} className="flex min-h-14 flex-wrap items-center gap-3 px-3 py-2">
                 <span className="w-20 text-sm font-medium">{DAY_LABELS[h.day]}</span>
                 <label className="flex cursor-pointer items-center gap-1.5 text-sm">
                   <input type="checkbox" checked={h.closed} onChange={(e) => updateDay(h.day, { closed: e.target.checked })} className="h-4 w-4" />
@@ -132,24 +127,22 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
                 </label>
                 {!h.closed && (
                   <div className="flex items-center gap-2" dir="ltr">
-                    <input type="time" value={h.open} onChange={(e) => updateDay(h.day, { open: e.target.value })} className="rounded-lg border border-[var(--color-border)] bg-transparent px-2 py-1.5 text-sm" />
+                    <input type="time" value={h.open} onChange={(e) => updateDay(h.day, { open: e.target.value })} className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-2 text-sm" />
                     <span>-</span>
-                    <input type="time" value={h.close} onChange={(e) => updateDay(h.day, { close: e.target.value })} className="rounded-lg border border-[var(--color-border)] bg-transparent px-2 py-1.5 text-sm" />
+                    <input type="time" value={h.close} onChange={(e) => updateDay(h.day, { close: e.target.value })} className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-2 text-sm" />
                   </div>
                 )}
               </div>
             ))}
           </div>
         )}
-      </section>
+      </Card>
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">السوشال ميديا</h2>
-        <p className="text-xs text-[var(--color-muted-foreground)]">حط الرابط الكامل. يلي بتتركه فاضي ما بيظهر بالموقع.</p>
+      <Card title="السوشال ميديا" description="حط الرابط الكامل. يلي بتتركه فاضي ما بيظهر بالموقع.">
         <div className="grid gap-4 sm:grid-cols-2">
           {SOCIAL_PLATFORMS.map((p) => (
             <div key={p.key}>
-              <label className="mb-1 block text-sm font-medium">{p.label}</label>
+              <label className={labelClass}>{p.label}</label>
               <input
                 type="url"
                 dir="ltr"
@@ -161,18 +154,26 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
             </div>
           ))}
         </div>
-      </section>
+      </Card>
 
-      <div className="flex flex-wrap items-center gap-4">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="min-h-11 cursor-pointer rounded-full bg-[var(--color-primary)] px-8 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
-        >
-          {isPending ? "جاري الحفظ..." : "حفظ الإعدادات"}
-        </button>
-        {status.type === "saved" && <p className="text-sm text-[var(--color-success)]">تم الحفظ</p>}
-        {status.type === "error" && <p className="text-sm text-[var(--color-destructive)]">{status.message}</p>}
+      <div className="fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-20 border-t border-[var(--color-border)] bg-[var(--color-card)]/95 backdrop-blur-md md:bottom-0 md:start-64">
+        <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-3 md:px-8">
+          <p
+            role={status.type === "error" ? "alert" : "status"}
+            className={cn("min-w-0 flex-1 truncate text-sm", status.type === "error" ? "text-[var(--color-destructive)]" : "text-[var(--color-success)]")}
+          >
+            {status.type !== "idle" && (
+              <span className="inline-flex items-center gap-1.5">
+                <Icon name={status.type === "error" ? "alert" : "check"} className="h-4 w-4" />
+                {status.type === "saved" ? "انحفظت الإعدادات وطلعت عالموقع." : status.message}
+              </span>
+            )}
+          </p>
+          <button type="submit" disabled={isPending} className={cn(buttonClass.primary, "min-w-32")}>
+            {isPending ? <Spinner /> : <Icon name="check" className="h-4 w-4" />}
+            حفظ الإعدادات
+          </button>
+        </div>
       </div>
     </form>
   );

@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { deleteProduct } from "@/app/actions/products";
+import { Icon, Spinner, buttonClass } from "@/components/dashboard/ui";
 
 export function DeleteProductButton({ id }: { id: string }) {
   const router = useRouter();
@@ -10,9 +11,10 @@ export function DeleteProductButton({ id }: { id: string }) {
 
   return (
     <button
+      type="button"
       disabled={isPending}
       onClick={() => {
-        if (!confirm("حذف هذا المنتج نهائياً؟")) return;
+        if (!confirm("حذف هالمنتج مع كل صوره نهائياً؟")) return;
         startTransition(async () => {
           const result = await deleteProduct(id);
           if (result?.error) {
@@ -22,9 +24,10 @@ export function DeleteProductButton({ id }: { id: string }) {
           router.push("/dashboard/products");
         });
       }}
-      className="cursor-pointer text-sm text-[var(--color-destructive)] disabled:opacity-50"
+      className={buttonClass.danger}
     >
-      حذف المنتج
+      {isPending ? <Spinner /> : <Icon name="trash" className="h-4 w-4" />}
+      حذف
     </button>
   );
 }

@@ -1,6 +1,8 @@
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import type { Review } from "@/lib/data";
 
+// These read with the signed-in session: RLS only exposes pending reviews to admins.
+
 export async function getPendingReviews(): Promise<(Review & { product_name: string })[]> {
   if (!isSupabaseConfigured()) return [];
   const supabase = await createClient();
@@ -14,4 +16,13 @@ export async function getPendingReviews(): Promise<(Review & { product_name: str
     const row = r as Review & { products: { name_ar: string } | null };
     return { ...row, product_name: row.products?.name_ar ?? "" };
   });
+}
+
+export async function getPendingReviewCount(): Promise<number> {
+  const supabase = await createClient();
+  const { count } = await supabase
+    .from("reviews")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "pending");
+  return count ?? 0;
 }

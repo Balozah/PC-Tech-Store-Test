@@ -35,18 +35,19 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // getClaims verifies the ES256 session JWT locally against the cached JWKS,
+  // so this check costs no round-trip to Supabase Auth on every request.
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const userId = claimsData?.claims?.sub;
 
   const isLoginPage = request.nextUrl.pathname === "/dashboard/login";
 
   let isAdmin = false;
-  if (user) {
+  if (userId) {
     const { data } = await supabase
       .from("admins")
       .select("user_id")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle();
     isAdmin = Boolean(data);
   }

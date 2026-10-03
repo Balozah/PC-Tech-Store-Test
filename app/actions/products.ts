@@ -68,7 +68,10 @@ export async function saveProduct(productId: string | null, input: ProductFormIn
   let id = productId;
 
   if (id) {
-    const { error } = await supabase.from("products").update(payload).eq("id", id);
+    const { error } = await supabase
+      .from("products")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", id);
     if (error) return { error: error.message };
   } else {
     const { data, error } = await supabase
@@ -81,37 +84,43 @@ export async function saveProduct(productId: string | null, input: ProductFormIn
   }
 
   // Replace option groups/values wholesale — simplest consistent approach for a small catalog.
+  const groups = input.optionGroups
+    .map((g) => ({ ...g, name_ar: g.name_ar.trim(), values: g.values.filter((v) => v.label_ar.trim()) }))
+    .filter((g) => g.name_ar && g.values.length);
+
   await supabase.from("option_groups").delete().eq("product_id", id);
-  for (const [gi, group] of input.optionGroups.entries()) {
-    const { data: groupRow, error: groupError } = await supabase
+  if (groups.length) {
+    const { data: groupRows, error: groupError } = await supabase
       .from("option_groups")
-      .insert({
-        product_id: id,
-        name_ar: group.name_ar,
-        name_en: group.name_en,
-        kind: group.kind,
-        is_required: group.is_required,
-        sort_order: gi,
-      })
-      .select("id")
-      .single();
+      .insert(
+        groups.map((g, gi) => ({
+          product_id: id,
+          name_ar: g.name_ar,
+          name_en: g.name_en?.trim() || null,
+          kind: g.kind,
+          is_required: g.is_required,
+          sort_order: gi,
+        }))
+      )
+      .select("id, sort_order");
     if (groupError) return { error: groupError.message };
 
-    if (group.values.length) {
-      const { error: valuesError } = await supabase.from("option_values").insert(
-        group.values.map((v, vi) => ({
-          group_id: groupRow.id,
-          label_ar: v.label_ar,
-          label_en: v.label_en,
-          hex: v.hex,
+    const groupIdByOrder = new Map(groupRows.map((r) => [r.sort_order, r.id]));
+    const { error: valuesError } = await supabase.from("option_values").insert(
+      groups.flatMap((g, gi) =>
+        g.values.map((v, vi) => ({
+          group_id: groupIdByOrder.get(gi)!,
+          label_ar: v.label_ar.trim(),
+          label_en: v.label_en?.trim() || null,
+          hex: g.kind === "color" ? v.hex : null,
           price_override_usd: v.price_override_usd,
           price_override_syp: v.price_override_syp,
           is_available: v.is_available,
           sort_order: vi,
         }))
-      );
-      if (valuesError) return { error: valuesError.message };
-    }
+      )
+    );
+    if (valuesError) return { error: valuesError.message };
   }
 
   revalidateEverything();
@@ -135,12 +144,20 @@ export async function deleteProduct(id: string) {
   return { ok: true };
 }
 
-export async function addProductImage(productId: string, path: string, sortOrder: number) {
+export async function addProductImages(productId: string, paths: string[]) {
   const supabase = await requireAdmin();
   if (!supabase) return { error: NOT_AUTHORIZED };
+  if (!paths.length) return { ok: true };
+
+  const { count } = await supabase
+    .from("product_images")
+    .select("id", { count: "exact", head: true })
+    .eq("product_id", productId);
+  const start = count ?? 0;
+
   const { error } = await supabase
     .from("product_images")
-    .insert({ product_id: productId, path, sort_order: sortOrder });
+    .insert(paths.map((path, i) => ({ product_id: productId, path, sort_order: start + i })));
   if (error) return { error: error.message };
   revalidateEverything();
   return { ok: true };
@@ -162,11 +179,15 @@ export async function reorderProductImages(productId: string, orderedIds: string
   return { ok: true };
 }
 
-export async function deleteProductImage(imageId: string, path: string) {
+export async function deleteProductImage(imageId: string) {
   const supabase = await requireAdmin();
   if (!supabase) return { error: NOT_AUTHORIZED };
-  if (!path.startsWith("http")) {
-    await supabase.storage.from("products").remove([path]);
+
+  // Look the path up server-side rather than trusting a client-supplied storage path.
+  const { data: image } = await supabase.from("product_images").select("path").eq("id", imageId).maybeSingle();
+  if (!image) return { error: "الصورة مش موجودة" };
+  if (!image.path.startsWith("http")) {
+    await supabase.storage.from("products").remove([image.path]);
   }
   const { error } = await supabase.from("product_images").delete().eq("id", imageId);
   if (error) return { error: error.message };

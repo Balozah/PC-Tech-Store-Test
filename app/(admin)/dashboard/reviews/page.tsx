@@ -1,7 +1,10 @@
 import { SupabaseNotice } from "@/components/dashboard/supabase-notice";
 import { ReviewRow } from "@/components/dashboard/review-row";
+import { EmptyState, PageHeader } from "@/components/dashboard/ui";
 import { isSupabaseConfigured } from "@/lib/data";
 import { getPendingReviews } from "@/lib/data-admin";
+
+export const metadata = { title: "التقييمات" };
 
 export default async function ReviewsPage() {
   const configured = isSupabaseConfigured();
@@ -9,16 +12,20 @@ export default async function ReviewsPage() {
 
   return (
     <div>
-      <h1 className="mb-6 text-2xl font-bold">التقييمات بانتظار الموافقة</h1>
+      <PageHeader
+        title="التقييمات"
+        description="ما في تقييم بيطلع عالموقع قبل ما توافق عليه."
+      />
       {!configured && <SupabaseNotice />}
-      <div className="space-y-3">
-        {reviews.map((r) => (
-          <ReviewRow key={r.id} review={r} />
-        ))}
-        {configured && reviews.length === 0 && (
-          <p className="text-sm text-[var(--color-muted-foreground)]">لا توجد تقييمات بانتظار الموافقة.</p>
-        )}
-      </div>
+      {reviews.length === 0 ? (
+        <EmptyState icon="star" title="ما في تقييمات بانتظارك" description="لما يكتب زبون تقييم، بيوصل لهون." />
+      ) : (
+        <div className="space-y-3">
+          {reviews.map((r) => (
+            <ReviewRow key={r.id} review={r} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

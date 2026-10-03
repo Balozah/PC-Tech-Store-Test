@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
 import { updateCategory, deleteCategory } from "@/app/actions/categories";
+import { Icon, Spinner, buttonClass, inputClass, labelClass } from "@/components/dashboard/ui";
 import type { Category } from "@/lib/data";
 
-export function CategoryRow({ category }: { category: Category }) {
+export function CategoryRow({ category, productCount }: { category: Category; productCount: number }) {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -13,66 +15,74 @@ export function CategoryRow({ category }: { category: Category }) {
     return (
       <form
         action={(formData) => {
+          setError(null);
           startTransition(async () => {
             const result = await updateCategory(category.id, formData);
             if (result?.error) setError(result.error);
             else setEditing(false);
           });
         }}
-        className="flex flex-wrap items-center gap-2 rounded-xl border border-[var(--color-primary)] p-3"
+        className="space-y-3 bg-[var(--color-background)] p-4"
       >
-        <input
-          name="name_ar"
-          defaultValue={category.name_ar}
-          placeholder="الاسم بالعربي"
-          className="rounded-lg border border-[var(--color-border)] bg-transparent px-2 py-1 text-sm"
-        />
-        <input
-          name="name_en"
-          defaultValue={category.name_en ?? ""}
-          placeholder="Name (English)"
-          className="rounded-lg border border-[var(--color-border)] bg-transparent px-2 py-1 text-sm"
-        />
-        <input
-          name="slug"
-          defaultValue={category.slug}
-          placeholder="slug"
-          className="rounded-lg border border-[var(--color-border)] bg-transparent px-2 py-1 text-sm"
-        />
-        <button type="submit" disabled={isPending} className="cursor-pointer rounded-full bg-[var(--color-primary)] px-3 py-1 text-xs font-semibold text-white">
-          حفظ
-        </button>
-        <button type="button" onClick={() => setEditing(false)} className="cursor-pointer text-xs text-[var(--color-muted-foreground)]">
-          إلغاء
-        </button>
-        {error && <p className="w-full text-xs text-[var(--color-destructive)]">{error}</p>}
+        <div className="grid gap-3 sm:grid-cols-3">
+          <div>
+            <label className={labelClass}>الاسم</label>
+            <input name="name_ar" required defaultValue={category.name_ar} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>Name (English)</label>
+            <input name="name_en" dir="ltr" defaultValue={category.name_en ?? ""} className={inputClass} />
+          </div>
+          <div>
+            <label className={labelClass}>الرابط</label>
+            <input name="slug" dir="ltr" required defaultValue={category.slug} className={inputClass} />
+          </div>
+        </div>
+        {error && <p role="alert" className="text-sm text-[var(--color-destructive)]">{error}</p>}
+        <div className="flex gap-2">
+          <button type="submit" disabled={isPending} className={buttonClass.primary}>
+            {isPending ? <Spinner /> : <Icon name="check" className="h-4 w-4" />}
+            حفظ
+          </button>
+          <button type="button" onClick={() => setEditing(false)} className={buttonClass.ghost}>
+            إلغاء
+          </button>
+        </div>
       </form>
     );
   }
 
   return (
-    <div className="flex items-center justify-between rounded-xl border border-[var(--color-border)] p-3">
-      <div>
-        <p className="font-medium">{category.name_ar} {category.name_en && `/ ${category.name_en}`}</p>
-        <p className="text-xs text-[var(--color-muted-foreground)]">/{category.slug}</p>
-      </div>
-      <div className="flex gap-2">
-        <button onClick={() => setEditing(true)} className="cursor-pointer text-sm text-[var(--color-primary)]">
-          تعديل
-        </button>
-        <button
-          onClick={() => {
-            if (!confirm("حذف هذا القسم؟ المنتجات يلي فيه بتضل بس بدون قسم.")) return;
-            startTransition(async () => {
-              const result = await deleteCategory(category.id);
-              if (result?.error) alert(result.error);
-            });
-          }}
-          className="cursor-pointer text-sm text-[var(--color-destructive)]"
-        >
-          حذف
-        </button>
-      </div>
+    <div className="flex items-center gap-3 p-3 sm:p-4">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--color-primary)]/12 text-[var(--color-primary)]">
+        <Icon name="folder" />
+      </span>
+      <Link href={`/dashboard/products?category=${category.slug}`} className="min-w-0 flex-1">
+        <p className="truncate font-medium">
+          {category.name_ar}
+          {category.name_en && <span className="text-[var(--color-muted-foreground)]"> · {category.name_en}</span>}
+        </p>
+        <p className="text-xs text-[var(--color-muted-foreground)]">{productCount} منتج</p>
+      </Link>
+      <button type="button" aria-label="تعديل القسم" onClick={() => setEditing(true)} className="grid h-11 w-11 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]">
+        <Icon name="pencil" className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        aria-label="حذف القسم"
+        disabled={isPending}
+        onClick={() => {
+          const note = productCount ? `\nالـ ${productCount} منتج يلي فيه بيضلوا بس بدون قسم.` : "";
+          if (!confirm(`حذف قسم "${category.name_ar}"؟${note}`)) return;
+          startTransition(async () => {
+            const result = await deleteCategory(category.id);
+            if (result?.error) alert(result.error);
+          });
+        }}
+        className="grid h-11 w-11 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)] disabled:opacity-50"
+      >
+        {isPending ? <Spinner /> : <Icon name="trash" className="h-4 w-4" />}
+      </button>
     </div>
   );
 }
