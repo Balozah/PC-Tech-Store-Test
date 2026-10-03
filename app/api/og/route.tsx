@@ -3,6 +3,9 @@ import { getSiteSettings } from "@/lib/data";
 
 // Generic share card for the home page until the client supplies a logo/brand image.
 // Latin-only text: the built-in OG renderer has no Arabic shaping.
+// Cached so a public endpoint can't be used to burn function invocations.
+export const revalidate = 86400;
+
 export async function GET() {
   const settings = await getSiteSettings();
   const name = settings.business_name_en || "";

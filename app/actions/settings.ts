@@ -65,8 +65,11 @@ export async function updateSettings(formData: FormData) {
   if (mapsUrl.error || mapsEmbed.error) {
     return { error: "روابط الخريطة لازم تبدأ بـ https://" };
   }
-  if (mapsEmbed.value && !new URL(mapsEmbed.value).hostname.endsWith("google.com")) {
-    return { error: "رابط تضمين الخريطة لازم يكون من Google Maps" };
+  if (mapsEmbed.value) {
+    const embed = new URL(mapsEmbed.value);
+    if (!["www.google.com", "google.com"].includes(embed.hostname) || !embed.pathname.startsWith("/maps/embed")) {
+      return { error: "رابط تضمين الخريطة لازم يكون من Google Maps (يبدأ بـ https://www.google.com/maps/embed)" };
+    }
   }
 
   const whatsapp = String(formData.get("whatsapp") ?? "").replace(/[^\d+]/g, "") || null;
@@ -89,5 +92,6 @@ export async function updateSettings(formData: FormData) {
 
   revalidatePath("/dashboard/settings");
   revalidatePath("/[locale]", "layout");
+  revalidatePath("/api/og");
   return { ok: true };
 }
