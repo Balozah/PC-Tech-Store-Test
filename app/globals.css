@@ -68,6 +68,37 @@ html[dir="rtl"] * {
   letter-spacing: 0;
 }
 
+@keyframes enter-rise {
+  from { opacity: 0; transform: translateY(24px); }
+}
+
+@keyframes enter-scale {
+  from { opacity: 0; transform: scale(0.92); }
+}
+
+/* Load-time entrance in pure CSS so above-the-fold content never waits on JS. */
+.enter {
+  animation: enter-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--enter-delay, 0ms) backwards;
+}
+
+.enter-scale {
+  animation: enter-scale 0.6s ease-out 200ms backwards;
+}
+
+[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.45s ease-out,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

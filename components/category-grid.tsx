@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/category-icon";
-import { AnimatedStagger, AnimatedStaggerItem } from "@/components/animated-section";
+import { Reveal } from "@/components/reveal";
 import type { Category } from "@/lib/data";
 import type { Locale } from "@/i18n/routing";
 
@@ -13,9 +13,9 @@ export function CategoryGrid({ categories, locale }: { categories: Category[]; l
       <h2 className="mb-8 font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">
         {t("title")}
       </h2>
-      <AnimatedStagger className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
-        {categories.map((cat) => (
-          <AnimatedStaggerItem key={cat.id}>
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">
+        {categories.map((cat, i) => (
+          <Reveal key={cat.id} index={i}>
             <Link
               href={`/categories/${cat.slug}`}
               className="group flex flex-col items-center gap-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6 text-center transition-colors hover:border-[var(--color-primary)]"
@@ -28,9 +28,9 @@ export function CategoryGrid({ categories, locale }: { categories: Category[]; l
                 {locale === "ar" ? cat.name_ar : cat.name_en ?? cat.name_ar}
               </span>
             </Link>
-          </AnimatedStaggerItem>
+          </Reveal>
         ))}
-      </AnimatedStagger>
+      </div>
     </section>
   );
 }

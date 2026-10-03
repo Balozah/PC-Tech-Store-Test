@@ -6,7 +6,7 @@ import { Spotlight as GlowSpotlight } from "@/components/ui/spotlight";
 import { HeroTiltCard } from "@/components/hero-tilt-card";
 import { CategoryGrid } from "@/components/category-grid";
 import { ProductCard } from "@/components/product-card";
-import { AnimatedSection } from "@/components/animated-section";
+import { Reveal } from "@/components/reveal";
 import { getCategories, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
 import { pageAlternates } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
@@ -47,6 +47,7 @@ export default async function HomePage({
 }) {
   const { locale } = (await params) as { locale: Locale };
   const t = await getTranslations("hero");
+  const tp = await getTranslations("product");
 
   const [categories, products] = await Promise.all([getCategories(), getProducts()]);
   const featured = products.find((p) => p.sort_order === 1 && p.price_on_request) ?? products[0];
@@ -67,7 +68,7 @@ export default async function HomePage({
             text={t("title")}
             className="mt-3 font-[var(--font-heading)] text-4xl font-extrabold leading-tight sm:text-6xl"
           />
-          <AnimatedSection delay={0.3}>
+          <div className="enter" style={{ "--enter-delay": "300ms" } as React.CSSProperties}>
             <p className="mt-6 max-w-xl text-lg text-[var(--color-muted-foreground)]">
               {t("subtitle")}
             </p>
@@ -77,7 +78,7 @@ export default async function HomePage({
             >
               {t("cta")}
             </Link>
-          </AnimatedSection>
+          </div>
         </div>
 
         <div className="relative z-10">
@@ -94,15 +95,19 @@ export default async function HomePage({
 
       {gridProducts.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+          <Reveal>
+            <h2 className="mb-8 font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">{tp("latest")}</h2>
+          </Reveal>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {gridProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                image={extras[product.slug]?.image}
-                rating={extras[product.slug]?.rating}
-                locale={locale}
-              />
+            {gridProducts.map((product, i) => (
+              <Reveal key={product.id} index={i}>
+                <ProductCard
+                  product={product}
+                  image={extras[product.slug]?.image}
+                  rating={extras[product.slug]?.rating}
+                  locale={locale}
+                />
+              </Reveal>
             ))}
           </div>
         </section>

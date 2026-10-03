@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { ProductCard } from "@/components/product-card";
-import { AnimatedStagger, AnimatedStaggerItem } from "@/components/animated-section";
+import { Reveal } from "@/components/reveal";
 import { getCategories, getCategoryBySlug, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
 import { pageAlternates } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
@@ -51,18 +51,18 @@ export default async function CategoryPage({
           {locale === "ar" ? "لا توجد منتجات بهذا القسم حالياً." : "No products in this category yet."}
         </p>
       ) : (
-        <AnimatedStagger className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {products.map((product) => (
-            <AnimatedStaggerItem key={product.id}>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          {products.map((product, i) => (
+            <Reveal key={product.id} index={i}>
               <ProductCard
                 product={product}
                 image={extras[product.slug]?.image}
                 rating={extras[product.slug]?.rating}
                 locale={locale}
               />
-            </AnimatedStaggerItem>
+            </Reveal>
           ))}
-        </AnimatedStagger>
+        </div>
       )}
     </div>
   );

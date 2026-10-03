@@ -38,7 +38,8 @@
     "reviewSubmit": "إرسال",
     "reviewSubmitted": "تم إرسال تقييمك، رح يظهر بعد المراجعة",
     "reviewError": "صار في خطأ، حاول مرة ثانية",
-    "orderUnavailable": "الطلب عبر واتساب غير متاح حالياً"
+    "orderUnavailable": "الطلب عبر واتساب غير متاح حالياً",
+    "latest": "أحدث المنتجات"
   },
   "footer": {
     "contact": "تواصل معنا",

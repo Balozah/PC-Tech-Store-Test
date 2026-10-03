@@ -1,80 +1,56 @@
 "use client";
 
-import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, useSpring, useTransform, type SpringOptions } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
-type SpotlightProps = {
-  className?: string;
-  size?: number;
-  springOptions?: SpringOptions;
-};
-
-// Mouse-follow glow for a hero/card background. Pure CSS + framer-motion
-// (no 3D runtime) — keeps the "interactive" feel without the payload a
-// library like Spline would add, which matters for the slow/unstable
-// connections most Tech RT visitors browse on.
-export function Spotlight({ className, size = 320, springOptions = { bounce: 0 } }: SpotlightProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const [parentElement, setParentElement] = useState<HTMLElement | null>(null);
-
-  const mouseX = useSpring(0, springOptions);
-  const mouseY = useSpring(0, springOptions);
-
-  const spotlightLeft = useTransform(mouseX, (x) => `${x - size / 2}px`);
-  const spotlightTop = useTransform(mouseY, (y) => `${y - size / 2}px`);
+// Mouse-follow glow behind the hero. Plain pointer events + CSS transitions, no
+// animation library: it only runs on devices with a real mouse, so phones on slow
+// connections don't download anything for it.
+export function Spotlight({ className, size = 320 }: { className?: string; size?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const parent = containerRef.current?.parentElement;
-    if (parent) {
-      parent.style.position = "relative";
-      parent.style.overflow = "hidden";
-      setParentElement(parent);
-    }
-  }, []);
+    const el = ref.current;
+    const parent = el?.parentElement;
+    if (!el || !parent) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  const handleMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (!parentElement) return;
-      const { left, top } = parentElement.getBoundingClientRect();
-      mouseX.set(event.clientX - left);
-      mouseY.set(event.clientY - top);
-    },
-    [mouseX, mouseY, parentElement]
-  );
+    parent.style.position = "relative";
+    parent.style.overflow = "hidden";
 
-  useEffect(() => {
-    if (!parentElement) return;
-    const onEnter = () => setIsHovered(true);
-    const onLeave = () => setIsHovered(false);
-
-    parentElement.addEventListener("mousemove", handleMouseMove);
-    parentElement.addEventListener("mouseenter", onEnter);
-    parentElement.addEventListener("mouseleave", onLeave);
-
-    return () => {
-      parentElement.removeEventListener("mousemove", handleMouseMove);
-      parentElement.removeEventListener("mouseenter", onEnter);
-      parentElement.removeEventListener("mouseleave", onLeave);
+    const onMove = (e: MouseEvent) => {
+      const rect = parent.getBoundingClientRect();
+      el.style.transform = `translate3d(${e.clientX - rect.left - size / 2}px, ${e.clientY - rect.top - size / 2}px, 0)`;
     };
-  }, [parentElement, handleMouseMove]);
+    const onEnter = () => (el.style.opacity = "0.7");
+    const onLeave = () => (el.style.opacity = "0");
+
+    parent.addEventListener("mousemove", onMove);
+    parent.addEventListener("mouseenter", onEnter);
+    parent.addEventListener("mouseleave", onLeave);
+    return () => {
+      parent.removeEventListener("mousemove", onMove);
+      parent.removeEventListener("mouseenter", onEnter);
+      parent.removeEventListener("mouseleave", onLeave);
+    };
+  }, [size]);
 
   return (
-    <motion.div
-      ref={containerRef}
+    <div
+      ref={ref}
+      aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute rounded-full blur-3xl transition-opacity duration-300",
-        isHovered ? "opacity-70" : "opacity-0",
+        "pointer-events-none absolute rounded-full opacity-0 blur-3xl transition-[opacity,transform] duration-300 ease-out",
         className
       )}
       style={{
         width: size,
         height: size,
-        left: spotlightLeft,
-        top: spotlightTop,
-        background:
-          "radial-gradient(circle at center, var(--color-primary), transparent 75%)",
+        left: 0,
+        top: 0,
+        right: "auto",
+        background: "radial-gradient(circle at center, var(--color-primary), transparent 75%)",
       }}
     />
   );

@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { AnimatedSection } from "@/components/animated-section";
+import { Reveal } from "@/components/reveal";
 import { Price } from "@/components/price";
 import { productImageUrl } from "@/lib/product-image";
 import type { Product, ProductImage } from "@/lib/data";
@@ -22,7 +22,7 @@ export function Spotlight({
   return (
     <section className="bg-black text-white">
       <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 py-16 sm:px-6 md:grid-cols-2">
-        <AnimatedSection>
+        <Reveal>
           <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-accent)]">
             {t("eyebrow")}
           </p>
@@ -42,8 +42,8 @@ export function Spotlight({
           >
             {t("cta")}
           </Link>
-        </AnimatedSection>
-        <AnimatedSection delay={0.1} className="relative aspect-square w-full overflow-hidden rounded-2xl bg-[var(--color-muted)]">
+        </Reveal>
+        <Reveal index={1} className="relative aspect-square w-full overflow-hidden rounded-2xl bg-[var(--color-muted)]">
           {image && (
             <Image
               src={productImageUrl(image.path)}
@@ -53,7 +53,7 @@ export function Spotlight({
               className="object-cover"
             />
           )}
-        </AnimatedSection>
+        </Reveal>
       </div>
     </section>
   );

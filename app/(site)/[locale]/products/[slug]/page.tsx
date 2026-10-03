@@ -5,6 +5,7 @@ import { ProductOrder } from "@/components/product-order";
 import { StarRating } from "@/components/star-rating";
 import { ReviewForm } from "@/components/review-form";
 import { ProductCard } from "@/components/product-card";
+import { Reveal } from "@/components/reveal";
 import {
   getProducts,
   getProductBySlug,
@@ -107,7 +108,8 @@ export default async function ProductPage({
         </div>
       </div>
 
-      <section className="mt-16">
+      <Reveal className="mt-16">
+        <section>
         <h2 className="mb-4 font-[var(--font-heading)] text-2xl font-bold">{t("reviews")}</h2>
         {product.reviews.length === 0 ? (
           <p className="text-[var(--color-muted-foreground)]">{t("noReviews")}</p>
@@ -125,20 +127,24 @@ export default async function ProductPage({
           </ul>
         )}
         <ReviewForm productId={product.id} />
-      </section>
+        </section>
+      </Reveal>
 
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="mb-4 font-[var(--font-heading)] text-2xl font-bold">{t("related")}</h2>
+          <Reveal>
+            <h2 className="mb-4 font-[var(--font-heading)] text-2xl font-bold">{t("related")}</h2>
+          </Reveal>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {related.map((p) => (
-              <ProductCard
-                key={p.id}
-                product={p}
-                image={relatedExtras[p.slug]?.image}
-                rating={relatedExtras[p.slug]?.rating}
-                locale={locale}
-              />
+            {related.map((p, i) => (
+              <Reveal key={p.id} index={i}>
+                <ProductCard
+                  product={p}
+                  image={relatedExtras[p.slug]?.image}
+                  rating={relatedExtras[p.slug]?.rating}
+                  locale={locale}
+                />
+              </Reveal>
             ))}
           </div>
         </section>
