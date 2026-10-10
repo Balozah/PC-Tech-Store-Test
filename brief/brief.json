@@ -468,15 +468,15 @@
       {
         "env": "production",
         "url": "https://pc-tech-store-test.vercel.app",
-        "deployment": "pc-tech-store-test-7pwr8cpvp",
-        "commit": "7063681",
-        "date": "2026-10-10",
-        "status": "live; all routes OK, dashboard E2E passed, CSP added"
+        "deployment": null,
+        "commit": "00c5f9b",
+        "date": "2026-10-11",
+        "status": "live; hero dither + Warp, dashboard restyle, QA fixes; live check OK (routes, 404, dashboard 307, headers, LH mobile home 81-90 / product 94-95, a11y/bp/seo 100)"
       },
       {
         "env": "preview",
         "url": "https://pc-tech-store-test-git-redesign-balozah.vercel.app",
-        "commit": "e4ba96a",
+        "commit": "00c5f9b",
         "date": "2026-10-11",
         "status": "ready (behind Vercel login); hero dither + category Warp"
       }
@@ -501,9 +501,9 @@
     "commits": "per_milestone",
     "qa_verdict": {
       "approved": true,
-      "date": "2026-10-10",
-      "note": "ready_with_notes (5 yellow, see qa-reports/2026-10-10-full.md)",
-      "commit": "c86cdbd"
+      "date": "2026-10-11",
+      "note": "ready_with_notes (qa-reports/2026-10-11-full.md); Ahmad: 'الكود صار تمام' and approved publishing",
+      "commit": "00c5f9b"
     },
     "deploys": [
       {
@@ -523,6 +523,12 @@
         "approved": true,
         "date": "2026-10-11",
         "note": "Ahmad: push redesign (hero dither + Warp) to preview"
+      },
+      {
+        "target": "production",
+        "approved": true,
+        "date": "2026-10-11",
+        "note": "Ahmad: publish everything; Ahmad ran the push redesign:main himself"
       }
     ]
   },
@@ -535,11 +541,11 @@
       "polish",
       "qa"
     ],
-    "next_action": "Ahmad: revoke Supabase token, decide mobile shader, approve push to preview + production; client data still blocks delivery",
+    "next_action": "Ahmad: revoke Supabase token claude-pctech; decide mobile shader (kept on); client data (WhatsApp blocks delivery) then real order test + handover",
     "blocked_on": [
       "client whatsapp number",
       "client domain"
     ],
-    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review; 2026-10-11 dashboard restyle (98da352) + full QA ready_with_notes, 10 fixes (62cd624); not pushed yet"
+    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review; 2026-10-11 dashboard restyle (98da352) + full QA ready_with_notes, 10 fixes (62cd624); not pushed yet; production 00c5f9b live 2026-10-11, live check passed"
   }
 }
