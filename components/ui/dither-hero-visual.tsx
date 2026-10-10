@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { canRunShaders } from "@/lib/shader-budget";
 
 const DitherHeroShaders = dynamic(() => import("./dither-hero-shaders"), { ssr: false });
@@ -20,13 +20,16 @@ const corners = [
 // over it after the page has settled.
 export function DitherHeroVisual({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [shader, setShader] = useState<{ image: HTMLImageElement; coarse: boolean } | null>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (!canRunShaders()) return;
     let cancelled = false;
     const start = () => {
+      // Reuse the responsive file the <img> already downloaded: no second
+      // request, and a texture sized to the frame instead of the 1200px master.
       const image = new window.Image();
-      image.src = src;
+      image.src = imgRef.current?.currentSrc || src;
       image
         .decode()
         .then(() => {
@@ -49,6 +52,7 @@ export function DitherHeroVisual({ src, alt, className }: { src: string; alt: st
     <div className={`relative ${className ?? ""}`}>
       <div className="relative aspect-square overflow-hidden border border-[var(--color-line)] bg-[var(--color-surface)]">
         <Image
+          ref={imgRef}
           src={src}
           alt={alt}
           fill
