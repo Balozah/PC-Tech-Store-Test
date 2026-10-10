@@ -4,12 +4,14 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { updateCategory, deleteCategory } from "@/app/actions/categories";
 import { Icon, Spinner, buttonClass, inputClass, labelClass } from "@/components/dashboard/ui";
+import { useConfirm } from "@/components/dashboard/confirm-dialog";
 import type { Category } from "@/lib/data";
 
 export function CategoryRow({ category, productCount }: { category: Category; productCount: number }) {
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [ask, dialog] = useConfirm();
 
   if (editing) {
     return (
@@ -71,18 +73,19 @@ export function CategoryRow({ category, productCount }: { category: Category; pr
         type="button"
         aria-label="حذف القسم"
         disabled={isPending}
-        onClick={() => {
+        onClick={async () => {
           const note = productCount ? `\nالـ ${productCount} منتج يلي فيه بيضلوا بس بدون قسم.` : "";
-          if (!confirm(`حذف قسم "${category.name_ar}"؟${note}`)) return;
+          if (!(await ask({ message: `حذف قسم "${category.name_ar}"؟${note}`, confirmLabel: "حذف القسم" }))) return;
           startTransition(async () => {
             const result = await deleteCategory(category.id);
-            if (result?.error) alert(result.error);
+            if (result?.error) await ask({ message: result.error, notice: true });
           });
         }}
         className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)] disabled:opacity-50"
       >
         {isPending ? <Spinner /> : <Icon name="trash" className="h-4 w-4" />}
       </button>
+      {dialog}
     </div>
   );
 }

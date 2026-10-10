@@ -7,6 +7,9 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+  // Narrow CSP that can't break Next's inline scripts: no framing by other
+  // sites, no <base>/plugin injection, forms only post back to this site.
+  { key: "Content-Security-Policy", value: "frame-ancestors 'self'; base-uri 'self'; object-src 'none'; form-action 'self'" },
 ];
 
 const nextConfig: NextConfig = {

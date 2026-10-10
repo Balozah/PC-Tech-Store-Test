@@ -13,7 +13,7 @@ export function LocaleSwitcher() {
 
   return (
     <button
-      onClick={() => router.replace(pathname, { locale: other })}
+      onClick={() => router.replace(`${pathname}${window.location.search}`, { locale: other })}
       lang={other}
       className="h-11 cursor-pointer px-3 text-sm font-semibold transition-colors hover:bg-[var(--color-muted)]"
       aria-label={other === "ar" ? "التبديل إلى العربية" : "Switch to English"}
