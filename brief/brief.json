@@ -443,9 +443,9 @@
         "env": "production",
         "url": "https://pc-tech-store-test.vercel.app",
         "deployment": "pc-tech-store-test-7pwr8cpvp",
-        "commit": "7b6d9cd",
+        "commit": "7063681",
         "date": "2026-10-10",
-        "status": "live; code-tester live: all routes OK, Lighthouse mobile 92/100/100/100, LCP 3.1s, CLS 0"
+        "status": "live; all routes OK, dashboard E2E passed, CSP added"
       },
       {
         "env": "preview",
@@ -503,7 +503,7 @@
       "polish",
       "qa"
     ],
-    "next_action": "wait for client data (WhatsApp number, owner email, address/hours, domain); then set WhatsApp in dashboard, test a real order, handover message",
+    "next_action": "client data: WhatsApp number (blocks delivery), owner email, address/hours/socials, logo, domain; then real order test + handover message",
     "blocked_on": [
       "client whatsapp number",
       "client domain"
