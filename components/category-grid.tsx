@@ -2,11 +2,13 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CategoryIcon } from "@/components/category-icon";
 import { Reveal } from "@/components/reveal";
+import { CategoryWarp } from "@/components/category-warp";
 import type { Category } from "@/lib/data";
 import type { Locale } from "@/i18n/routing";
 
 // Blueprint grid: hairline cells (gap-px over the line color). Hover inverts a
-// cell to ink, the reference's monochrome emphasis.
+// cell to ink, the reference's monochrome emphasis; on mouse devices a Warp
+// shader (ink + accent) moves under the content while hovered.
 export function CategoryGrid({
   categories,
   counts,
@@ -29,13 +31,14 @@ export function CategoryGrid({
           <Reveal as="li" key={cat.id} index={i % 5} step={40} className="bg-[var(--color-background)]">
             <Link
               href={`/categories/${cat.slug}`}
-              className="group flex aspect-[5/4] flex-col justify-between p-4 transition-colors duration-200 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] sm:aspect-square sm:p-5"
+              className="group relative flex aspect-[5/4] flex-col overflow-hidden justify-between p-4 transition-colors duration-200 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] sm:aspect-square sm:p-5"
             >
+              <CategoryWarp index={i} />
               <CategoryIcon
                 slug={cat.slug}
-                className="size-8 transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-10"
+                className="relative size-8 transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-10"
               />
-              <span>
+              <span className="relative">
                 <span className="block font-semibold leading-snug">
                   {locale === "ar" ? cat.name_ar : cat.name_en ?? cat.name_ar}
                 </span>

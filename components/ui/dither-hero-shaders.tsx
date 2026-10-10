@@ -71,7 +71,7 @@ export default function DitherHeroShaders({ image, coarse }: { image: HTMLImageE
     <div
       ref={rootRef}
       aria-hidden="true"
-      className="dither-in absolute inset-0"
+      className="shader-in absolute inset-0"
       onPointerEnter={(e) => e.pointerType === "mouse" && develop(8, 600)}
       onPointerDown={(e) => e.pointerType !== "mouse" && develop(8, 600)}
       onPointerMove={onPointerMove}

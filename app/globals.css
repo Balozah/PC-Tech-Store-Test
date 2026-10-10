@@ -196,7 +196,7 @@ textarea {
 }
 
 /* Shader layers (Paper Shaders) fade in over their static fallback. */
-.dither-in {
+.shader-in {
   animation: fade-in 0.5s ease-out backwards;
 }
 
