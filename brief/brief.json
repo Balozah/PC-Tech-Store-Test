@@ -475,9 +475,9 @@
       {
         "env": "preview",
         "url": "https://pc-tech-store-test-git-redesign-balozah.vercel.app",
-        "commit": "7b6d9cd",
-        "date": "2026-10-10",
-        "status": "ready (behind Vercel login)"
+        "commit": "e4ba96a",
+        "date": "2026-10-11",
+        "status": "ready (behind Vercel login); hero dither + category Warp"
       }
     ]
   },
@@ -516,6 +516,12 @@
         "approved": true,
         "date": "2026-10-10",
         "note": "Ahmad: merge redesign -> main"
+      },
+      {
+        "target": "preview",
+        "approved": true,
+        "date": "2026-10-11",
+        "note": "Ahmad: push redesign (hero dither + Warp) to preview"
       }
     ]
   },
@@ -533,6 +539,6 @@
       "client whatsapp number",
       "client domain"
     ],
-    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, not pushed or deployed yet"
+    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review"
   }
 }
