@@ -340,13 +340,13 @@
       ],
       "design_needed": true,
       "milestone": "M6",
-      "status": "built"
+      "status": "tested"
     },
     {
       "id": "addon-6",
       "request": "Sort + in-stock filter on category pages",
       "verdict": "paid_addon",
-      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad",
+      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad; sort/filter is client-side (needs JS) because category pages are static - requirement \"works without JS\" not met, Ahmad to decide",
       "decision": "approved_addon",
       "price": null,
       "currency": null,
@@ -358,7 +358,7 @@
       ],
       "design_needed": true,
       "milestone": "M4",
-      "status": "built"
+      "status": "tested"
     },
     {
       "id": "addon-7",
@@ -429,10 +429,10 @@
     ]
   },
   "qa": {
-    "reports_gitignored": null,
-    "test_accounts_source": null,
-    "last_report": null,
-    "last_verdict": null,
+    "reports_gitignored": true,
+    "test_accounts_source": "ahmad adds QA_EMAIL/QA_PASSWORD to .env.local (pending)",
+    "last_report": "qa-reports/2026-10-10-full.md",
+    "last_verdict": "ready_with_notes",
     "confirmed_urls": []
   },
   "deploy": {
@@ -459,13 +459,14 @@
     "deploys": []
   },
   "pipeline": {
-    "stage": "polish",
+    "stage": "qa",
     "completed": [
       "intake",
       "design",
-      "build"
+      "build",
+      "polish"
     ],
-    "next_action": "polish: shifra-design polish on all public pages + dashboard (redesign branch)",
+    "next_action": "Ahmad: QA verdict; then deliver: push branch redesign -> Vercel preview",
     "blocked_on": [
       "infra"
     ],
