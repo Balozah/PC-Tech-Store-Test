@@ -265,6 +265,11 @@
       "item": "Revoke Supabase access token claude-pctech (it was pasted in chat) and delete SUPABASE_ACCESS_TOKEN from .env.local",
       "owner": "ahmad",
       "due": null
+    },
+    {
+      "item": "Delete temporary QA admin: node scripts/qa-admin.mjs delete",
+      "owner": "ahmad",
+      "due": null
     }
   ],
   "out_of_scope": [
@@ -430,7 +435,7 @@
   },
   "qa": {
     "reports_gitignored": true,
-    "test_accounts_source": "ahmad adds QA_EMAIL/QA_PASSWORD to .env.local (pending)",
+    "test_accounts_source": "scripts/qa-admin.mjs create|delete (temporary qa-dashboard@techrt.test)",
     "last_report": "qa-reports/2026-10-10-full.md",
     "last_verdict": "ready_with_notes",
     "confirmed_urls": [
@@ -508,6 +513,6 @@
       "client whatsapp number",
       "client domain"
     ],
-    "note": "redesign M1-M9 committed on branch redesign (54ad5ec..08d3fb6); build + lint pass 2026-10-10"
+    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap"
   }
 }
