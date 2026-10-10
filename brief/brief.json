@@ -79,7 +79,8 @@
       "no eyebrow labels, no glow",
       "2026-10-11: hero image is static public/hero/case.webp (white case, Unsplash 21GamV3hkxM, grayscale), no longer the first pre-built product photo",
       "2026-10-11: Paper Shaders (@paper-design/shaders-react, WebGL, adapted from 21st.dev) allowed in ink/accent only, hero + category hover only, lazy-loaded with a static fallback; still no animation library",
-      "2026-10-11: dashboard restyled to the storefront identity (ink sidebar band + wordmark, split login, blueprint stats, storefront category icons, square tags)"
+      "2026-10-11: dashboard restyled to the storefront identity (ink sidebar band + wordmark, split login, blueprint stats, storefront category icons, square tags)",
+      "2026-10-11: Ahmad: dithered hero was unreadable and appeared after a clear photo; hero dither is now an intro + hover accent ending on the clear photo; ambient layer and tilt removed"
     ],
     "references": [
       {
@@ -179,9 +180,9 @@
       },
       {
         "element": "hero image (shader)",
-        "trigger": "load (idle) / hover / tap",
-        "motion": "ImageDithering print develops pxSize 14->2; ambient Dithering warp (desktop only, pauses off screen)",
-        "duration_ms": 1400,
+        "trigger": "load (intro) / hover (mouse)",
+        "motion": "photo held before paint; ImageDithering print develops pxSize 16->1.5 then fades to the clear photo (resting state); skipped on slow connections; hover replay 7->1.5",
+        "duration_ms": 1300,
         "easing": "ease-out-expo"
       },
       {

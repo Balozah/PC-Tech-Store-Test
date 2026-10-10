@@ -195,6 +195,12 @@ textarea {
   animation: settle 0.9s var(--ease-out-expo) 120ms backwards;
 }
 
+/* Hero photo waits for the dithered intro (lib/hero-hold.ts). */
+.hero-hold .hero-photo {
+  opacity: 0;
+  animation: none;
+}
+
 /* Shader layers (Paper Shaders) fade in over their static fallback. */
 .shader-in {
   animation: fade-in 0.5s ease-out backwards;

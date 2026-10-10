@@ -53,7 +53,7 @@ Exception (2026-10-11): Paper Shaders may render in ink / paper / line / accent 
 |---|---|---|---|
 | Hero headline | load | per-line mask rise (no word split — keeps Arabic/bidi intact) | 700ms, 90ms stagger, `cubic-bezier(.16,1,.3,1)` |
 | Hero image (fallback) | load | grayscale photo `public/hero/case.webp`, scale 1.06→1 + fade | 900ms |
-| Hero image (shader) | load (idle) / hover / tap | `ImageDithering` print, ink on transparent, 4×4 Bayer, 1 step: pixel size develops 14→2; hover/tap re-develops 8→2. Desktop adds an ambient `Dithering` warp (paper/line) behind it; ±6px pointer parallax | 1400ms / 600ms, expo-out |
+| Hero image (shader) | load / hover (mouse) | Intro only: on capable devices the photo is held before paint (`lib/hero-hold.ts`), an `ImageDithering` print (ink on paper, 4×4 Bayer, 1 step) develops pixel size 16→1.5, then fades out to the clear grayscale photo, which is the resting state. Skipped (photo shown at once) on slow connections or when the shader is late. Hover replays 7→1.5 and fades. No ambient layer, no tilt | 1300ms + 450ms fade; hover 650ms |
 | Featured band | in view | image rise, spec rows stagger | 500ms, 60ms |
 | Category grid | in view / hover | cells stagger; hover invert to ink + icon nudge | 40ms stagger; 200ms |
 | Category cell (shader) | hover / focus, fine pointer only | `Warp` (ink, accent, ink, accent-on-dark; checks/stripes per cell) under the content, `ink/70` overlay for text contrast | fade 500ms |
@@ -67,7 +67,7 @@ Exception (2026-10-11): Paper Shaders may render in ink / paper / line / accent 
 ### Shader rules (Paper Shaders, `@paper-design/shaders-react`)
 - Enhancement only: every shader sits on a static fallback that already looks finished. Gate: `lib/shader-budget.ts` (no reduced motion, no Save-Data/2G, device memory ≥ 4GB, hardware WebGL; software renderers like SwiftShader are skipped).
 - Loaded lazily (`next/dynamic`, `ssr: false`) after `load` + idle; never the LCP element.
-- At most one continuous shader per viewport; it pauses off screen and in hidden tabs. Phones run only the hero print (static after it develops), no ambient, no category Warp.
+- No continuous shader in the hero: the print is an intro/hover accent and the clear photo is always the resting state (owner feedback 2026-10-11: the product must stay readable). Phones get the intro only, no category Warp.
 - Per-frame motion goes through `paperShaderMount.setUniforms/setSpeed`, never React state.
 - Measured cost (4× CPU throttle): one ~150–180ms task when the shader starts, nothing after.
 - Components live in `components/ui/` (shadcn / 21st.dev convention).

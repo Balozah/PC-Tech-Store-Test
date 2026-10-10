@@ -2,8 +2,9 @@
 
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { canRunShaders } from "@/lib/shader-budget";
+import { isHeroHeld, releaseHeroHold } from "@/lib/hero-hold";
 
 const DitherHeroShaders = dynamic(() => import("./dither-hero-shaders"), { ssr: false });
 
@@ -15,38 +16,46 @@ const corners = [
 ];
 
 // Hero centerpiece. The grayscale photo is server-rendered and stays the LCP
-// element and the full fallback (no JS, reduced motion, Save-Data, no WebGL).
-// When the device can afford it, a dithered "print" of the same photo is laid
-// over it after the page has settled.
+// element, the resting state, and the full fallback (no JS, reduced motion,
+// Save-Data, no WebGL2). When the device can afford it, a dithered "print"
+// plays first (the photo is held back before paint) and fades to the photo.
 export function DitherHeroVisual({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [shader, setShader] = useState<{ image: HTMLImageElement; coarse: boolean } | null>(null);
   const imgRef = useRef<HTMLImageElement>(null);
 
+  // The intro only plays while the photo is still held back (see
+  // lib/hero-hold.ts); once it is visible, pixels would only blur it.
+  const canIntro = useCallback(() => isHeroHeld(), []);
+
   useEffect(() => {
-    if (!canRunShaders()) return;
+    if (!canRunShaders()) {
+      releaseHeroHold();
+      return;
+    }
     let cancelled = false;
-    const start = () => {
-      // Reuse the responsive file the <img> already downloaded: no second
-      // request, and a texture sized to the frame instead of the 1200px master.
-      const image = new window.Image();
-      image.src = imgRef.current?.currentSrc || src;
-      image
-        .decode()
-        .then(() => {
-          if (!cancelled) setShader({ image, coarse: window.matchMedia("(pointer: coarse)").matches });
-        })
-        .catch(() => {});
-    };
-    // Wait for load + an idle slot so the shader never competes with the LCP.
-    const schedule = () =>
-      "requestIdleCallback" in window ? window.requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300);
-    if (document.readyState === "complete") schedule();
-    else window.addEventListener("load", schedule, { once: true });
+    // Start fetching the shader chunk right away, in parallel with decoding.
+    const chunk = import("./dither-hero-shaders");
+    const img = imgRef.current;
+    const loaded =
+      img && !img.complete ? new Promise((resolve) => img.addEventListener("load", resolve, { once: true })) : Promise.resolve();
+    loaded
+      .then(() => {
+        // Reuse the responsive file the <img> already downloaded: no second
+        // request, and a texture sized to the frame instead of the 1200px master.
+        const image = new window.Image();
+        image.src = img?.currentSrc || src;
+        return Promise.all([image.decode(), chunk]).then(() => {
+          const coarse = window.matchMedia("(pointer: coarse)").matches;
+          // Phones have no hover replay, so a missed intro means no shader at all.
+          if (!cancelled && (!coarse || canIntro())) setShader({ image, coarse });
+          else releaseHeroHold();
+        });
+      })
+      .catch(releaseHeroHold);
     return () => {
       cancelled = true;
-      window.removeEventListener("load", schedule);
     };
-  }, [src]);
+  }, [src, canIntro]);
 
   return (
     <div className={`relative ${className ?? ""}`}>
@@ -58,9 +67,9 @@ export function DitherHeroVisual({ src, alt, className }: { src: string; alt: st
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 34vw"
-          className="settle object-cover grayscale contrast-[1.1]"
+          className="hero-photo settle object-cover grayscale contrast-[1.1]"
         />
-        {shader && <DitherHeroShaders image={shader.image} coarse={shader.coarse} />}
+        {shader && <DitherHeroShaders image={shader.image} coarse={shader.coarse} canIntro={canIntro} onShow={releaseHeroHold} />}
       </div>
       {corners.map((c) => (
         <span key={c} aria-hidden="true" className={`pointer-events-none absolute size-3 border-[var(--color-ink)] ${c}`} />

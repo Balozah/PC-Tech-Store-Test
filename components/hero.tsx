@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { Link } from "@/i18n/navigation";
 import { ArrowIcon, WhatsAppIcon } from "@/components/icons";
 import { DitherHeroVisual } from "@/components/ui/dither-hero-visual";
+import { heroHoldScript } from "@/lib/hero-hold";
 
 // Static, owner-independent hero photo (monochrome case shot, public/hero).
 const HERO_IMAGE = "/hero/case.webp";
@@ -52,6 +53,8 @@ export function Hero({ chatUrl, prebuiltHref }: { chatUrl: string | null; prebui
           </div>
         </div>
 
+        {/* Must run before the photo paints, so it is inline and synchronous. */}
+        <script dangerouslySetInnerHTML={{ __html: heroHoldScript }} />
         <DitherHeroVisual src={HERO_IMAGE} alt={t("imageAlt")} className="lg:col-span-4 lg:self-center" />
 
         <ul
