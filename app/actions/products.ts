@@ -145,7 +145,8 @@ export async function deleteProduct(id: string) {
   const { data: images } = await supabase.from("product_images").select("path").eq("product_id", id);
   const storagePaths = (images ?? []).map((i) => i.path).filter((p) => !p.startsWith("http"));
   if (storagePaths.length) {
-    await supabase.storage.from("products").remove(storagePaths);
+    const { error: storageError } = await supabase.storage.from("products").remove(storagePaths);
+    if (storageError) console.error("deleteProduct: storage remove failed", storageError.message);
   }
 
   const { error } = await supabase.from("products").delete().eq("id", id);
@@ -198,7 +199,8 @@ export async function deleteProductImage(imageId: string) {
   const { data: image } = await supabase.from("product_images").select("path").eq("id", imageId).maybeSingle();
   if (!image) return { error: "الصورة مش موجودة" };
   if (!image.path.startsWith("http")) {
-    await supabase.storage.from("products").remove([image.path]);
+    const { error: storageError } = await supabase.storage.from("products").remove([image.path]);
+    if (storageError) console.error("deleteProductImage: storage remove failed", storageError.message);
   }
   const { error } = await supabase.from("product_images").delete().eq("id", imageId);
   if (error) return { error: error.message };

@@ -217,14 +217,14 @@ export function ProductForm({
             <div className="grid gap-4 py-4 sm:grid-cols-2">
               <div>
                 <label htmlFor="price_usd" className={labelClass}>السعر بالدولار</label>
-                <div className="relative">
+                <div className="relative" dir="ltr">
                   <input id="price_usd" dir="ltr" inputMode="decimal" type="number" step="0.01" min="0" value={priceUsd} onChange={(e) => setPriceUsd(e.target.value)} className={cn(inputClass, "pe-9")} />
                   <span className="pointer-events-none absolute inset-y-0 end-3.5 my-auto h-fit text-sm text-[var(--color-muted-foreground)]">$</span>
                 </div>
               </div>
               <div>
                 <label htmlFor="price_syp" className={labelClass}>السعر بالليرة السورية</label>
-                <div className="relative">
+                <div className="relative" dir="ltr">
                   <input id="price_syp" dir="ltr" inputMode="numeric" type="number" step="1" min="0" value={priceSyp} onChange={(e) => setPriceSyp(e.target.value)} className={cn(inputClass, "pe-12")} />
                   <span className="pointer-events-none absolute inset-y-0 end-3.5 my-auto h-fit text-sm text-[var(--color-muted-foreground)]">ل.س</span>
                 </div>

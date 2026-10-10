@@ -180,10 +180,14 @@ on conflict (id) do update set
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
+drop policy if exists "products admin select" on storage.objects;
 drop policy if exists "products admin insert" on storage.objects;
 drop policy if exists "products admin update" on storage.objects;
 drop policy if exists "products admin delete" on storage.objects;
 
+-- remove() needs SELECT to find the objects it deletes.
+create policy "products admin select" on storage.objects for select
+  using (bucket_id = 'products' and private.is_admin());
 create policy "products admin insert" on storage.objects for insert
   with check (bucket_id = 'products' and private.is_admin());
 create policy "products admin update" on storage.objects for update
