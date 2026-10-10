@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
-import { ProductCard } from "@/components/product-card";
-import { Reveal } from "@/components/reveal";
+import { getTranslations } from "next-intl/server";
+import { Breadcrumbs } from "@/components/breadcrumbs";
+import { CategoryChips } from "@/components/category-chips";
+import { CategoryIcon } from "@/components/category-icon";
+import { ProductBrowser } from "@/components/product-browser";
 import { getCategories, getCategoryBySlug, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
 import { pageAlternates } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
@@ -35,35 +38,36 @@ export default async function CategoryPage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = (await params) as { locale: Locale; slug: string };
-  const category = await getCategoryBySlug(slug);
+  const [category, categories] = await Promise.all([getCategoryBySlug(slug), getCategories()]);
   if (!category) notFound();
 
-  const products = await getProducts(slug);
+  const [products, t, tn] = await Promise.all([
+    getProducts(slug),
+    getTranslations("product"),
+    getTranslations("nav"),
+  ]);
   const extras = await getCardExtras(products);
-
   const name = locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar;
+  const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <h1 className="mb-8 font-display text-3xl font-bold sm:text-4xl">{name}</h1>
-      {products.length === 0 ? (
-        <p className="text-[var(--color-muted-foreground)]">
-          {locale === "ar" ? "لا توجد منتجات بهذا القسم حالياً." : "No products in this category yet."}
-        </p>
-      ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-          {products.map((product, i) => (
-            <Reveal key={product.id} index={i}>
-              <ProductCard
-                product={product}
-                image={extras[product.slug]?.image}
-                rating={extras[product.slug]?.rating}
-                locale={locale}
-              />
-            </Reveal>
-          ))}
-        </div>
-      )}
+    <div className="mx-auto max-w-7xl px-4 pb-20 pt-6 sm:px-6">
+      <Breadcrumbs
+        items={[{ label: t("breadcrumbHome"), href: "/" }, { label: name }]}
+        siteUrl={siteUrl}
+        locale={locale}
+      />
+
+      <div className="mb-8 mt-6 flex items-end justify-between gap-6 md:mb-10">
+        <h1 className="font-display enter text-[clamp(2.25rem,6vw,4.5rem)]">{name}</h1>
+        <CategoryIcon slug={category.slug} className="enter hidden size-16 shrink-0 sm:block" />
+      </div>
+
+      <div className="mb-6">
+        <CategoryChips categories={categories} activeSlug={slug} locale={locale} label={tn("allCategories")} />
+      </div>
+
+      <ProductBrowser products={products} extras={extras} locale={locale} />
     </div>
   );
 }

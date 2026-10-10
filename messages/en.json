@@ -96,7 +96,8 @@
     "empty": "No products in this category yet.",
     "emptyFiltered": "Nothing in stock in this category right now.",
     "showAll": "Show all products",
-    "browseOthers": "Browse other categories"
+    "browseOthers": "Browse other categories",
+    "sortDefault": "Featured"
   },
   "search": {
     "title": "Search",
