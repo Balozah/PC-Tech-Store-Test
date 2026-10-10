@@ -470,13 +470,24 @@
       "note": "redesign plan M1-M9 (incl. add-ons search/sort-filter/specs)"
     },
     "commits": "per_milestone",
-    "qa_verdict": null,
+    "qa_verdict": {
+      "approved": true,
+      "date": "2026-10-10",
+      "note": "ready_with_notes (5 yellow, see qa-reports/2026-10-10-full.md)",
+      "commit": "c86cdbd"
+    },
     "deploys": [
       {
         "target": "preview",
         "approved": true,
         "date": "2026-10-10",
         "note": "Ahmad: push redesign branch, preview first"
+      },
+      {
+        "target": "production",
+        "approved": true,
+        "date": "2026-10-10",
+        "note": "Ahmad: merge redesign -> main"
       }
     ]
   },
@@ -489,9 +500,8 @@
       "polish",
       "qa"
     ],
-    "next_action": "Ahmad: QA verdict + check preview in browser + run specs migration; then merge redesign -> main (production)",
+    "next_action": "production deploy: merge redesign -> main, then code-tester live",
     "blocked_on": [
-      "qa_verdict",
       "specs migration",
       "client whatsapp number"
     ],
