@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (!category) return {};
   const name = locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar;
   const brand = locale === "ar" ? settings.business_name_ar : settings.business_name_en || settings.business_name_ar;
-  const title = `${name} — ${brand}`;
+  const title = `${name} | ${brand}`;
   return {
     title,
     alternates: pageAlternates(locale, `/categories/${slug}`),

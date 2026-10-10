@@ -40,7 +40,7 @@ export async function generateMetadata({
   const image = product.images[0];
 
   return {
-    title: `${name} — ${brand}`,
+    title: `${name} | ${brand}`,
     description: description ?? undefined,
     alternates: pageAlternates(locale, `/products/${slug}`),
     openGraph: {

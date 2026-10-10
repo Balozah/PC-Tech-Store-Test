@@ -260,6 +260,11 @@
       "item": "Fill infra (hosting/repo/domain/ownership) - missing from the original brief",
       "owner": "ahmad",
       "due": null
+    },
+    {
+      "item": "Apply supabase/migrations/20261010_product_specs.sql to the live Supabase project (needs Ahmad's yes)",
+      "owner": "ahmad",
+      "due": null
     }
   ],
   "out_of_scope": [
@@ -335,7 +340,7 @@
       ],
       "design_needed": true,
       "milestone": "M6",
-      "status": "planned"
+      "status": "built"
     },
     {
       "id": "addon-6",
@@ -353,7 +358,7 @@
       ],
       "design_needed": true,
       "milestone": "M4",
-      "status": "planned"
+      "status": "built"
     },
     {
       "id": "addon-7",
@@ -371,7 +376,7 @@
       ],
       "design_needed": true,
       "milestone": "M7",
-      "status": "planned"
+      "status": "built"
     }
   ],
   "infra": {
@@ -411,7 +416,17 @@
     "plan": "C:/Users/ASUS/.claude/plans/pc-tech-humming-stonebraker.md",
     "branch": "redesign",
     "execution_mode": "inline",
-    "milestones_done": []
+    "milestones_done": [
+      "M1",
+      "M2",
+      "M3",
+      "M4",
+      "M5",
+      "M6",
+      "M7",
+      "M8",
+      "M9"
+    ]
   },
   "qa": {
     "reports_gitignored": null,
@@ -444,15 +459,16 @@
     "deploys": []
   },
   "pipeline": {
-    "stage": "build",
+    "stage": "polish",
     "completed": [
       "intake",
-      "design"
+      "design",
+      "build"
     ],
-    "next_action": "build M1 tokens & theming",
+    "next_action": "polish: shifra-design polish on all public pages + dashboard (redesign branch)",
     "blocked_on": [
       "infra"
     ],
-    "note": "v1 build exists (commit faaf3e1); redesign approved 2026-10-10 covers public pages + dashboard"
+    "note": "redesign M1-M9 committed on branch redesign (54ad5ec..08d3fb6); build + lint pass 2026-10-10"
   }
 }

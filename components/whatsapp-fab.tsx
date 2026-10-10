@@ -15,7 +15,7 @@ export function WhatsAppFab({ href, label }: { href: string; label: string }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="enter fixed bottom-4 end-4 z-30 grid size-14 place-items-center bg-[var(--color-whatsapp)] text-[var(--color-ink)] shadow-[0_8px_24px_-8px_rgb(14_14_16/0.45)] transition-transform hover:-translate-y-0.5 active:scale-95 sm:bottom-6 sm:end-6"
+      className="enter fixed bottom-[max(1rem,env(safe-area-inset-bottom))] end-4 z-30 grid size-14 place-items-center bg-[var(--color-whatsapp)] text-[var(--color-ink)] shadow-[0_8px_24px_-8px_rgb(14_14_16/0.45)] transition-transform hover:-translate-y-0.5 active:scale-95 sm:bottom-6 sm:end-6"
       style={{ "--enter-delay": "800ms" } as React.CSSProperties}
     >
       <WhatsAppIcon className="size-7" />

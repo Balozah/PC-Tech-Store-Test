@@ -31,7 +31,7 @@ export function ProductGallery({ images, alt }: { images: ProductImage[]; alt: s
               <button
                 type="button"
                 onClick={() => setActive(i)}
-                aria-label={`${alt} — ${i + 1}/${images.length}`}
+                aria-label={`${alt} ${i + 1}/${images.length}`}
                 aria-current={i === active}
                 className={`relative block size-16 cursor-pointer overflow-hidden border bg-[var(--color-surface)] transition-colors sm:size-20 ${
                   i === active ? "border-[var(--color-ink)] outline outline-1 outline-[var(--color-ink)]" : "border-[var(--color-border)] hover:border-[var(--color-ink)]"

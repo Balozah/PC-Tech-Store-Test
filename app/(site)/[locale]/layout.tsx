@@ -13,7 +13,7 @@ import type { Locale } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
 import "@/app/globals.css";
 
-export const viewport: Viewport = { themeColor: "#f2f2ef" };
+export const viewport: Viewport = { themeColor: "#f2f2ef", viewportFit: "cover" };
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.SITE_URL ?? "http://localhost:3000"),

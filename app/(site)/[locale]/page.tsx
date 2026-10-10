@@ -23,11 +23,11 @@ export async function generateMetadata({
   const { locale } = (await params) as { locale: Locale };
   const settings = await getSiteSettings();
   const brand = locale === "ar" ? settings.business_name_ar : settings.business_name_en || settings.business_name_ar;
-  const title = locale === "ar" ? `${brand} — قطع كمبيوتر وتجميعات` : `${brand} — PC Parts & Builds`;
+  const title = locale === "ar" ? `${brand} | قطع كمبيوتر وتجميعات` : `${brand} | PC Parts & Builds`;
   const description =
     locale === "ar"
-      ? "قطع كمبيوتر، لابتوبات، تجميعات جاهزة وإكسسوارات — اطلب عبر واتساب."
-      : "PC parts, laptops, pre-built rigs and accessories — order on WhatsApp.";
+      ? "قطع كمبيوتر، لابتوبات، تجميعات جاهزة وإكسسوارات، اطلبها عبر واتساب."
+      : "PC parts, laptops, pre-built rigs and accessories. Order on WhatsApp.";
   return {
     title,
     description,
