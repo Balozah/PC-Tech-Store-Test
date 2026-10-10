@@ -78,7 +78,8 @@
       "motion rich via CSS + IntersectionObserver, no animation library (slow connections)",
       "no eyebrow labels, no glow",
       "2026-10-11: hero image is static public/hero/case.webp (white case, Unsplash 21GamV3hkxM, grayscale), no longer the first pre-built product photo",
-      "2026-10-11: Paper Shaders (@paper-design/shaders-react, WebGL, adapted from 21st.dev) allowed in ink/accent only, hero + category hover only, lazy-loaded with a static fallback; still no animation library"
+      "2026-10-11: Paper Shaders (@paper-design/shaders-react, WebGL, adapted from 21st.dev) allowed in ink/accent only, hero + category hover only, lazy-loaded with a static fallback; still no animation library",
+      "2026-10-11: dashboard restyled to the storefront identity (ink sidebar band + wordmark, split login, blueprint stats, storefront category icons, square tags)"
     ],
     "references": [
       {
@@ -456,7 +457,7 @@
   "qa": {
     "reports_gitignored": true,
     "test_accounts_source": "scripts/qa-admin.mjs create|delete (temporary qa-dashboard@techrt.test)",
-    "last_report": "qa-reports/2026-10-10-full.md",
+    "last_report": "qa-reports/2026-10-11-full.md",
     "last_verdict": "ready_with_notes",
     "confirmed_urls": [
       "https://pc-tech-store-test.vercel.app"
@@ -534,11 +535,11 @@
       "polish",
       "qa"
     ],
-    "next_action": "client data: WhatsApp number (blocks delivery), owner email, address/hours/socials, logo, domain; then real order test + handover message",
+    "next_action": "Ahmad: revoke Supabase token, decide mobile shader, approve push to preview + production; client data still blocks delivery",
     "blocked_on": [
       "client whatsapp number",
       "client domain"
     ],
-    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review"
+    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review; 2026-10-11 dashboard restyle (98da352) + full QA ready_with_notes, 10 fixes (62cd624); not pushed yet"
   }
 }
