@@ -5,7 +5,7 @@ import { CategoryChips } from "@/components/category-chips";
 import { CategoryIcon } from "@/components/category-icon";
 import { ProductBrowser } from "@/components/product-browser";
 import { getCategories, getCategoryBySlug, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
-import { pageAlternates } from "@/lib/seo";
+import { pageAlternates, ogLocale } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
@@ -25,10 +25,13 @@ export async function generateMetadata({
   const name = locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar;
   const brand = locale === "ar" ? settings.business_name_ar : settings.business_name_en || settings.business_name_ar;
   const title = `${name} | ${brand}`;
+  const t = await getTranslations({ locale, namespace: "category" });
+  const description = t("metaDescription", { name, brand });
   return {
     title,
+    description,
     alternates: pageAlternates(locale, `/categories/${slug}`),
-    openGraph: { title, locale, siteName: brand },
+    openGraph: { title, description, ...ogLocale(locale), siteName: brand },
   };
 }
 

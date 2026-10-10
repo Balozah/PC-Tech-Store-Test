@@ -17,7 +17,7 @@ import {
 } from "@/lib/data";
 import type { Locale } from "@/i18n/routing";
 import { productImageUrl } from "@/lib/product-image";
-import { pageAlternates } from "@/lib/seo";
+import { pageAlternates, ogLocale } from "@/lib/seo";
 import { specRows } from "@/lib/specs";
 import type { Metadata } from "next";
 
@@ -46,7 +46,7 @@ export async function generateMetadata({
     openGraph: {
       title: name,
       description: description ?? undefined,
-      locale,
+      ...ogLocale(locale),
       siteName: brand,
       images: image ? [{ url: productImageUrl(image.path) }] : undefined,
     },

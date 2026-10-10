@@ -135,19 +135,22 @@ export function ProductBrowser({
           )}
         </div>
       ) : (
-        <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-          {visible.map((product, i) => (
-            <li key={product.id} className="enter" style={{ "--enter-delay": `${Math.min(i, 7) * 40}ms` } as React.CSSProperties}>
-              <ProductCard
-                product={product}
-                image={extras[product.slug]?.image}
-                rating={extras[product.slug]?.rating}
-                locale={locale}
-                priority={i < 2}
-              />
-            </li>
-          ))}
-        </ul>
+        <>
+          <h2 className="sr-only">{t("listTitle")}</h2>
+          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            {visible.map((product, i) => (
+              <li key={product.id} className="enter" style={{ "--enter-delay": `${Math.min(i, 7) * 40}ms` } as React.CSSProperties}>
+                <ProductCard
+                  product={product}
+                  image={extras[product.slug]?.image}
+                  rating={extras[product.slug]?.rating}
+                  locale={locale}
+                  priority={i < 2}
+                />
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

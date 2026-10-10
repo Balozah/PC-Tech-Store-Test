@@ -22,7 +22,7 @@ export function ProductOrder({
   const t = useTranslations("product");
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [barVisible, setBarVisible] = useState(false);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
+  const ctaRef = useRef<HTMLElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
 
   const requiredGroups = product.optionGroups.filter((g) => g.is_required);
@@ -129,17 +129,25 @@ export function ProductOrder({
         </div>
       )}
 
-      <a
-        ref={ctaRef}
-        href={canOrder && orderUrl ? orderUrl : undefined}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-disabled={!canOrder}
-        className={`mt-6 ${buttonClass("lg")}`}
-      >
-        <WhatsAppIcon className="size-5" />
-        {label}
-      </a>
+      {canOrder && orderUrl ? (
+        <a
+          ref={ctaRef as React.RefObject<HTMLAnchorElement>}
+          href={orderUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`mt-6 ${buttonClass("lg")}`}
+        >
+          <WhatsAppIcon className="size-5" />
+          {label}
+        </a>
+      ) : (
+        // Not a link until ordering is possible: an <a> without href reads as a
+        // broken link to crawlers and some screen readers.
+        <span ref={ctaRef} aria-disabled="true" className={`mt-6 ${buttonClass("lg")}`}>
+          <WhatsAppIcon className="size-5" />
+          {label}
+        </span>
+      )}
       {canOrder && <p className="mt-3 text-sm text-[var(--color-ink-soft)]">{t("orderHint")}</p>}
 
       {orderUrl && product.is_available && (

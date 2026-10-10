@@ -63,6 +63,7 @@ export default async function SearchPage({
           <p className="mt-10 border-y border-[var(--color-border)] py-3 text-sm tabular-nums text-[var(--color-ink-soft)]">
             {t("count", { count: results.length })}
           </p>
+          <h2 className="sr-only">{t("listTitle")}</h2>
           <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {results.map((product, i) => (
               <li key={product.id} className="enter" style={{ "--enter-delay": `${Math.min(i, 7) * 40}ms` } as React.CSSProperties}>

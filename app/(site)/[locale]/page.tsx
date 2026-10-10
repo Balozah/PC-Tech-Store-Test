@@ -8,7 +8,7 @@ import { Reveal } from "@/components/reveal";
 import { getCategories, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
 import { productImageUrl } from "@/lib/product-image";
 import { whatsAppChatUrl } from "@/lib/whatsapp";
-import { pageAlternates } from "@/lib/seo";
+import { pageAlternates, ogLocale } from "@/lib/seo";
 import { specRows } from "@/lib/specs";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
@@ -35,7 +35,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
-      locale,
+      ...ogLocale(locale),
       siteName: brand,
       type: "website",
       images: [{ url: "/api/og", width: 1200, height: 630 }],

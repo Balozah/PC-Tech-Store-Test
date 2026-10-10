@@ -10,3 +10,13 @@ export function pageAlternates(locale: Locale, path: string) {
     },
   };
 }
+
+// Open Graph wants language_TERRITORY; the other language is listed as an alternate.
+const OG_LOCALES: Record<Locale, string> = { ar: "ar_SY", en: "en_US" };
+
+export function ogLocale(locale: Locale) {
+  return {
+    locale: OG_LOCALES[locale],
+    alternateLocale: routing.locales.filter((l) => l !== locale).map((l) => OG_LOCALES[l]),
+  };
+}
