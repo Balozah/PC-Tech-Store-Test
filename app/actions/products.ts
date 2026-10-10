@@ -2,6 +2,7 @@
 
 import { revalidateEverything } from "@/lib/revalidate";
 import { requireAdmin, NOT_AUTHORIZED } from "@/lib/supabase/admin";
+import { sanitizeSpecs, type Spec } from "@/lib/specs";
 
 function slugify(input: string) {
   return input
@@ -40,7 +41,16 @@ export type ProductFormInput = {
   is_available: boolean;
   slug?: string;
   optionGroups: OptionGroupInput[];
+  /** Omitted when the product never had specs, so saves keep working on a
+   *  database where the specs migration hasn't been applied yet. */
+  specs?: Spec[];
 };
+
+const SPECS_COLUMN_MISSING = "ميزة المواصفات لسا مو مفعّلة بقاعدة البيانات. شيل المواصفات واحفظ، أو تواصل مع شيفرة لتفعيلها.";
+
+function saveError(message: string) {
+  return /specs/i.test(message) && /column|schema cache/i.test(message) ? SPECS_COLUMN_MISSING : message;
+}
 
 export async function saveProduct(productId: string | null, input: ProductFormInput) {
   const supabase = await requireAdmin();
@@ -63,6 +73,7 @@ export async function saveProduct(productId: string | null, input: ProductFormIn
     price_syp: input.price_on_request ? null : input.price_syp,
     price_on_request: input.price_on_request,
     is_available: input.is_available,
+    ...(input.specs !== undefined ? { specs: sanitizeSpecs(input.specs) } : {}),
   };
 
   let id = productId;
@@ -72,14 +83,14 @@ export async function saveProduct(productId: string | null, input: ProductFormIn
       .from("products")
       .update({ ...payload, updated_at: new Date().toISOString() })
       .eq("id", id);
-    if (error) return { error: error.message };
+    if (error) return { error: saveError(error.message) };
   } else {
     const { data, error } = await supabase
       .from("products")
       .insert({ ...payload, slug })
       .select("id")
       .single();
-    if (error) return { error: error.message };
+    if (error) return { error: saveError(error.message) };
     id = data.id;
   }
 

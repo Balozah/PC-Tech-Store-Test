@@ -47,7 +47,9 @@ create table if not exists products (
   price_on_request boolean not null default false,
   is_available boolean not null default true,
   sort_order int not null default 0,
+  specs jsonb not null default '[]'::jsonb,   -- [{label_ar, label_en, value}] (add-on, see migrations/20261010_product_specs.sql)
   created_at timestamptz default now(), updated_at timestamptz default now(),
+  constraint specs_is_array check (jsonb_typeof(specs) = 'array'),
   constraint price_present_unless_on_request
     check (price_on_request or (price_usd is not null and price_syp is not null))
 );

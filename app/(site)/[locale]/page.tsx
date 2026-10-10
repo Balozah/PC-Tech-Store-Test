@@ -9,6 +9,7 @@ import { getCategories, getProducts, getCardExtras, getSiteSettings } from "@/li
 import { productImageUrl } from "@/lib/product-image";
 import { whatsAppChatUrl } from "@/lib/whatsapp";
 import { pageAlternates } from "@/lib/seo";
+import { specRows } from "@/lib/specs";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
@@ -80,7 +81,7 @@ export default async function HomePage({
         prebuiltHref={prebuiltCategory ? `/categories/${PREBUILT_SLUG}` : "/#categories"}
       />
 
-      {featured && <Spotlight product={featured} image={extras[featured.slug]?.image} specs={[]} locale={locale} />}
+      {featured && <Spotlight product={featured} image={extras[featured.slug]?.image} specs={specRows(featured.specs, locale).slice(0, 4)} locale={locale} />}
 
       <CategoryGrid categories={categories} counts={counts} locale={locale} />
 

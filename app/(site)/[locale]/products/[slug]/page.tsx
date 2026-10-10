@@ -18,6 +18,7 @@ import {
 import type { Locale } from "@/i18n/routing";
 import { productImageUrl } from "@/lib/product-image";
 import { pageAlternates } from "@/lib/seo";
+import { specRows } from "@/lib/specs";
 import type { Metadata } from "next";
 
 export async function generateStaticParams() {
@@ -65,6 +66,7 @@ export default async function ProductPage({
   const name = locale === "ar" ? product.name_ar : product.name_en ?? product.name_ar;
   const description = locale === "ar" ? product.description_ar : product.description_en ?? product.description_ar;
   const rating = getProductRating(product.reviews);
+  const specs = specRows(product.specs, locale);
   const category = product.category;
   const categoryName = category ? (locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar) : null;
 
@@ -135,6 +137,25 @@ export default async function ProductPage({
           </div>
         </div>
       </div>
+
+      {specs.length > 0 && (
+        <section aria-labelledby="specs-title" className="mt-20 border-t border-[var(--color-border)] pt-10">
+          <h2 id="specs-title" className="font-display mb-6 text-[clamp(1.5rem,3vw,2.25rem)]">
+            {t("specs")}
+          </h2>
+          <dl className="grid gap-px border border-[var(--color-border)] bg-[var(--color-border)] sm:grid-cols-2">
+            {specs.map((s, i) => (
+              <div key={i} className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-4 bg-[var(--color-surface)] px-4 py-3.5">
+                <dt className="text-[var(--color-ink-soft)]">{s.label}</dt>
+                <dd className="font-semibold tabular-nums">
+                  <bdi>{s.value}</bdi>
+                </dd>
+              </div>
+            ))}
+            {specs.length % 2 === 1 && <div className="hidden bg-[var(--color-surface)] sm:block" aria-hidden="true" />}
+          </dl>
+        </section>
+      )}
 
       <section id="reviews" aria-labelledby="reviews-title" className="mt-20 scroll-mt-24 border-t border-[var(--color-border)] pt-10">
         <div className="grid gap-10 md:grid-cols-12">

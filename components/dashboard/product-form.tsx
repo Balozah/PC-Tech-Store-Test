@@ -15,6 +15,7 @@ import { productImageUrl } from "@/lib/product-image";
 import type { Category, ProductImage, ProductWithRelations } from "@/lib/data";
 import { Card, Icon, Spinner, Switch, buttonClass, hintClass, inputClass, labelClass } from "@/components/dashboard/ui";
 import { cn } from "@/lib/utils";
+import { SPECS_MAX_ROWS, sanitizeSpecs } from "@/lib/specs";
 
 type OptionValueDraft = {
   id?: string;
@@ -66,6 +67,9 @@ function toDraftGroups(product: ProductWithRelations | null): OptionGroupDraft[]
 
 const toNumber = (value: string) => (value.trim() ? Number(value) : null);
 
+type SpecDraft = { label_ar: string; label_en: string; value: string };
+const emptySpec = (): SpecDraft => ({ label_ar: "", label_en: "", value: "" });
+
 export function ProductForm({
   product,
   categories,
@@ -91,6 +95,20 @@ export function ProductForm({
   const [priceOnRequest, setPriceOnRequest] = useState(product?.price_on_request ?? false);
   const [isAvailable, setIsAvailable] = useState(product?.is_available ?? true);
   const [groups, setGroups] = useState<OptionGroupDraft[]>(toDraftGroups(product));
+  const [initialSpecs] = useState(() => sanitizeSpecs(product?.specs));
+  const [specs, setSpecs] = useState<SpecDraft[]>(() =>
+    initialSpecs.map((s) => ({ label_ar: s.label_ar, label_en: s.label_en ?? "", value: s.value }))
+  );
+  const updateSpec = (i: number, patch: Partial<SpecDraft>) =>
+    setSpecs((list) => list.map((s, j) => (j === i ? { ...s, ...patch } : s)));
+  const moveSpec = (from: number, to: number) =>
+    setSpecs((list) => {
+      if (to < 0 || to >= list.length) return list;
+      const next = [...list];
+      const [item] = next.splice(from, 1);
+      next.splice(to, 0, item);
+      return next;
+    });
 
   const updateGroup = (gi: number, patch: Partial<OptionGroupDraft>) =>
     setGroups((list) => list.map((g, i) => (i === gi ? { ...g, ...patch } : g)));
@@ -128,6 +146,11 @@ export function ProductForm({
           is_available: v.is_available,
         })),
       })),
+      // Only send specs once this product has (or had) some — see ProductFormInput.
+      specs:
+        specs.length || initialSpecs.length
+          ? specs.map((s) => ({ label_ar: s.label_ar, label_en: s.label_en.trim() || null, value: s.value }))
+          : undefined,
     };
 
     startTransition(async () => {
@@ -171,7 +194,7 @@ export function ProductForm({
           </div>
           <div>
             <label htmlFor="desc_ar" className={labelClass}>الوصف</label>
-            <textarea id="desc_ar" value={descAr} onChange={(e) => setDescAr(e.target.value)} rows={4} placeholder="المواصفات، الضمان، الحالة..." className={inputClass} />
+            <textarea id="desc_ar" value={descAr} onChange={(e) => setDescAr(e.target.value)} rows={4} placeholder="الضمان، الحالة، ملاحظات للزبون..." className={inputClass} />
           </div>
           <div>
             <label htmlFor="desc_en" className={labelClass}>Description (English)</label>
@@ -372,6 +395,81 @@ export function ProductForm({
               </div>
             ))}
             <p className={hintClass}>سعر الخيار بيحل محل سعر المنتج لما الزبون يختاره. اتركه فاضي إذا نفس السعر.</p>
+          </div>
+        )}
+      </Card>
+
+      <Card
+        title="المواصفات"
+        description="بتطلع كجدول بصفحة المنتج. مثلاً: السوكيت ← LGA 1700، الذاكرة ← 8GB GDDR6."
+        action={
+          <button
+            type="button"
+            disabled={specs.length >= SPECS_MAX_ROWS}
+            onClick={() => setSpecs((list) => [...list, emptySpec()])}
+            className={buttonClass.secondary}
+          >
+            <Icon name="plus" className="h-4 w-4" />
+            سطر
+          </button>
+        }
+      >
+        {specs.length === 0 ? (
+          <p className="text-sm text-[var(--color-muted-foreground)]">ما في مواصفات. الجدول ما بيظهر بصفحة المنتج.</p>
+        ) : (
+          <div className="space-y-2">
+            {specs.map((spec, i) => (
+              <div key={i} className="flex items-start gap-2 border border-[var(--color-border)] p-2.5">
+                <div className="grid flex-1 gap-2 sm:grid-cols-3">
+                  <input
+                    aria-label={`اسم المواصفة ${i + 1}`}
+                    value={spec.label_ar}
+                    maxLength={60}
+                    onChange={(e) => updateSpec(i, { label_ar: e.target.value })}
+                    placeholder="مثلاً: السوكيت"
+                    className={inputClass}
+                  />
+                  <input
+                    aria-label={`Spec label ${i + 1} (English)`}
+                    dir="ltr"
+                    value={spec.label_en}
+                    maxLength={60}
+                    onChange={(e) => updateSpec(i, { label_en: e.target.value })}
+                    placeholder="Socket"
+                    className={inputClass}
+                  />
+                  <input
+                    aria-label={`القيمة ${i + 1}`}
+                    dir="auto"
+                    value={spec.value}
+                    maxLength={120}
+                    onChange={(e) => updateSpec(i, { value: e.target.value })}
+                    placeholder="LGA 1700"
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex shrink-0 flex-col sm:flex-row">
+                  <button
+                    type="button"
+                    aria-label="لفوق"
+                    disabled={i === 0}
+                    onClick={() => moveSpec(i, i - 1)}
+                    className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] disabled:opacity-30"
+                  >
+                    <Icon name="arrowUp" className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="حذف السطر"
+                    onClick={() => setSpecs((list) => list.filter((_, j) => j !== i))}
+                    className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)]"
+                  >
+                    <Icon name="x" className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            ))}
+            <p className={hintClass}>السطور الناقصة (بلا اسم أو قيمة) ما بتنحفظ.</p>
           </div>
         )}
       </Card>

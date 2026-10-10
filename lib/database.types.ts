@@ -102,6 +102,7 @@ export interface Database {
           price_on_request: boolean;
           is_available: boolean;
           sort_order: number;
+          specs: Json;
           created_at: string;
           updated_at: string;
         };
@@ -118,6 +119,7 @@ export interface Database {
           price_on_request?: boolean;
           is_available?: boolean;
           sort_order?: number;
+          specs?: Json;
           created_at?: string;
           updated_at?: string;
         };
@@ -134,6 +136,7 @@ export interface Database {
           price_on_request?: boolean;
           is_available?: boolean;
           sort_order?: number;
+          specs?: Json;
           created_at?: string;
           updated_at?: string;
         };
