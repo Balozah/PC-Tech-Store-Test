@@ -31,7 +31,7 @@ export default function LoginPage() {
       <form action={formAction} className="space-y-4 border border-[var(--color-border)] bg-[var(--color-card)] p-5 sm:p-6">
         <div>
           <label htmlFor="email" className={labelClass}>البريد الإلكتروني</label>
-          <input id="email" name="email" type="email" dir="ltr" autoComplete="email" required className={inputClass} />
+          <input id="email" name="email" type="email" dir="ltr" autoComplete="email" required defaultValue={state?.email} className={inputClass} />
         </div>
         <div>
           <label htmlFor="password" className={labelClass}>كلمة المرور</label>

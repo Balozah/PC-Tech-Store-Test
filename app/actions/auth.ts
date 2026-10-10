@@ -10,15 +10,15 @@ const AUTH_UNREACHABLE = "تعذّر الاتصال بخادم تسجيل الد
 export async function signIn(_: unknown, formData: FormData) {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  if (!email || !password) return { error: INVALID_LOGIN };
+  if (!email || !password) return { error: INVALID_LOGIN, email };
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error || !data.user) {
     console.error("signIn failed", { code: error?.code, status: error?.status, name: error?.name, message: error?.message });
-    if (error?.status === 429 || error?.code === "over_request_rate_limit") return { error: RATE_LIMITED };
-    if (error && !error.status) return { error: AUTH_UNREACHABLE };
-    return { error: INVALID_LOGIN };
+    if (error?.status === 429 || error?.code === "over_request_rate_limit") return { error: RATE_LIMITED, email };
+    if (error && !error.status) return { error: AUTH_UNREACHABLE, email };
+    return { error: INVALID_LOGIN, email };
   }
 
   const { data: admin, error: adminError } = await supabase
@@ -30,7 +30,7 @@ export async function signIn(_: unknown, formData: FormData) {
   if (!admin) {
     console.error("signIn: user is not in admins", { userId: data.user.id, error: adminError?.message });
     await supabase.auth.signOut();
-    return { error: INVALID_LOGIN };
+    return { error: INVALID_LOGIN, email };
   }
 
   redirect("/dashboard");

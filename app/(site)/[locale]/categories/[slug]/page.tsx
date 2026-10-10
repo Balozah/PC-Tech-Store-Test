@@ -9,10 +9,6 @@ import { pageAlternates, ogLocale } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
 
-// Items added from the dashboard after a build render on first request
-// (the locale layout sets dynamicParams = false for its own segment).
-export const dynamicParams = true;
-
 export async function generateStaticParams() {
   const categories = await getCategories();
   return categories.map((c) => ({ slug: c.slug }));
