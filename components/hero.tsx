@@ -1,18 +1,13 @@
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import type { CSSProperties } from "react";
 import { Link } from "@/i18n/navigation";
 import { ArrowIcon, WhatsAppIcon } from "@/components/icons";
+import { DitherHeroVisual } from "@/components/ui/dither-hero-visual";
 
-export function Hero({
-  imageUrl,
-  chatUrl,
-  prebuiltHref,
-}: {
-  imageUrl?: string;
-  chatUrl: string | null;
-  prebuiltHref: string;
-}) {
+// Static, owner-independent hero photo (monochrome case shot, public/hero).
+const HERO_IMAGE = "/hero/case.webp";
+
+export function Hero({ chatUrl, prebuiltHref }: { chatUrl: string | null; prebuiltHref: string }) {
   const t = useTranslations("hero");
   const lines = [t("line1"), t("line2")];
 
@@ -24,8 +19,8 @@ export function Hero({
   return (
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 pb-20 pt-10 sm:px-6 md:pb-28 md:pt-16 lg:grid-cols-12 lg:gap-8">
-        <div className="lg:col-span-6 lg:self-center">
-          <h1 className="font-display text-[clamp(2.25rem,6.4vw,4rem)]">
+        <div className="lg:col-span-5 lg:self-center">
+          <h1 className="font-display text-[clamp(2.25rem,6.4vw,4rem)] lg:text-[clamp(2.5rem,4.4vw,3.6rem)]">
             {lines.map((line, i) => (
               <span key={i} className="line-mask">
                 <span style={{ "--line-delay": `${i * 90}ms` } as CSSProperties}>{line}</span>
@@ -57,21 +52,10 @@ export function Hero({
           </div>
         </div>
 
-        {imageUrl && (
-          <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-ink)] sm:aspect-[16/10] lg:col-span-3 lg:aspect-[3/4] lg:self-center">
-            <Image
-              src={imageUrl}
-              alt={t("imageAlt")}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 25vw"
-              className="settle object-cover"
-            />
-          </div>
-        )}
+        <DitherHeroVisual src={HERO_IMAGE} alt={t("imageAlt")} className="lg:col-span-4 lg:self-center" />
 
         <ul
-          className={`grid self-center border-b border-[var(--color-border)] sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-1 ${imageUrl ? "lg:col-span-3" : "lg:col-span-6"}`}
+          className="grid self-center border-b border-[var(--color-border)] sm:grid-cols-2 sm:gap-x-6 lg:col-span-3 lg:grid-cols-1"
         >
           {paths.map((p, i) => (
             <li

@@ -195,6 +195,11 @@ textarea {
   animation: settle 0.9s var(--ease-out-expo) 120ms backwards;
 }
 
+/* Shader layers (Paper Shaders) fade in over their static fallback. */
+.dither-in {
+  animation: fade-in 0.5s ease-out backwards;
+}
+
 [data-reveal="hidden"] {
   opacity: 0;
   transform: translateY(20px);
