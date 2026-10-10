@@ -78,7 +78,7 @@ export default async function ProductPage({
         <ProductGallery images={product.images} alt={name} />
 
         <div>
-          <h1 className="font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">{name}</h1>
+          <h1 className="font-display text-3xl font-bold sm:text-4xl">{name}</h1>
 
           <div className="mt-3 flex items-center gap-3">
             <StarRating value={rating.average} count={rating.count} />
@@ -110,7 +110,7 @@ export default async function ProductPage({
 
       <Reveal className="mt-16">
         <section>
-        <h2 className="mb-4 font-[var(--font-heading)] text-2xl font-bold">{t("reviews")}</h2>
+        <h2 className="mb-4 font-display text-2xl font-bold">{t("reviews")}</h2>
         {product.reviews.length === 0 ? (
           <p className="text-[var(--color-muted-foreground)]">{t("noReviews")}</p>
         ) : (
@@ -133,7 +133,7 @@ export default async function ProductPage({
       {related.length > 0 && (
         <section className="mt-16">
           <Reveal>
-            <h2 className="mb-4 font-[var(--font-heading)] text-2xl font-bold">{t("related")}</h2>
+            <h2 className="mb-4 font-display text-2xl font-bold">{t("related")}</h2>
           </Reveal>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             {related.map((p, i) => (

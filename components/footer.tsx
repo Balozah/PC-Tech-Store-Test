@@ -22,7 +22,7 @@ export function Footer({ settings, locale }: { settings: SiteSettings; locale: s
     <footer id="contact" className="mt-24 border-t border-[var(--color-border)] bg-[var(--color-card)]">
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
-          <h3 className="font-[var(--font-heading)] text-lg font-bold">{name}</h3>
+          <h3 className="font-display text-lg font-bold">{name}</h3>
           {socials.length > 0 && (
             <div className="mt-4">
               <h4 className="mb-2 text-sm font-semibold text-[var(--color-muted-foreground)]">{t("follow")}</h4>

@@ -45,7 +45,7 @@ export default async function CategoryPage({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <h1 className="mb-8 font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">{name}</h1>
+      <h1 className="mb-8 font-display text-3xl font-bold sm:text-4xl">{name}</h1>
       {products.length === 0 ? (
         <p className="text-[var(--color-muted-foreground)]">
           {locale === "ar" ? "لا توجد منتجات بهذا القسم حالياً." : "No products in this category yet."}

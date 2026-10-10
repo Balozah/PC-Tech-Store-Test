@@ -10,7 +10,7 @@ export function CategoryGrid({ categories, locale }: { categories: Category[]; l
 
   return (
     <section id="categories" className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <h2 className="mb-8 font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">
+      <h2 className="mb-8 font-display text-3xl font-bold sm:text-4xl">
         {t("title")}
       </h2>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-5">

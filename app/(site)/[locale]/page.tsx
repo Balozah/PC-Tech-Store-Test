@@ -66,7 +66,7 @@ export default async function HomePage({
           </p>
           <HeroTitle
             text={t("title")}
-            className="mt-3 font-[var(--font-heading)] text-4xl font-extrabold leading-tight sm:text-6xl"
+            className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-6xl"
           />
           <div className="enter" style={{ "--enter-delay": "300ms" } as React.CSSProperties}>
             <p className="mt-6 max-w-xl text-lg text-[var(--color-muted-foreground)]">
@@ -96,7 +96,7 @@ export default async function HomePage({
       {gridProducts.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
           <Reveal>
-            <h2 className="mb-8 font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">{tp("latest")}</h2>
+            <h2 className="mb-8 font-display text-3xl font-bold sm:text-4xl">{tp("latest")}</h2>
           </Reveal>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {gridProducts.map((product, i) => (

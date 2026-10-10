@@ -1,6 +1,7 @@
 {
+  "schema_version": 2,
   "package": "asas",
-  "design_skill": "ui-ux-pro-max",
+  "design_skill": "shifra-design",
   "date": "2026-10-03",
   "delivery_date": null,
   "project": {
@@ -10,45 +11,72 @@
     "visitor_goal": "Browse products by category and order via WhatsApp",
     "audience": "Syrians interested in PCs and gaming hardware",
     "tagline": null,
-    "about": null
+    "about": null,
+    "languages": [
+      "ar",
+      "en"
+    ],
+    "competitors_or_liked_sites": []
   },
   "brand": {
     "logo": null,
     "colors": {
-      "primary": "#2563EB",
-      "secondary": "#F97316",
-      "surface": "#141419",
-      "background": "#0A0A0F",
-      "foreground": "#F4F4F5",
-      "card": "#141419",
+      "primary": "#0E0E10",
+      "secondary": null,
+      "surface": "#FFFFFF",
+      "background": "#F2F2EF",
+      "foreground": "#0E0E10",
+      "card": "#FFFFFF",
       "card_light": "#FFFFFF",
-      "muted_foreground": "#9CA3AF",
-      "border": "#27272F",
-      "success": "#22C55E",
-      "destructive": "#EF4444",
-      "text": "#F4F4F5",
-      "source": "proposed by ui-ux-pro-max, client deferred color choice"
+      "muted_foreground": "#5A5A61",
+      "border": "#D6D6D1",
+      "success": "#15803D",
+      "destructive": "#B91C1C",
+      "text": "#0E0E10",
+      "source": "shifra-design",
+      "muted": "#5A5A61",
+      "accent": "#1D4ED8",
+      "whatsapp": "#25D366",
+      "accent_on_dark": "#7EA6FF"
     },
     "fonts": {
-      "heading_latin": "Space Grotesk",
-      "body_latin": "DM Sans",
-      "arabic": "IBM Plex Sans Arabic"
+      "arabic_heading": "Alexandria",
+      "arabic_body": "Alexandria",
+      "latin_heading": "Archivo (wdth 125)",
+      "latin_body": "Archivo",
+      "weights": [
+        400,
+        500,
+        600,
+        800
+      ],
+      "source": "shifra-design"
     },
-    "theme": "mixed-dark-first"
+    "theme": "light",
+    "theme_source": "shifra-design"
   },
   "design": {
-    "source": "ui-ux-pro-max",
+    "source": "shifra-design",
     "client_fixed": [
       "reference image: PC Builder style site (monochrome, bold typography, category grid, light->dark section rhythm)",
       "animation_level: rich, explicitly requested",
       "no cart / no login / no builder configurator / no blog (out of Asas scope)"
     ],
-    "style": "bold tech monochrome-with-blue-accent",
+    "style": "bold technical catalog: monochrome paper/ink, hairline grid, square corners, oversized wide type, one blue accent (client reference + Swiss Industrial Print)",
     "decisions": [
       "oversized bold headings (Space Grotesk 700-900)",
       "full-bleed black featured-product section echoing reference's 'Brand new beast'",
       "category icon grid (10 categories) echoing reference's component grid",
-      "light/white product cards over dark page background to make product photos pop"
+      "light/white product cards over dark page background to make product photos pop",
+      "origin (colors): proposed by ui-ux-pro-max, client deferred color choice",
+      "origin (fonts): ui-ux-pro-max (before the shifra-design merge)",
+      "origin (design): ui-ux-pro-max",
+      "origin (theme): mixed-dark-first",
+      "2026-10-10 redesign: light theme with deliberate dark bands (featured build, footer) per reference rhythm",
+      "orange removed; single accent #1D4ED8",
+      "WhatsApp green kept only on the order button (functional)",
+      "motion rich via CSS + IntersectionObserver, no animation library (slow connections)",
+      "no eyebrow labels, no glow/tilt, no remote hero image"
     ],
     "references": [
       {
@@ -62,17 +90,91 @@
       "visitor login/accounts",
       "interactive builder configurator",
       "blog/FAQ as a core section"
-    ]
+    ],
+    "usage": [],
+    "personality": [
+      "bold",
+      "technical",
+      "precise",
+      "trustworthy"
+    ],
+    "priority": "product browsing and WhatsApp ordering on mobile",
+    "modules": [
+      "reference-led (image-to-code)",
+      "industrial-brutalist-ui: Swiss Industrial Print",
+      "redesign-existing-projects",
+      "impeccable craft-floor",
+      "arabic-rtl",
+      "motion-policy rich"
+    ],
+    "files": {
+      "design_md": "DESIGN.md",
+      "tokens": "app/globals.css",
+      "master_md": null
+    }
   },
   "animation": {
     "level": "rich",
-    "effects": [
-      { "element": "hero headline", "trigger": "load", "motion": "character stagger reveal", "duration": "~600ms", "easing": "expo.out" },
-      { "element": "section entrance", "trigger": "scroll into view", "motion": "fade + rise", "duration": "300-400ms", "easing": "power1.out" },
-      { "element": "category grid", "trigger": "scroll into view", "motion": "staggered card reveal", "duration": "250-350ms", "easing": "power1.out" },
-      { "element": "product card", "trigger": "hover", "motion": "lift + subtle glow", "duration": "200-300ms" }
+    "reduced_motion": "supported",
+    "transitions": [
+      {
+        "element": "hero headline",
+        "trigger": "load",
+        "motion": "per-line mask rise",
+        "duration_ms": 700,
+        "easing": "cubic-bezier(.16,1,.3,1)"
+      },
+      {
+        "element": "hero image",
+        "trigger": "load",
+        "motion": "scale 1.06->1 + fade",
+        "duration_ms": 900,
+        "easing": "cubic-bezier(.16,1,.3,1)"
+      },
+      {
+        "element": "featured band",
+        "trigger": "in view",
+        "motion": "image rise + spec rows stagger 60ms",
+        "duration_ms": 500,
+        "easing": "cubic-bezier(.16,1,.3,1)"
+      },
+      {
+        "element": "category grid",
+        "trigger": "in view / hover",
+        "motion": "stagger 40ms; hover invert to ink + icon nudge",
+        "duration_ms": 200,
+        "easing": "ease-out"
+      },
+      {
+        "element": "product card",
+        "trigger": "hover / press",
+        "motion": "image scale 1.04, border ink; press .98",
+        "duration_ms": 200,
+        "easing": "ease-out"
+      },
+      {
+        "element": "mobile menu",
+        "trigger": "open",
+        "motion": "slide from inline-start + links stagger",
+        "duration_ms": 240,
+        "easing": "cubic-bezier(.16,1,.3,1)"
+      },
+      {
+        "element": "sticky order bar",
+        "trigger": "main CTA out of view",
+        "motion": "slide up",
+        "duration_ms": 250,
+        "easing": "cubic-bezier(.16,1,.3,1)"
+      },
+      {
+        "element": "page navigation",
+        "trigger": "route change",
+        "motion": "cross-fade (View Transitions)",
+        "duration_ms": 150,
+        "easing": "ease"
+      }
     ],
-    "reduced_motion": "required"
+    "client_requested_effects": []
   },
   "content": {
     "sections": [
@@ -93,34 +195,264 @@
     "address_en": null,
     "maps_url": null,
     "hours": [],
-    "socials": {},
-    "domain": null
+    "socials": {}
   },
   "package_specific": {
-    "categories": [
-      "Processors", "Graphics Cards", "Motherboards", "RAM", "Storage",
-      "Power Supply", "Cooling", "Laptops", "Pre-Built PCs", "Accessories"
-    ],
-    "currency": ["SYP", "USD"],
-    "pricing_mode": "price_on_request_for_some",
-    "pricing_reason": "exchange rate instability (SYP/USD)",
-    "product_count_at_launch": null,
-    "product_source": "placeholder stock/internet images until real photos are provided",
-    "owner_dashboard_email": null
+    "asas": {
+      "categories": [
+        "Processors",
+        "Graphics Cards",
+        "Motherboards",
+        "RAM",
+        "Storage",
+        "Power Supply",
+        "Cooling",
+        "Laptops",
+        "Pre-Built PCs",
+        "Accessories"
+      ],
+      "currency": "SYP",
+      "show_prices": true,
+      "order_message_format": null,
+      "owner_email": null,
+      "note": "pricing_mode: price_on_request_for_some (exchange rate instability (SYP/USD)); currencies: SYP, USD",
+      "product_count_at_launch": null,
+      "product_source": "placeholder stock/internet images until real photos are provided"
+    }
   },
   "todo": [
-    { "item": "Real WhatsApp number for orders", "owner": "client", "due": null },
-    { "item": "Owner email for dashboard login", "owner": "client", "due": null },
-    { "item": "Logo and final brand colors (if provided later, revisit palette)", "owner": "client", "due": null },
-    { "item": "Address, map link, business hours, social links", "owner": "client", "due": null },
-    { "item": "Real product photos to replace temporary stock placeholders", "owner": "client", "due": null },
-    { "item": "Domain name", "owner": "client", "due": null },
-    { "item": "Tagline and about text", "owner": "client_or_ahmad", "due": null }
+    {
+      "item": "Real WhatsApp number for orders",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Owner email for dashboard login",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Logo and final brand colors (if provided later, revisit palette)",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Address, map link, business hours, social links",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Real product photos to replace temporary stock placeholders",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Domain name",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Tagline and about text",
+      "owner": "client_or_ahmad",
+      "due": null
+    },
+    {
+      "item": "Fill infra (hosting/repo/domain/ownership) - missing from the original brief",
+      "owner": "ahmad",
+      "due": null
+    }
   ],
   "out_of_scope": [
-    { "request": "Shopping cart + electronic checkout (from reference)", "verdict": "not_offered", "decision": "pending" },
-    { "request": "Visitor login/accounts (from reference)", "verdict": "not_offered", "decision": "pending" },
-    { "request": "Interactive PC builder configurator (from reference)", "verdict": "paid_addon", "decision": "pending" },
-    { "request": "Blog & Articles system (from reference)", "verdict": "not_offered", "decision": "pending" }
-  ]
+    {
+      "request": "Shopping cart + electronic checkout (from reference)",
+      "verdict": "not_offered",
+      "decision": "pending",
+      "id": "addon-1",
+      "note": "",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "milestone": null,
+      "design_needed": null,
+      "requirements": [],
+      "status": "not_started"
+    },
+    {
+      "request": "Visitor login/accounts (from reference)",
+      "verdict": "not_offered",
+      "decision": "pending",
+      "id": "addon-2",
+      "note": "",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "milestone": null,
+      "design_needed": null,
+      "requirements": [],
+      "status": "not_started"
+    },
+    {
+      "request": "Interactive PC builder configurator (from reference)",
+      "verdict": "paid_addon",
+      "decision": "pending",
+      "id": "addon-3",
+      "note": "",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "milestone": null,
+      "design_needed": null,
+      "requirements": [],
+      "status": "not_started"
+    },
+    {
+      "request": "Blog & Articles system (from reference)",
+      "verdict": "not_offered",
+      "decision": "pending",
+      "id": "addon-4",
+      "note": "",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "milestone": null,
+      "design_needed": null,
+      "requirements": [],
+      "status": "not_started"
+    },
+    {
+      "id": "addon-5",
+      "request": "Product search (header search box, Arabic + English names)",
+      "verdict": "paid_addon",
+      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad",
+      "decision": "approved_addon",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "requirements": [
+        "search by product name ar/en",
+        "results page /search?q=",
+        "no dashboard editing needed"
+      ],
+      "design_needed": true,
+      "milestone": "M6",
+      "status": "planned"
+    },
+    {
+      "id": "addon-6",
+      "request": "Sort + in-stock filter on category pages",
+      "verdict": "paid_addon",
+      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad",
+      "decision": "approved_addon",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "requirements": [
+        "sort: newest / price low-high / price high-low",
+        "filter: in stock only",
+        "works without JS via URL params"
+      ],
+      "design_needed": true,
+      "milestone": "M4",
+      "status": "planned"
+    },
+    {
+      "id": "addon-7",
+      "request": "Specs table on product pages",
+      "verdict": "paid_addon",
+      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad",
+      "decision": "approved_addon",
+      "price": null,
+      "currency": null,
+      "added_days": null,
+      "requirements": [
+        "rows of label (ar/en) + value per product",
+        "edited from the dashboard product form",
+        "hidden when empty"
+      ],
+      "design_needed": true,
+      "milestone": "M7",
+      "status": "planned"
+    }
+  ],
+  "infra": {
+    "hosting": {
+      "provider": null,
+      "owner": null,
+      "node_support": null,
+      "notes": ""
+    },
+    "backend": {
+      "provider": "supabase",
+      "owner": null,
+      "region": null,
+      "plan": null,
+      "notes": "Supabase is used in the code (lib/supabase/*)"
+    },
+    "repo": {
+      "host": "github",
+      "owner": null,
+      "owner_type": null,
+      "name": null,
+      "private": true,
+      "auto_deploy": null,
+      "on_delivery": null
+    },
+    "domain": {
+      "name": null,
+      "registrar": null,
+      "dns_managed_by": null,
+      "records_added_by": null,
+      "owner": null,
+      "has_email": null
+    },
+    "env_entered_by": null
+  },
+  "dev": {
+    "plan": "C:/Users/ASUS/.claude/plans/pc-tech-humming-stonebraker.md",
+    "branch": "redesign",
+    "execution_mode": "inline",
+    "milestones_done": []
+  },
+  "qa": {
+    "reports_gitignored": null,
+    "test_accounts_source": null,
+    "last_report": null,
+    "last_verdict": null,
+    "confirmed_urls": []
+  },
+  "deploy": {
+    "targets": []
+  },
+  "approvals": {
+    "brief": {
+      "approved": true,
+      "date": "2026-10-03",
+      "note": "pre-contract project, assumed approved (site already built) - confirm"
+    },
+    "design_read": {
+      "approved": true,
+      "date": "2026-10-10",
+      "note": "redesign v2 Design Read approved by Ahmad"
+    },
+    "build_plan": {
+      "approved": true,
+      "date": "2026-10-10",
+      "note": "redesign plan M1-M9 (incl. add-ons search/sort-filter/specs)"
+    },
+    "commits": "per_milestone",
+    "qa_verdict": null,
+    "deploys": []
+  },
+  "pipeline": {
+    "stage": "build",
+    "completed": [
+      "intake",
+      "design"
+    ],
+    "next_action": "build M1 tokens & theming",
+    "blocked_on": [
+      "infra"
+    ],
+    "note": "v1 build exists (commit faaf3e1); redesign approved 2026-10-10 covers public pages + dashboard"
+  }
 }

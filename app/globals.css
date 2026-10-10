@@ -1,102 +1,203 @@
 @import "tailwindcss";
 
+/* Tokens — values documented in DESIGN.md. Legacy names (--color-primary,
+   --color-card…) are kept because the dashboard and actions use them. */
 :root {
-  --color-background: #0a0a0f;
-  --color-foreground: #f4f4f5;
-  --color-card: #141419;
-  --color-card-foreground: #f4f4f5;
-  --color-card-light: #ffffff;
-  --color-card-light-foreground: #0a0a0f;
-  --color-primary: #2563eb;
-  --color-primary-foreground: #ffffff;
-  --color-accent: #f97316;
-  --color-accent-foreground: #0a0a0f;
-  --color-success: #22c55e;
-  --color-destructive: #ef4444;
-  --color-muted: #1e1e26;
-  --color-muted-foreground: #9ca3af;
-  --color-border: #27272f;
+  --color-paper: #f2f2ef;
+  --color-surface: #ffffff;
+  --color-ink: #0e0e10;
+  --color-ink-soft: #5a5a61;
+  --color-line: #d6d6d1;
+  --color-line-strong: #0e0e10;
+  --color-on-dark: #f2f2ef;
+  --color-on-dark-soft: #a1a1a8;
+  --color-accent-on-dark: #7ea6ff;
+  --color-whatsapp: #25d366;
 
-  --font-heading-latin: var(--font-heading-latin-next), sans-serif;
-  --font-body-latin: var(--font-body-latin-next), sans-serif;
-  --font-arabic: var(--font-arabic-next), sans-serif;
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-ink);
+  --color-card-light: var(--color-surface);
+  --color-card-light-foreground: var(--color-ink);
+  --color-primary: #1d4ed8;
+  --color-primary-foreground: #ffffff;
+  --color-accent: #1d4ed8;
+  --color-accent-foreground: #ffffff;
+  --color-success: #15803d;
+  --color-destructive: #b91c1c;
+  --color-muted: #e7e7e3;
+  --color-muted-foreground: var(--color-ink-soft);
+  --color-border: var(--color-line);
+
+  --font-stack: var(--font-archivo), var(--font-alexandria), system-ui, sans-serif;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark bands (featured build, footer): components inside read the same token
+   names, so they flip without per-component overrides. */
+.band-dark {
+  --color-background: var(--color-ink);
+  --color-foreground: var(--color-on-dark);
+  --color-muted-foreground: var(--color-on-dark-soft);
+  --color-primary: var(--color-accent-on-dark);
+  --color-accent: var(--color-accent-on-dark);
+  --color-border: #2c2c31;
+  --color-line: #2c2c31;
+  --color-muted: #1b1b1f;
+  --color-card: #161619;
+  background: var(--color-background);
+  color: var(--color-foreground);
 }
 
 @theme inline {
+  --color-paper: var(--color-paper);
+  --color-surface: var(--color-surface);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-line: var(--color-line);
+  --color-whatsapp: var(--color-whatsapp);
   --color-background: var(--color-background);
   --color-foreground: var(--color-foreground);
   --color-card: var(--color-card);
   --color-card-foreground: var(--color-card-foreground);
-  --color-card-light: var(--color-card-light);
-  --color-card-light-foreground: var(--color-card-light-foreground);
   --color-primary: var(--color-primary);
   --color-primary-foreground: var(--color-primary-foreground);
   --color-accent: var(--color-accent);
-  --color-accent-foreground: var(--color-accent-foreground);
   --color-success: var(--color-success);
   --color-destructive: var(--color-destructive);
   --color-muted: var(--color-muted);
   --color-muted-foreground: var(--color-muted-foreground);
   --color-border: var(--color-border);
-  --font-heading: var(--font-heading-latin);
-  --font-body: var(--font-body-latin);
-  --font-arabic: var(--font-arabic);
+  --font-sans: var(--font-stack);
 }
 
-html[dir="rtl"] {
-  --font-heading-active: var(--font-arabic);
-  --font-body-active: var(--font-arabic);
-}
-
-html[dir="ltr"] {
-  --font-heading-active: var(--font-heading-latin);
-  --font-body-active: var(--font-body-latin);
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-body-active, var(--font-body-latin));
+  font-family: var(--font-stack);
+  line-height: 1.6;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading-active, var(--font-heading-latin));
+html[dir="rtl"] body {
+  font-size: 1.0625rem;
+  line-height: 1.8;
 }
 
-/* Arabic text should never get Latin letter-spacing */
+h1, h2, h3, h4 {
+  font-weight: 800;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+html[dir="rtl"] :is(h1, h2, h3, h4) {
+  line-height: 1.35;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Wide display cut (Archivo wdth 125). Tight tracking for Latin only —
+   Arabic must never get letter-spacing. */
+@utility font-display {
+  font-stretch: 125%;
+  font-weight: 800;
+}
+
+html[lang="en"] .font-display {
+  letter-spacing: -0.03em;
+}
+
 html[dir="rtl"] * {
   letter-spacing: 0;
 }
+
+::selection {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.band-dark ::selection {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+input,
+select,
+textarea {
+  accent-color: var(--color-ink);
+}
+
+/* ---------- Motion (DESIGN.md "Motion", level rich, CSS only) ---------- */
 
 @keyframes enter-rise {
   from { opacity: 0; transform: translateY(24px); }
 }
 
-@keyframes enter-scale {
-  from { opacity: 0; transform: scale(0.92); }
+@keyframes line-rise {
+  from { transform: translateY(105%); }
+}
+
+@keyframes settle {
+  from { opacity: 0; transform: scale(1.06); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
 }
 
 /* Load-time entrance in pure CSS so above-the-fold content never waits on JS. */
 .enter {
-  animation: enter-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--enter-delay, 0ms) backwards;
+  animation: enter-rise 0.6s var(--ease-out-expo) var(--enter-delay, 0ms) backwards;
 }
 
-.enter-scale {
-  animation: enter-scale 0.6s ease-out 200ms backwards;
+/* Hero headline: each line rises from behind its own mask. Lines are whole
+   strings, never split into words, so Arabic shaping and bidi stay intact. */
+.line-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.08em;
+  margin-block: -0.08em;
+}
+
+.line-mask > span {
+  display: block;
+  animation: line-rise 0.7s var(--ease-out-expo) var(--line-delay, 0ms) backwards;
+}
+
+.settle {
+  animation: settle 0.9s var(--ease-out-expo) 120ms backwards;
 }
 
 [data-reveal="hidden"] {
   opacity: 0;
-  transform: translateY(28px) scale(0.98);
+  transform: translateY(20px);
 }
 
 [data-reveal="shown"] {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.45s ease-out,
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.5s var(--ease-out-expo),
+    transform 0.5s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 150ms;
 }
 
 @media (prefers-reduced-motion: reduce) {

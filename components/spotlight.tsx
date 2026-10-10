@@ -26,7 +26,7 @@ export function Spotlight({
           <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-accent)]">
             {t("eyebrow")}
           </p>
-          <h2 className="mt-2 font-[var(--font-heading)] text-3xl font-bold sm:text-4xl">
+          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
             {name}
           </h2>
           <Price
