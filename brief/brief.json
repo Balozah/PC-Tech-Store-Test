@@ -76,7 +76,9 @@
       "orange removed; single accent #1D4ED8",
       "WhatsApp green kept only on the order button (functional)",
       "motion rich via CSS + IntersectionObserver, no animation library (slow connections)",
-      "no eyebrow labels, no glow/tilt, no remote hero image"
+      "no eyebrow labels, no glow",
+      "2026-10-11: hero image is static public/hero/case.webp (white case, Unsplash 21GamV3hkxM, grayscale), no longer the first pre-built product photo",
+      "2026-10-11: Paper Shaders (@paper-design/shaders-react, WebGL, adapted from 21st.dev) allowed in ink/accent only, hero + category hover only, lazy-loaded with a static fallback; still no animation library"
     ],
     "references": [
       {
@@ -105,7 +107,8 @@
       "redesign-existing-projects",
       "impeccable craft-floor",
       "arabic-rtl",
-      "motion-policy rich"
+      "motion-policy rich",
+      "21st.dev paper-design dithering + feature-shader-cards (Warp)"
     ],
     "files": {
       "design_md": "DESIGN.md",
@@ -125,9 +128,9 @@
         "easing": "cubic-bezier(.16,1,.3,1)"
       },
       {
-        "element": "hero image",
+        "element": "hero image (fallback)",
         "trigger": "load",
-        "motion": "scale 1.06->1 + fade",
+        "motion": "grayscale photo, scale 1.06->1 + fade",
         "duration_ms": 900,
         "easing": "cubic-bezier(.16,1,.3,1)"
       },
@@ -172,13 +175,30 @@
         "motion": "cross-fade (View Transitions)",
         "duration_ms": 150,
         "easing": "ease"
+      },
+      {
+        "element": "hero image (shader)",
+        "trigger": "load (idle) / hover / tap",
+        "motion": "ImageDithering print develops pxSize 14->2; ambient Dithering warp (desktop only, pauses off screen)",
+        "duration_ms": 1400,
+        "easing": "ease-out-expo"
+      },
+      {
+        "element": "category cell (shader)",
+        "trigger": "hover / focus, fine pointer only",
+        "motion": "Warp shader ink+accent under content, ink/70 overlay, one canvas at a time",
+        "duration_ms": 500,
+        "easing": "ease-out"
       }
     ],
-    "client_requested_effects": []
+    "client_requested_effects": [
+      "hero animation from 21st.dev (Ahmad, 2026-10-11)",
+      "use feature-shader-cards Warp component (Ahmad, 2026-10-11)"
+    ]
   },
   "content": {
     "sections": [
-      "hero",
+      "hero (static case photo + dither shader)",
       "featured-product-spotlight (full-bleed dark)",
       "category-grid",
       "reviews (if available)",
@@ -243,6 +263,11 @@
     },
     {
       "item": "Real product photos to replace temporary stock placeholders",
+      "owner": "client",
+      "due": null
+    },
+    {
+      "item": "Real case photo from the client's shop for the hero (replaces stock public/hero/case.webp; square, light background)",
       "owner": "client",
       "due": null
     },
@@ -508,6 +533,6 @@
       "client whatsapp number",
       "client domain"
     ],
-    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap"
+    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, not pushed or deployed yet"
   }
 }
