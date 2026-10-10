@@ -57,7 +57,7 @@ export function DashboardShell({
             <p className="mt-3 max-w-sm text-[var(--color-muted-foreground)]">المنتجات والأقسام والتقييمات وإعدادات المتجر، من مكان واحد.</p>
           </div>
         </div>
-        <div className="flex items-center justify-center px-4 py-10 md:py-16">{children}</div>
+        <main className="flex items-center justify-center px-4 py-10 md:py-16">{children}</main>
       </div>
     );
   }

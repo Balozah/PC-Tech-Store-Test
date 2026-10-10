@@ -36,8 +36,9 @@ export function CategoryWarp({ index }: { index: number }) {
       {on && (
         <>
           <WarpHover index={index} className="shader-in absolute inset-0" />
-          {/* Keeps paper text and the soft count ≥4.5:1 over the brightest blue. */}
-          <span className="absolute inset-0 bg-[var(--color-ink)]/70" />
+          {/* Keeps paper text and the soft count ≥4.5:1 over the brightest blue
+              (#7EA6FF under ink/75 ≈ #2A344C → count 4.8:1). */}
+          <span className="absolute inset-0 bg-[var(--color-ink)]/75" />
         </>
       )}
     </span>

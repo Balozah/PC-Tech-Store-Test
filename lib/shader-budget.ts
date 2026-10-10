@@ -1,8 +1,10 @@
 // Paper Shaders (WebGL) are an enhancement only: every shader in the site sits
 // on top of a static fallback that already looks finished. Skip them when the
 // visitor asked for less motion, is saving data, is on a 2G-class connection,
-// the device is low on memory, or WebGL is missing or software-rendered (CPU
+// the device is low on memory, or WebGL2 is missing or software-rendered (CPU
 // rasterizers like SwiftShader turn every frame into a main-thread stall).
+// Paper Shaders only run on WebGL2, so a WebGL1-only browser (older iOS) gets
+// the fallback.
 
 type NetworkInformation = { saveData?: boolean; effectiveType?: string };
 type DeviceHints = Navigator & { connection?: NetworkInformation; deviceMemory?: number };
@@ -13,7 +15,7 @@ function hasHardwareWebGL() {
   if (gpuOk !== undefined) return gpuOk;
   try {
     const canvas = document.createElement("canvas");
-    const gl = (canvas.getContext("webgl2") ?? canvas.getContext("webgl")) as WebGLRenderingContext | null;
+    const gl = canvas.getContext("webgl2");
     if (!gl) return (gpuOk = false);
     const info = gl.getExtension("WEBGL_debug_renderer_info");
     const renderer = String(info ? gl.getParameter(info.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));

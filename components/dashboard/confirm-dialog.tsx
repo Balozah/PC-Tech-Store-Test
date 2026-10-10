@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 import { Icon, buttonClass } from "@/components/dashboard/ui";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,8 @@ type Request = { message: string; confirmLabel?: string; notice?: boolean };
 //   ...render {dialog} once in the component.
 export function useConfirm() {
   const ref = useRef<HTMLDialogElement>(null);
+  // Every row renders its own dialog, so the label id must be unique per instance.
+  const messageId = useId();
   const resolveRef = useRef<((ok: boolean) => void) | null>(null);
   const [request, setRequest] = useState<Request | null>(null);
 
@@ -42,7 +44,7 @@ export function useConfirm() {
       onClick={(e) => {
         if (e.target === ref.current) close(false);
       }}
-      aria-labelledby="confirm-message"
+      aria-labelledby={messageId}
       className="m-auto w-[min(26rem,calc(100%-2rem))] border border-[var(--color-border)] bg-[var(--color-card)] p-0 text-[var(--color-foreground)] backdrop:bg-[rgb(14_14_16/0.5)]"
     >
       <div className="p-5">
@@ -55,7 +57,7 @@ export function useConfirm() {
           >
             <Icon name="alert" className="h-5 w-5" />
           </span>
-          <p id="confirm-message" className="whitespace-pre-line pt-2 text-sm leading-relaxed">
+          <p id={messageId} className="whitespace-pre-line pt-2 text-sm leading-relaxed">
             {request?.message}
           </p>
         </div>

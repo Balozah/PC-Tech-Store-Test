@@ -32,7 +32,7 @@ export function ReviewRow({
   };
 
   const date = review.created_at
-    ? new Date(review.created_at).toLocaleDateString("ar", { day: "numeric", month: "long" })
+    ? new Date(review.created_at).toLocaleDateString("ar", { day: "numeric", month: "long", timeZone: "Asia/Damascus" })
     : null;
 
   return (

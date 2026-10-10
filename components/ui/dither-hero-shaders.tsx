@@ -31,13 +31,20 @@ export default function DitherHeroShaders({ image, coarse }: { image: HTMLImageE
   // print shader is static (speed 0), so it only redraws while this runs.
   const develop = (from: number, duration: number) => {
     cancelAnimationFrame(tweenRef.current);
-    const start = performance.now();
+    let start = 0;
+    const requested = performance.now();
     const frame = (now: number) => {
       const mount = printRef.current?.paperShaderMount;
       if (!mount) {
-        tweenRef.current = requestAnimationFrame(frame);
+        // The mount appears a frame or two after React commits; if it never
+        // does (init failed), stop polling instead of spinning forever.
+        if (now - requested < 1500) tweenRef.current = requestAnimationFrame(frame);
         return;
       }
+      // Phones have no ambient layer, so paper only goes behind the print once
+      // the print exists; until then the grayscale fallback stays visible.
+      if (coarse && rootRef.current) rootRef.current.style.background = PAPER;
+      start ||= now;
       const t = Math.min((now - start) / duration, 1);
       mount.setUniforms({ u_pxSize: from + (DEVELOP_TO - from) * easeOutExpo(t) });
       if (t < 1) tweenRef.current = requestAnimationFrame(frame);
@@ -87,7 +94,6 @@ export default function DitherHeroShaders({ image, coarse }: { image: HTMLImageE
       ref={rootRef}
       aria-hidden="true"
       className="shader-in absolute inset-0"
-      style={coarse ? { background: PAPER } : undefined}
       onPointerEnter={(e) => e.pointerType === "mouse" && develop(8, 600)}
       onPointerDown={(e) => e.pointerType !== "mouse" && develop(8, 600)}
       onPointerMove={onPointerMove}

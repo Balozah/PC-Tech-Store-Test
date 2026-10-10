@@ -31,7 +31,7 @@ export function CategoryGrid({
           <Reveal as="li" key={cat.id} index={i % 5} step={40} className="bg-[var(--color-background)]">
             <Link
               href={`/categories/${cat.slug}`}
-              className="group relative flex aspect-[5/4] flex-col overflow-hidden justify-between p-4 transition-colors duration-200 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] sm:aspect-square sm:p-5"
+              className="group relative flex aspect-[5/4] flex-col overflow-hidden justify-between p-4 transition-colors duration-200 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] focus-visible:bg-[var(--color-ink)] focus-visible:text-[var(--color-paper)] sm:aspect-square sm:p-5"
             >
               <CategoryWarp index={i} />
               <CategoryIcon
@@ -42,7 +42,7 @@ export function CategoryGrid({
                 <span className="block font-semibold leading-snug">
                   {locale === "ar" ? cat.name_ar : cat.name_en ?? cat.name_ar}
                 </span>
-                <span className="mt-0.5 block text-sm tabular-nums text-[var(--color-ink-soft)] transition-colors group-hover:text-[var(--color-on-dark-soft)]">
+                <span className="mt-0.5 block text-sm tabular-nums text-[var(--color-ink-soft)] transition-colors group-hover:text-[var(--color-on-dark-soft)] group-focus-visible:text-[var(--color-on-dark-soft)]">
                   {tc("count", { count: counts[cat.id] ?? 0 })}
                 </span>
               </span>

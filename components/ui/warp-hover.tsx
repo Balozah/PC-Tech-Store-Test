@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Warp } from "@paper-design/shaders-react";
+import type { PaperShaderElement } from "@paper-design/shaders";
 
 // Adapted from the 21st.dev "feature-shader-cards" component: same per-card
 // Warp configs, recolored to Tech RT's ink + single blue accent (DESIGN.md:
@@ -20,8 +22,19 @@ const configs = [
 
 export default function WarpHover({ index = 0, className }: { index?: number; className?: string }) {
   const config = configs[index % configs.length];
+  const ref = useRef<PaperShaderElement>(null);
+
+  // Paper's dispose() removes the canvas but keeps the GL context alive until
+  // GC; hovers create one per cell, so free it now instead of hitting the
+  // browser's context cap (which would evict the hero's contexts first).
+  useEffect(() => {
+    const canvas = ref.current?.querySelector("canvas");
+    return () => canvas?.getContext("webgl2")?.getExtension("WEBGL_lose_context")?.loseContext();
+  }, []);
+
   return (
     <Warp
+      ref={ref}
       className={className}
       {...config}
       scale={1}

@@ -16,12 +16,13 @@ export default async function proxy(request: NextRequest) {
   if (/^\/[^/]*\.[^/]*$/.test(pathname)) {
     return ROOT_FILES.has(pathname) ? NextResponse.next() : new NextResponse(null, { status: 404 });
   }
-  // Deeper paths with a dot (/ar/x.png) keep skipping the locale middleware.
-  if (pathname.includes(".")) return NextResponse.next();
-
+  // Dashboard first: a dotted path (/dashboard/products/x.y) must still pass
+  // the session check before anything else can short-circuit it.
   if (pathname.startsWith("/dashboard")) {
     return updateSession(request);
   }
+  // Deeper paths with a dot (/ar/x.png) keep skipping the locale middleware.
+  if (pathname.includes(".")) return NextResponse.next();
   return intlMiddleware(request);
 }
 
