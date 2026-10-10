@@ -1,11 +1,15 @@
+import { ViewTransition } from "react";
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { getSiteSettings } from "@/lib/data";
+import { WhatsAppFab } from "@/components/whatsapp-fab";
+import { getCategories, getSiteSettings } from "@/lib/data";
+import { whatsAppChatUrl } from "@/lib/whatsapp";
+import type { Locale } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
 import "@/app/globals.css";
 
@@ -34,7 +38,12 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
 
   setRequestLocale(locale);
-  const settings = await getSiteSettings();
+  const [settings, categories, t] = await Promise.all([
+    getSiteSettings(),
+    getCategories(),
+    getTranslations({ locale, namespace: "footer" }),
+  ]);
+  const chatUrl = whatsAppChatUrl(settings.whatsapp);
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
@@ -45,9 +54,14 @@ export default async function LocaleLayout({
     >
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer settings={settings} locale={locale} />
+          <Header categories={categories} locale={locale as Locale} />
+          <ViewTransition>
+            <main id="main" className="flex-1">
+              {children}
+            </main>
+          </ViewTransition>
+          <Footer settings={settings} categories={categories} locale={locale} />
+          {chatUrl && <WhatsAppFab href={chatUrl} label={t("chat")} />}
         </NextIntlClientProvider>
       </body>
     </html>

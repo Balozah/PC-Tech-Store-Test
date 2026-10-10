@@ -30,7 +30,7 @@
   --color-muted-foreground: var(--color-ink-soft);
   --color-border: var(--color-line);
 
-  --font-stack: var(--font-archivo), var(--font-alexandria), system-ui, sans-serif;
+  --font-stack: var(--font-archivo), system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -72,6 +72,10 @@
   --font-sans: var(--font-stack);
 }
 
+html[dir="rtl"] {
+  --font-stack: var(--font-alexandria), system-ui, sans-serif;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
@@ -104,15 +108,24 @@ p {
   text-wrap: pretty;
 }
 
-/* Wide display cut (Archivo wdth 125). Tight tracking for Latin only —
+/* Wide display cut (Archivo wdth 125; Alexandria has no width axis, so the
+   stretch is ignored on Arabic pages). Tight tracking for Latin only —
    Arabic must never get letter-spacing. */
 @utility font-display {
   font-stretch: 125%;
   font-weight: 800;
 }
 
-html[lang="en"] .font-display {
+html[lang="en"] .font-display,
+.font-wordmark {
   letter-spacing: -0.03em;
+}
+
+/* The Latin wordmark keeps Archivo in both languages. */
+@utility font-wordmark {
+  font-family: var(--font-archivo), system-ui, sans-serif;
+  font-stretch: 125%;
+  font-weight: 800;
 }
 
 html[dir="rtl"] * {
@@ -168,8 +181,9 @@ textarea {
 .line-mask {
   display: block;
   overflow: hidden;
-  padding-block: 0.08em;
-  margin-block: -0.08em;
+  /* Room for Arabic dots/descenders below the baseline (e.g. final ي). */
+  padding-block: 0.12em 0.28em;
+  margin-block: -0.12em -0.28em;
 }
 
 .line-mask > span {
@@ -193,6 +207,37 @@ textarea {
     opacity 0.5s var(--ease-out-expo),
     transform 0.5s var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Mobile menu: panel slides from inline-start, links follow in sequence. */
+@keyframes menu-in {
+  from { transform: translateX(var(--menu-from, -100%)); }
+}
+
+html[dir="rtl"] {
+  --menu-from: 100%;
+}
+
+.menu-panel {
+  animation: menu-in 0.24s var(--ease-out-expo);
+}
+
+.menu-backdrop {
+  animation: fade-in 0.24s ease-out;
+}
+
+.menu-item {
+  animation: enter-rise 0.4s var(--ease-out-expo) calc(80ms + var(--i, 0) * 30ms) backwards;
+}
+
+/* Sticky order bar on product pages (shown once the main CTA scrolls away). */
+.order-bar {
+  transform: translateY(110%);
+  transition: transform 0.25s var(--ease-out-expo);
+}
+
+.order-bar[data-visible="true"] {
+  transform: none;
 }
 
 ::view-transition-old(root),

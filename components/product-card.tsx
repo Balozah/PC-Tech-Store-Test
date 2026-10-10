@@ -12,11 +12,13 @@ export function ProductCard({
   image,
   rating,
   locale,
+  priority,
 }: {
   product: Product;
   image?: ProductImage;
   rating?: { average: number; count: number };
   locale: Locale;
+  priority?: boolean;
 }) {
   const t = useTranslations("product");
   const name = locale === "ar" ? product.name_ar : product.name_en ?? product.name_ar;
@@ -24,38 +26,37 @@ export function ProductCard({
   return (
     <Link
       href={`/products/${product.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card-light)] text-[var(--color-card-light-foreground)] transition-transform hover:-translate-y-1 hover:shadow-xl hover:shadow-black/20"
+      className="group flex h-full flex-col border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-ink)] transition-[border-color,transform] duration-200 hover:border-[var(--color-ink)] active:scale-[0.98]"
     >
-      <div className="relative aspect-square w-full overflow-hidden bg-[var(--color-muted)]">
+      <div className="relative aspect-square w-full overflow-hidden bg-[var(--color-surface)]">
         {image && (
           <Image
             src={productImageUrl(image.path)}
             alt={name}
             fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            priority={priority}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-contain p-3 transition-transform duration-300 ease-out group-hover:scale-[1.04] sm:p-5"
           />
         )}
         {!product.is_available && (
-          <span className="absolute top-2 start-2 rounded-full bg-[var(--color-destructive)] px-2.5 py-1 text-xs font-semibold text-white">
+          <span className="absolute start-0 top-0 bg-[var(--color-ink)] px-2.5 py-1 text-xs font-semibold text-[var(--color-paper)]">
             {t("unavailable")}
           </span>
         )}
       </div>
-      <div className="p-4">
-        <h3 className="line-clamp-1 font-semibold">{name}</h3>
-        <Price
-          usd={product.price_usd}
-          syp={product.price_syp}
-          onRequest={product.price_on_request}
-          locale={locale}
-          className="mt-1 block text-sm font-medium text-[var(--color-primary)]"
-        />
-        {rating && rating.count > 0 && (
-          <div className="mt-1.5">
-            <StarRating value={rating.average} count={rating.count} size={13} />
-          </div>
-        )}
+      <div className="flex flex-1 flex-col gap-2 border-t border-[var(--color-border)] p-3 sm:p-4">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">{name}</h3>
+        <div className="mt-auto flex flex-wrap items-end justify-between gap-x-2 gap-y-1">
+          <Price
+            usd={product.price_usd}
+            syp={product.price_syp}
+            onRequest={product.price_on_request}
+            locale={locale}
+            className="text-sm font-bold tabular-nums text-[var(--color-primary)]"
+          />
+          {rating && rating.count > 0 && <StarRating value={rating.average} count={rating.count} size={12} />}
+        </div>
       </div>
     </Link>
   );

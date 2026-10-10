@@ -14,10 +14,11 @@ export function LocaleSwitcher() {
   return (
     <button
       onClick={() => router.replace(pathname, { locale: other })}
-      className="rounded-full border border-[var(--color-border)] px-3 py-1.5 text-sm font-medium hover:border-[var(--color-primary)] transition-colors cursor-pointer"
-      aria-label="Switch language"
+      lang={other}
+      className="h-11 cursor-pointer px-3 text-sm font-semibold transition-colors hover:bg-[var(--color-muted)]"
+      aria-label={other === "ar" ? "التبديل إلى العربية" : "Switch to English"}
     >
-      {other === "ar" ? "العربية" : "English"}
+      {other === "ar" ? "عربي" : "EN"}
     </button>
   );
 }

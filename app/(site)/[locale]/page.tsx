@@ -1,16 +1,18 @@
 import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { HeroTitle } from "@/components/hero-title";
+import { Hero } from "@/components/hero";
 import { Spotlight } from "@/components/spotlight";
-import { Spotlight as GlowSpotlight } from "@/components/ui/spotlight";
-import { HeroTiltCard } from "@/components/hero-tilt-card";
 import { CategoryGrid } from "@/components/category-grid";
 import { ProductCard } from "@/components/product-card";
+import { HowToOrder } from "@/components/how-to-order";
 import { Reveal } from "@/components/reveal";
 import { getCategories, getProducts, getCardExtras, getSiteSettings } from "@/lib/data";
+import { productImageUrl } from "@/lib/product-image";
+import { whatsAppChatUrl } from "@/lib/whatsapp";
 import { pageAlternates } from "@/lib/seo";
 import type { Locale } from "@/i18n/routing";
 import type { Metadata } from "next";
+
+const PREBUILT_SLUG = "pre-built-pcs";
 
 export async function generateMetadata({
   params,
@@ -46,61 +48,50 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = (await params) as { locale: Locale };
-  const t = await getTranslations("hero");
   const tp = await getTranslations("product");
 
-  const [categories, products] = await Promise.all([getCategories(), getProducts()]);
-  const featured = products.find((p) => p.sort_order === 1 && p.price_on_request) ?? products[0];
-  const gridProducts = products.filter((p) => p.id !== featured?.id).slice(0, 8);
+  const [categories, products, settings] = await Promise.all([getCategories(), getProducts(), getSiteSettings()]);
 
-  const extras = await getCardExtras(featured ? [featured, ...gridProducts] : gridProducts);
+  // Owner-controlled picks: the featured band shows the first product marked
+  // "price on request" at the top of its category; the hero shows the first
+  // pre-built PC, so replacing that product's photo replaces the hero.
+  const featured = products.find((p) => p.sort_order === 1 && p.price_on_request) ?? products[0];
+  const prebuiltCategory = categories.find((c) => c.slug === PREBUILT_SLUG);
+  const heroProduct = products.find((p) => p.category_id === prebuiltCategory?.id) ?? featured;
+  const latest = [...products]
+    .filter((p) => p.id !== featured?.id)
+    .sort((a, b) => b.created_at.localeCompare(a.created_at))
+    .slice(0, 8);
+
+  const counts: Record<string, number> = {};
+  for (const p of products) if (p.category_id) counts[p.category_id] = (counts[p.category_id] ?? 0) + 1;
+
+  const extras = await getCardExtras(
+    [featured, heroProduct, ...latest].filter((p, i, all) => p && all.findIndex((q) => q?.id === p.id) === i)
+  );
+  const heroImage = heroProduct ? extras[heroProduct.slug]?.image : undefined;
+  const chatUrl = whatsAppChatUrl(settings.whatsapp);
 
   return (
     <>
-      <section className="relative mx-auto grid max-w-6xl items-center gap-10 overflow-hidden px-4 py-16 sm:px-6 sm:py-24 md:grid-cols-2 md:gap-16">
-        <GlowSpotlight className="-top-20 start-1/4" size={420} />
+      <Hero
+        imageUrl={heroImage ? productImageUrl(heroImage.path) : undefined}
+        chatUrl={chatUrl}
+        prebuiltHref={prebuiltCategory ? `/categories/${PREBUILT_SLUG}` : "/#categories"}
+      />
 
-        <div className="relative z-10">
-          <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-primary)]">
-            {t("eyebrow")}
-          </p>
-          <HeroTitle
-            text={t("title")}
-            className="mt-3 font-display text-4xl font-extrabold leading-tight sm:text-6xl"
-          />
-          <div className="enter" style={{ "--enter-delay": "300ms" } as React.CSSProperties}>
-            <p className="mt-6 max-w-xl text-lg text-[var(--color-muted-foreground)]">
-              {t("subtitle")}
-            </p>
-            <Link
-              href="/#categories"
-              className="mt-8 inline-block rounded-full bg-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-white transition-transform hover:scale-105"
-            >
-              {t("cta")}
-            </Link>
-          </div>
-        </div>
+      {featured && <Spotlight product={featured} image={extras[featured.slug]?.image} specs={[]} locale={locale} />}
 
-        <div className="relative z-10">
-          <HeroTiltCard
-            src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=900&h=900&q=80&fit=crop&auto=format"
-            alt={locale === "ar" ? "تجميعة كمبيوتر بإضاءة RGB" : "RGB gaming PC build"}
-          />
-        </div>
-      </section>
+      <CategoryGrid categories={categories} counts={counts} locale={locale} />
 
-      {featured && <Spotlight product={featured} image={extras[featured.slug]?.image} locale={locale} />}
-
-      <CategoryGrid categories={categories} locale={locale} />
-
-      {gridProducts.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-          <Reveal>
-            <h2 className="mb-8 font-display text-3xl font-bold sm:text-4xl">{tp("latest")}</h2>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-            {gridProducts.map((product, i) => (
-              <Reveal key={product.id} index={i}>
+      {latest.length > 0 && (
+        <section aria-labelledby="latest-title" className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 md:pb-24">
+          <h2 id="latest-title" className="font-display mb-8 text-[clamp(1.75rem,4vw,3rem)] md:mb-10">
+            {tp("latest")}
+          </h2>
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+            {latest.map((product, i) => (
+              <Reveal as="li" key={product.id} index={i % 4} step={60}>
                 <ProductCard
                   product={product}
                   image={extras[product.slug]?.image}
@@ -109,9 +100,11 @@ export default async function HomePage({
                 />
               </Reveal>
             ))}
-          </div>
+          </ul>
         </section>
       )}
+
+      <HowToOrder chatUrl={chatUrl} />
     </>
   );
 }

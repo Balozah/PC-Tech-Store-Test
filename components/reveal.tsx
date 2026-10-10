@@ -9,12 +9,17 @@ export function Reveal({
   children,
   className,
   index = 0,
+  step = 70,
+  as: Tag = "div",
 }: {
   children: ReactNode;
   className?: string;
   index?: number;
+  /** Stagger between siblings in ms (DESIGN.md: 40ms grids, 60ms lists, 70ms default). */
+  step?: number;
+  as?: "div" | "li";
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -35,8 +40,12 @@ export function Reveal({
   }, []);
 
   return (
-    <div ref={ref} className={className} style={{ "--reveal-delay": `${(index % 4) * 70}ms` } as CSSProperties}>
+    <Tag
+      ref={ref as React.RefObject<HTMLDivElement & HTMLLIElement>}
+      className={className}
+      style={{ "--reveal-delay": `${Math.min(index, 9) * step}ms` } as CSSProperties}
+    >
       {children}
-    </div>
+    </Tag>
   );
 }

@@ -5,18 +5,29 @@
   "nav": {
     "home": "Home",
     "categories": "Categories",
-    "contact": "Contact"
+    "contact": "Contact",
+    "search": "Search",
+    "menu": "Menu",
+    "close": "Close",
+    "allCategories": "All categories",
+    "skip": "Skip to content"
   },
   "hero": {
-    "eyebrow": "PC parts, builds & accessories",
-    "title": "Build your next PC with Tech RT",
-    "subtitle": "Genuine parts, ready-made builds, priced in USD and SYP — order directly on WhatsApp.",
-    "cta": "Browse products"
+    "subtitle": "PC parts, laptops and ready-made builds, priced in USD and SYP. Pick a part and order it directly on WhatsApp.",
+    "cta": "Browse categories",
+    "line1": "Build your next PC",
+    "line2": "with Tech RT",
+    "ctaWhatsapp": "Ask on WhatsApp",
+    "prebuiltTitle": "Pre-built PCs",
+    "prebuiltText": "Assembled machines ready for work or gaming. Pick the build that fits you.",
+    "partsTitle": "Individual parts",
+    "partsText": "CPUs, graphics cards, RAM and storage to build or upgrade your own PC.",
+    "imageAlt": "Desktop PC build"
   },
   "spotlight": {
-    "eyebrow": "Featured",
-    "title": "Latest pre-built rigs",
-    "cta": "See details"
+    "title": "Featured right now",
+    "cta": "See details",
+    "specs": "Key specs"
   },
   "categories": {
     "title": "Shop by category"
@@ -40,7 +51,10 @@
     "reviewError": "Something went wrong, try again",
     "reviewRateLimited": "This product got a lot of reviews just now, try again in a few minutes",
     "orderUnavailable": "WhatsApp ordering isn't available yet",
-    "latest": "Latest products"
+    "latest": "Latest products",
+    "specs": "Specifications",
+    "breadcrumbHome": "Home",
+    "orderBarLabel": "Order this product"
   },
   "footer": {
     "contact": "Contact us",
@@ -60,7 +74,9 @@
       "wed": "Wednesday",
       "thu": "Thursday",
       "fri": "Friday"
-    }
+    },
+    "categories": "Categories",
+    "chat": "Chat on WhatsApp"
   },
   "whatsappMessage": {
     "greeting": "Hi, I'd like to order:",
@@ -68,5 +84,44 @@
     "price": "Price",
     "link": "Link",
     "onRequest": "on request"
+  },
+  "category": {
+    "count": "{count, plural, =0 {No products} one {# product} other {# products}}",
+    "sort": "Sort",
+    "sortNewest": "Newest",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "inStock": "In stock only",
+    "apply": "Apply",
+    "empty": "No products in this category yet.",
+    "emptyFiltered": "Nothing in stock in this category right now.",
+    "showAll": "Show all products",
+    "browseOthers": "Browse other categories"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search parts, e.g. RTX 4060",
+    "submit": "Search",
+    "resultsFor": "Results for “{q}”",
+    "prompt": "Type the part or model you're looking for.",
+    "empty": "Nothing matched that name. Try another word or browse a category:",
+    "count": "{count, plural, =0 {No results} one {# result} other {# results}}"
+  },
+  "howTo": {
+    "title": "How to order",
+    "step1Title": "Pick a part",
+    "step1Text": "Browse the categories or search for the model you want.",
+    "step2Title": "Choose options",
+    "step2Text": "Select the available capacity, color or type for that product.",
+    "step3Title": "Send on WhatsApp",
+    "step3Text": "A ready message opens with the product, options and price. Just hit send.",
+    "helpTitle": "Questions before you order?",
+    "helpText": "Message us on WhatsApp and ask about any part or build.",
+    "helpCta": "Message us on WhatsApp"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The link may be wrong or the product was removed.",
+    "home": "Back to home"
   }
 }
