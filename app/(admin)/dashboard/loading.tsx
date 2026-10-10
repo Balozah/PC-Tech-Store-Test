@@ -1,7 +1,7 @@
 // Shown instantly inside the dashboard shell while the next page loads,
 // so a tap on slow internet never looks like nothing happened.
 export default function DashboardLoading() {
-  const block = "animate-pulse rounded-2xl bg-[var(--color-card)]";
+  const block = "animate-pulse bg-[var(--color-card)]";
   return (
     <div aria-busy="true" aria-label="جاري التحميل">
       <div className="mb-6 space-y-2">

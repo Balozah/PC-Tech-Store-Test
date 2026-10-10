@@ -26,9 +26,9 @@ export default async function ProductsPage({
 
   const chip = (active: boolean) =>
     cn(
-      "inline-flex min-h-10 shrink-0 items-center rounded-full border px-4 text-sm font-medium transition-colors",
+      "inline-flex min-h-10 shrink-0 items-center border px-4 text-sm font-medium transition-colors",
       active
-        ? "border-[var(--color-primary)] bg-[var(--color-primary)]/15 text-white"
+        ? "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-paper)]"
         : "border-[var(--color-border)] text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
     );
   const chipHref = (slug?: string) => {
@@ -85,13 +85,13 @@ export default async function ProductsPage({
           }
         />
       ) : (
-        <ul className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
+        <ul className="overflow-hidden border border-[var(--color-border)] bg-[var(--color-card)]">
           {products.map((p, i) => {
             const image = extras[p.slug]?.image;
             return (
               <li key={p.id} className={i > 0 ? "border-t border-[var(--color-border)]" : undefined}>
                 <Link href={`/dashboard/products/${p.id}`} className="flex items-center gap-3 p-3 transition-colors hover:bg-[var(--color-muted)] sm:gap-4 sm:p-4">
-                  <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[var(--color-muted)]">
+                  <span className="relative h-16 w-16 shrink-0 overflow-hidden bg-[var(--color-muted)]">
                     {image ? (
                       <Image src={productImageUrl(image.path)} alt="" fill sizes="64px" className="object-cover" />
                     ) : (

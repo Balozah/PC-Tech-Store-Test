@@ -117,7 +117,7 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
       <Card title="ساعات الدوام">
         <Switch checked={showHours} onChange={setShowHours} label="اعرض ساعات الدوام بالموقع" />
         {showHours && (
-          <div className="mt-3 divide-y divide-[var(--color-border)] rounded-xl border border-[var(--color-border)] bg-[var(--color-background)]">
+          <div className="mt-3 divide-y divide-[var(--color-border)] border border-[var(--color-border)] bg-[var(--color-background)]">
             {hours.map((h) => (
               <div key={h.day} className="flex min-h-14 flex-wrap items-center gap-3 px-3 py-2">
                 <span className="w-20 text-sm font-medium">{DAY_LABELS[h.day]}</span>
@@ -127,9 +127,9 @@ export function SettingsForm({ settings }: { settings: SiteSettings }) {
                 </label>
                 {!h.closed && (
                   <div className="flex items-center gap-2" dir="ltr">
-                    <input type="time" value={h.open} onChange={(e) => updateDay(h.day, { open: e.target.value })} className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-2 text-sm" />
+                    <input type="time" value={h.open} onChange={(e) => updateDay(h.day, { open: e.target.value })} className="min-h-11 border border-[var(--color-border)] bg-[var(--color-card)] px-2 text-sm" />
                     <span>-</span>
-                    <input type="time" value={h.close} onChange={(e) => updateDay(h.day, { close: e.target.value })} className="min-h-11 rounded-lg border border-[var(--color-border)] bg-[var(--color-card)] px-2 text-sm" />
+                    <input type="time" value={h.close} onChange={(e) => updateDay(h.day, { close: e.target.value })} className="min-h-11 border border-[var(--color-border)] bg-[var(--color-card)] px-2 text-sm" />
                   </div>
                 )}
               </div>

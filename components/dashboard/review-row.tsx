@@ -28,7 +28,7 @@ export function ReviewRow({
     : null;
 
   return (
-    <article className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4">
+    <article className=" border border-[var(--color-border)] bg-[var(--color-card)] p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="font-semibold">{review.author_name}</p>

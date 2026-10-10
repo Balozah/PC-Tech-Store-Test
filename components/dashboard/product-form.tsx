@@ -263,7 +263,7 @@ export function ProductForm({
         ) : (
           <div className="space-y-4">
             {groups.map((group, gi) => (
-              <div key={gi} className="rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] p-3 sm:p-4">
+              <div key={gi} className=" border border-[var(--color-border)] bg-[var(--color-background)] p-3 sm:p-4">
                 <div className="mb-3 flex items-start gap-2">
                   <div className="grid flex-1 gap-2 sm:grid-cols-[1fr_1fr_auto]">
                     <input
@@ -295,7 +295,7 @@ export function ProductForm({
                     type="button"
                     aria-label="حذف المجموعة"
                     onClick={() => setGroups((list) => list.filter((_, i) => i !== gi))}
-                    className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)]"
+                    className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)]"
                   >
                     <Icon name="trash" className="h-4 w-4" />
                   </button>
@@ -303,7 +303,7 @@ export function ProductForm({
 
                 <div className="space-y-2">
                   {group.values.map((value, vi) => (
-                    <div key={vi} className="rounded-lg border border-[var(--color-border)] p-2.5">
+                    <div key={vi} className=" border border-[var(--color-border)] p-2.5">
                       <div className="flex items-center gap-2">
                         {group.kind === "color" && (
                           <input
@@ -311,7 +311,7 @@ export function ProductForm({
                             aria-label="اللون"
                             value={value.hex || "#000000"}
                             onChange={(e) => updateValue(gi, vi, { hex: e.target.value })}
-                            className="h-11 w-11 shrink-0 cursor-pointer rounded-lg border border-[var(--color-border)] bg-transparent p-1"
+                            className="h-11 w-11 shrink-0 cursor-pointer border border-[var(--color-border)] bg-transparent p-1"
                           />
                         )}
                         <input
@@ -333,7 +333,7 @@ export function ProductForm({
                           type="button"
                           aria-label="حذف القيمة"
                           onClick={() => updateGroup(gi, { values: group.values.filter((_, j) => j !== vi) })}
-                          className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)]"
+                          className="grid h-11 w-11 shrink-0 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)]"
                         >
                           <Icon name="x" className="h-4 w-4" />
                         </button>
@@ -575,11 +575,11 @@ function ImagesManager({
     <Card title="الصور" description="أول صورة هي الغلاف يلي بيبيّن ببطاقة المنتج.">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         {images.map((img, index) => (
-          <div key={img.id} className={cn("overflow-hidden rounded-xl border-2 bg-[var(--color-background)]", index === 0 ? "border-[var(--color-primary)]" : "border-[var(--color-border)]")}>
+          <div key={img.id} className={cn("overflow-hidden border-2 bg-[var(--color-background)]", index === 0 ? "border-[var(--color-primary)]" : "border-[var(--color-border)]")}>
             <div className="relative aspect-square">
               <Image src={productImageUrl(img.path)} alt="" fill sizes="(max-width: 640px) 50vw, 200px" className="object-cover" />
               {index === 0 && (
-                <span className="absolute start-2 top-2 rounded-full bg-[var(--color-primary)] px-2 py-0.5 text-[11px] font-semibold text-white">الغلاف</span>
+                <span className="absolute start-0 top-0 bg-[var(--color-ink)] px-2 py-0.5 text-[11px] font-semibold text-[var(--color-paper)]">الغلاف</span>
               )}
               {busyId === img.id && (
                 <span className="absolute inset-0 grid place-items-center bg-black/60">
@@ -588,7 +588,7 @@ function ImagesManager({
               )}
             </div>
             <div className="flex items-center justify-between p-1">
-              <button type="button" aria-label="تقديم الصورة" disabled={index === 0} onClick={() => move(index, index - 1)} className="grid h-11 w-11 cursor-pointer place-items-center rounded-lg text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)] disabled:cursor-not-allowed disabled:opacity-30">
+              <button type="button" aria-label="تقديم الصورة" disabled={index === 0} onClick={() => move(index, index - 1)} className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)] disabled:cursor-not-allowed disabled:opacity-30">
                 <Icon name="back" className="h-4 w-4" />
               </button>
               {index !== 0 ? (
@@ -598,10 +598,10 @@ function ImagesManager({
               ) : (
                 <span />
               )}
-              <button type="button" aria-label="حذف الصورة" onClick={() => remove(img)} className="grid h-11 w-11 cursor-pointer place-items-center rounded-lg text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)]">
+              <button type="button" aria-label="حذف الصورة" onClick={() => remove(img)} className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)]">
                 <Icon name="trash" className="h-4 w-4" />
               </button>
-              <button type="button" aria-label="تأخير الصورة" disabled={index === images.length - 1} onClick={() => move(index, index + 1)} className="grid h-11 w-11 cursor-pointer place-items-center rounded-lg text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)] disabled:cursor-not-allowed disabled:opacity-30">
+              <button type="button" aria-label="تأخير الصورة" disabled={index === images.length - 1} onClick={() => move(index, index + 1)} className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)] disabled:cursor-not-allowed disabled:opacity-30">
                 <Icon name="chevron" className="h-4 w-4" />
               </button>
             </div>
@@ -610,7 +610,7 @@ function ImagesManager({
 
         <label
           className={cn(
-            "flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[var(--color-border)] text-center text-sm text-[var(--color-muted-foreground)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-foreground)]",
+            "flex aspect-square cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed border-[var(--color-border)] text-center text-sm text-[var(--color-muted-foreground)] transition-colors hover:border-[var(--color-primary)] hover:text-[var(--color-foreground)]",
             uploading && "pointer-events-none opacity-70"
           )}
         >
@@ -621,7 +621,7 @@ function ImagesManager({
             </>
           ) : (
             <>
-              <span className="grid h-10 w-10 place-items-center rounded-full bg-[var(--color-muted)]">
+              <span className="grid h-10 w-10 place-items-center bg-[var(--color-muted)]">
                 <Icon name="plus" />
               </span>
               إضافة صور

@@ -25,7 +25,7 @@ export default async function CategoriesPage() {
       {categories.length === 0 ? (
         <EmptyState icon="folder" title="ما في أقسام لسا" description="ضيف أول قسم من فوق، مثلاً: كروت شاشة." />
       ) : (
-        <ul className="overflow-hidden rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)]">
+        <ul className="overflow-hidden border border-[var(--color-border)] bg-[var(--color-card)]">
           {categories.map((c, i) => (
             <li key={c.id} className={i > 0 ? "border-t border-[var(--color-border)]" : undefined}>
               <CategoryRow category={c} productCount={counts.get(c.id) ?? 0} />

@@ -9,16 +9,16 @@ import { productImageUrl } from "@/lib/product-image";
 function Stat({ href, icon, label, value, tone }: { href: string; icon: IconName; label: string; value: number; tone?: "warning" | "danger" }) {
   const toneClass =
     tone === "warning"
-      ? "bg-[var(--color-accent)]/12 text-[var(--color-accent)]"
+      ? "bg-[#b45309]/12 text-[#92400e]"
       : tone === "danger"
       ? "bg-[var(--color-destructive)]/12 text-[var(--color-destructive)]"
       : "bg-[var(--color-primary)]/15 text-[var(--color-primary)]";
   return (
     <Link
       href={href}
-      className="group rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 transition-colors hover:border-[var(--color-primary)]/60"
+      className="group border border-[var(--color-border)] bg-[var(--color-card)] p-4 transition-colors hover:border-[var(--color-primary)]/60"
     >
-      <span className={`mb-3 grid h-10 w-10 place-items-center rounded-xl ${toneClass}`}>
+      <span className={`mb-3 grid h-10 w-10 place-items-center ${toneClass}`}>
         <Icon name={icon} />
       </span>
       <p className="text-3xl font-bold tabular-nums">{value}</p>
@@ -83,9 +83,9 @@ export default async function DashboardOverview() {
             </Link>
           }
         >
-          <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-[var(--color-muted)]">
+          <div className="mb-4 h-1.5 overflow-hidden bg-[var(--color-muted)]">
             <div
-              className="h-full rounded-full bg-[var(--color-primary)] transition-[width]"
+              className="h-full bg-[var(--color-ink)] transition-[width]"
               style={{ width: `${((setup.length - missing.length) / setup.length) * 100}%` }}
             />
           </div>
@@ -94,14 +94,14 @@ export default async function DashboardOverview() {
               <li key={item.label} className="flex items-start gap-2 text-sm">
                 <span
                   className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full ${
-                    item.done ? "bg-[var(--color-success)] text-black" : "border border-[var(--color-border)]"
+                    item.done ? "bg-[var(--color-success)] text-white" : "border border-[var(--color-border)]"
                   }`}
                 >
                   {item.done && <Icon name="check" className="h-3 w-3" strokeWidth={3} />}
                 </span>
                 <span>
                   <span className={item.done ? "text-[var(--color-muted-foreground)] line-through" : ""}>{item.label}</span>
-                  {!item.done && item.hint && <span className="block text-xs text-[var(--color-accent)]">{item.hint}</span>}
+                  {!item.done && item.hint && <span className="block text-xs text-[#92400e]">{item.hint}</span>}
                 </span>
               </li>
             ))}
@@ -122,8 +122,8 @@ export default async function DashboardOverview() {
             const image = extras[p.slug]?.image;
             return (
               <li key={p.id}>
-                <Link href={`/dashboard/products/${p.id}`} className="flex items-center gap-3 rounded-xl px-2 py-2.5 transition-colors hover:bg-[var(--color-muted)]">
-                  <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-[var(--color-muted)]">
+                <Link href={`/dashboard/products/${p.id}`} className="flex items-center gap-3 px-2 py-2.5 transition-colors hover:bg-[var(--color-muted)]">
+                  <span className="relative h-12 w-12 shrink-0 overflow-hidden bg-[var(--color-muted)]">
                     {image ? (
                       <Image src={productImageUrl(image.path)} alt="" fill sizes="48px" className="object-cover" />
                     ) : (

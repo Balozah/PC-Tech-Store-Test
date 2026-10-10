@@ -54,7 +54,7 @@ export function CategoryRow({ category, productCount }: { category: Category; pr
 
   return (
     <div className="flex items-center gap-3 p-3 sm:p-4">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--color-primary)]/12 text-[var(--color-primary)]">
+      <span className="grid h-10 w-10 shrink-0 place-items-center bg-[var(--color-primary)]/12 text-[var(--color-primary)]">
         <Icon name="folder" />
       </span>
       <Link href={`/dashboard/products?category=${category.slug}`} className="min-w-0 flex-1">
@@ -64,7 +64,7 @@ export function CategoryRow({ category, productCount }: { category: Category; pr
         </p>
         <p className="text-xs text-[var(--color-muted-foreground)]">{productCount} منتج</p>
       </Link>
-      <button type="button" aria-label="تعديل القسم" onClick={() => setEditing(true)} className="grid h-11 w-11 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]">
+      <button type="button" aria-label="تعديل القسم" onClick={() => setEditing(true)} className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]">
         <Icon name="pencil" className="h-4 w-4" />
       </button>
       <button
@@ -79,7 +79,7 @@ export function CategoryRow({ category, productCount }: { category: Category; pr
             if (result?.error) alert(result.error);
           });
         }}
-        className="grid h-11 w-11 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)] disabled:opacity-50"
+        className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)] disabled:opacity-50"
       >
         {isPending ? <Spinner /> : <Icon name="trash" className="h-4 w-4" />}
       </button>

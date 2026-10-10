@@ -21,7 +21,7 @@ function isActive(pathname: string, href: string) {
 function CountBadge({ count }: { count: number }) {
   if (!count) return null;
   return (
-    <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[var(--color-accent)] px-1.5 text-[11px] font-bold leading-none text-black">
+    <span className="grid h-5 min-w-5 place-items-center bg-[var(--color-ink)] px-1.5 text-[11px] font-bold leading-none text-[var(--color-paper)]">
       {count > 99 ? "99+" : count}
     </span>
   );
@@ -47,7 +47,7 @@ export function DashboardShell({
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-e border-[var(--color-border)] bg-[var(--color-card)] p-4 md:flex">
         <div className="mb-6 flex items-center gap-3 px-2">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[var(--color-primary)] text-white">
+          <span className="grid h-10 w-10 place-items-center bg-[var(--color-ink)] text-[var(--color-paper)]">
             <Icon name="box" />
           </span>
           <div className="min-w-0">
@@ -64,13 +64,13 @@ export function DashboardShell({
                 href={link.href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium transition-colors",
+                  "flex min-h-11 items-center gap-3 px-3 text-sm font-medium transition-colors",
                   active
-                    ? "bg-[var(--color-primary)]/15 text-white"
+                    ? "bg-[var(--color-ink)] text-[var(--color-paper)]"
                     : "text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]"
                 )}
               >
-                <Icon name={link.icon} className={active ? "text-[var(--color-primary)]" : undefined} />
+                <Icon name={link.icon} />
                 <span className="flex-1">{link.label}</span>
                 {link.href === "/dashboard/reviews" && <CountBadge count={pendingReviews} />}
               </Link>
@@ -82,7 +82,7 @@ export function DashboardShell({
             href="/ar"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex min-h-11 items-center gap-3 rounded-xl px-3 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]"
+            className="flex min-h-11 items-center gap-3 px-3 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]"
           >
             <Icon name="external" />
             عرض الموقع
@@ -90,7 +90,7 @@ export function DashboardShell({
           <form action={signOut}>
             <button
               type="submit"
-              className="flex min-h-11 w-full cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)]"
+              className="flex min-h-11 w-full cursor-pointer items-center gap-3 px-3 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:bg-[var(--color-destructive)]/10 hover:text-[var(--color-destructive)]"
             >
               <Icon name="logout" />
               تسجيل الخروج
@@ -102,7 +102,7 @@ export function DashboardShell({
       {/* Mobile top bar */}
       <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-background)]/85 px-4 backdrop-blur-md md:hidden">
         <div className="flex min-w-0 items-center gap-2">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-[var(--color-primary)] text-white">
+          <span className="grid h-8 w-8 place-items-center bg-[var(--color-ink)] text-[var(--color-paper)]">
             <Icon name="box" className="h-4 w-4" />
           </span>
           <span className="truncate font-bold">{storeName}</span>
@@ -113,7 +113,7 @@ export function DashboardShell({
             target="_blank"
             rel="noopener noreferrer"
             aria-label="عرض الموقع"
-            className="grid h-11 w-11 place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
+            className="grid h-11 w-11 place-items-center text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
           >
             <Icon name="external" />
           </a>
@@ -121,7 +121,7 @@ export function DashboardShell({
             <button
               type="submit"
               aria-label="تسجيل الخروج"
-              className="grid h-11 w-11 cursor-pointer place-items-center rounded-xl text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)]"
+              className="grid h-11 w-11 cursor-pointer place-items-center text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)]"
             >
               <Icon name="logout" />
             </button>
@@ -148,10 +148,10 @@ export function DashboardShell({
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative flex min-h-16 flex-col items-center justify-center gap-1 text-[11px] font-medium transition-colors",
-                  active ? "text-[var(--color-primary)]" : "text-[var(--color-muted-foreground)]"
+                  active ? "text-[var(--color-ink)]" : "text-[var(--color-muted-foreground)]"
                 )}
               >
-                {active && <span className="absolute top-0 h-0.5 w-8 rounded-full bg-[var(--color-primary)]" />}
+                {active && <span className="absolute top-0 h-0.5 w-8 bg-[var(--color-ink)]" />}
                 <span className="relative">
                   <Icon name={link.icon} className="h-6 w-6" />
                   {link.href === "/dashboard/reviews" && pendingReviews > 0 && (

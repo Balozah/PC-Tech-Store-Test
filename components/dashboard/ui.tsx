@@ -48,23 +48,23 @@ export function Icon({ name, className, ...props }: { name: IconName } & SVGProp
 }
 
 export const inputClass =
-  "w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] px-3.5 py-2.5 text-base text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)]/70 transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/25 sm:text-sm";
+  "w-full border border-[var(--color-border)] bg-[var(--color-background)] px-3.5 py-2.5 text-base text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)]/70 transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/25 sm:text-sm";
 
 export const labelClass = "mb-1.5 block text-sm font-medium text-[var(--color-foreground)]";
 export const hintClass = "mt-1.5 text-xs leading-relaxed text-[var(--color-muted-foreground)]";
 
 const buttonBase =
-  "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-xl px-4 text-sm font-semibold transition-[background-color,border-color,opacity,transform] duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/50";
+  "inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 px-4 text-sm font-semibold transition-[background-color,border-color,opacity,transform] duration-150 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]/50";
 
 export const buttonClass = {
-  primary: cn(buttonBase, "bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary)]/90"),
+  primary: cn(buttonBase, "bg-[var(--color-ink)] text-[var(--color-paper)] hover:bg-[var(--color-primary)]"),
   secondary: cn(
     buttonBase,
-    "border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-foreground)] hover:border-[var(--color-muted-foreground)]/50"
+    "border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-foreground)] hover:border-[var(--color-ink)]"
   ),
   ghost: cn(buttonBase, "text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]"),
   danger: cn(buttonBase, "bg-[var(--color-destructive)]/10 text-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/20"),
-  success: cn(buttonBase, "bg-[var(--color-success)] text-black hover:bg-[var(--color-success)]/90"),
+  success: cn(buttonBase, "bg-[var(--color-success)] text-white hover:bg-[var(--color-success)]/90"),
 };
 
 export function Card({
@@ -81,7 +81,7 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={cn("rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-4 sm:p-5", className)}>
+    <section className={cn(" border border-[var(--color-border)] bg-[var(--color-card)] p-4 sm:p-5", className)}>
       {(title || action) && (
         <div className="mb-4 flex items-start justify-between gap-3">
           <div>
@@ -101,11 +101,11 @@ export function Badge({ tone = "neutral", children }: { tone?: "neutral" | "succ
     neutral: "bg-[var(--color-muted)] text-[var(--color-muted-foreground)]",
     success: "bg-[var(--color-success)]/12 text-[var(--color-success)]",
     danger: "bg-[var(--color-destructive)]/12 text-[var(--color-destructive)]",
-    warning: "bg-[var(--color-accent)]/12 text-[var(--color-accent)]",
-    info: "bg-[var(--color-primary)]/15 text-[#93b4ff]",
+    warning: "bg-[#b45309]/12 text-[#92400e]",
+    info: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
   };
   return (
-    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium", tones[tone])}>
+    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap px-2.5 py-0.5 text-xs font-medium", tones[tone])}>
       {children}
     </span>
   );
@@ -129,7 +129,7 @@ export function PageHeader({
       {backHref && (
         <Link
           href={backHref}
-          className="-ms-2 mb-2 inline-flex min-h-11 items-center gap-1 rounded-lg px-2 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:text-[var(--color-foreground)]"
+          className="-ms-2 mb-2 inline-flex min-h-11 items-center gap-1 px-2 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:text-[var(--color-foreground)]"
         >
           <Icon name="back" className="h-4 w-4" />
           {backLabel}
@@ -137,7 +137,7 @@ export function PageHeader({
       )}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold tracking-normal">{title}</h1>
+          <h1 className="font-display text-2xl">{title}</h1>
           {description && <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -148,8 +148,8 @@ export function PageHeader({
 
 export function EmptyState({ icon, title, description, action }: { icon: IconName; title: string; description?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed border-[var(--color-border)] px-6 py-12 text-center">
-      <span className="mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-[var(--color-muted)] text-[var(--color-muted-foreground)]">
+    <div className="flex flex-col items-center border border-dashed border-[var(--color-border)] px-6 py-12 text-center">
+      <span className="mb-3 grid h-12 w-12 place-items-center bg-[var(--color-muted)] text-[var(--color-muted-foreground)]">
         <Icon name={icon} className="h-6 w-6" />
       </span>
       <p className="font-semibold">{title}</p>
@@ -179,7 +179,7 @@ export function Switch({
       <input type="checkbox" role="switch" checked={checked} onChange={(e) => onChange(e.target.checked)} className="peer sr-only" />
       <span
         aria-hidden="true"
-        className="relative h-6 w-11 shrink-0 rounded-full bg-[var(--color-muted)] transition-colors peer-checked:bg-[var(--color-primary)] peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--color-primary)]/50 after:absolute after:top-0.5 after:start-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-transform peer-checked:after:-translate-x-5 ltr:peer-checked:after:translate-x-5"
+        className="relative h-6 w-11 shrink-0 border border-[var(--color-border)] bg-[var(--color-muted)] transition-colors peer-checked:border-[var(--color-ink)] peer-checked:bg-[var(--color-ink)] peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--color-primary)]/50 after:absolute after:top-px after:start-px after:h-5 after:w-5 after:bg-white after:shadow after:transition-transform peer-checked:after:-translate-x-5 ltr:peer-checked:after:translate-x-5"
       />
     </label>
   );
