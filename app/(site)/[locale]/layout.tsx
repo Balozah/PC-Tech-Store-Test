@@ -23,6 +23,10 @@ export const metadata: Metadata = {
 // Dashboard actions revalidate instantly; this catches edits made directly in Supabase.
 export const revalidate = 3600;
 
+// Only /ar and /en exist; anything else (e.g. /favicon.ico, /.env) 404s at
+// routing instead of crashing this root layout with a 500.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
