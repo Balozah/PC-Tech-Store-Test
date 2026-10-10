@@ -262,7 +262,7 @@
       "due": null
     },
     {
-      "item": "Apply supabase/migrations/20261010_product_specs.sql to the live Supabase project (needs Ahmad's yes)",
+      "item": "Revoke Supabase access token claude-pctech (it was pasted in chat) and delete SUPABASE_ACCESS_TOKEN from .env.local",
       "owner": "ahmad",
       "due": null
     }
@@ -364,7 +364,7 @@
       "id": "addon-7",
       "request": "Specs table on product pages",
       "verdict": "paid_addon",
-      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad",
+      "note": "requested by Ahmad during the 2026-10-10 redesign; price set by Ahmad; migration applied 2026-10-10 (products.specs exists)",
       "decision": "approved_addon",
       "price": null,
       "currency": null,
@@ -376,7 +376,7 @@
       ],
       "design_needed": true,
       "milestone": "M7",
-      "status": "built"
+      "status": "tested"
     }
   ],
   "infra": {
@@ -503,9 +503,8 @@
       "polish",
       "qa"
     ],
-    "next_action": "Ahmad: run specs migration in Supabase SQL Editor; add client WhatsApp number in dashboard settings; re-upload B760 image; then handover",
+    "next_action": "wait for client data (WhatsApp number, owner email, address/hours, domain); then set WhatsApp in dashboard, test a real order, handover message",
     "blocked_on": [
-      "specs migration",
       "client whatsapp number",
       "client domain"
     ],
