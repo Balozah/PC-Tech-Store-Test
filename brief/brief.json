@@ -381,10 +381,10 @@
   ],
   "infra": {
     "hosting": {
-      "provider": null,
-      "owner": null,
-      "node_support": null,
-      "notes": ""
+      "provider": "vercel",
+      "owner": "ahmad (Vercel balozah)",
+      "node_support": true,
+      "notes": "project pc-tech-store-test, git-connected to Balozah/PC-Tech-Store-Test; previews behind Vercel Deployment Protection"
     },
     "backend": {
       "provider": "supabase",
@@ -395,11 +395,11 @@
     },
     "repo": {
       "host": "github",
-      "owner": null,
-      "owner_type": null,
-      "name": null,
+      "owner": "Balozah",
+      "owner_type": "ahmad",
+      "name": "PC-Tech-Store-Test",
       "private": true,
-      "auto_deploy": null,
+      "auto_deploy": true,
       "on_delivery": null
     },
     "domain": {
@@ -436,7 +436,22 @@
     "confirmed_urls": []
   },
   "deploy": {
-    "targets": []
+    "targets": [
+      {
+        "env": "preview",
+        "url": "https://pc-tech-store-test-git-redesign-balozah.vercel.app",
+        "commit": "redesign HEAD",
+        "date": "2026-10-10",
+        "status": "ready (behind Vercel login)"
+      },
+      {
+        "env": "production",
+        "url": "https://pc-tech-store-test.vercel.app",
+        "commit": "main (v1, faaf3e1)",
+        "date": "2026-10-03",
+        "status": "old version"
+      }
+    ]
   },
   "approvals": {
     "brief": {
@@ -456,19 +471,29 @@
     },
     "commits": "per_milestone",
     "qa_verdict": null,
-    "deploys": []
+    "deploys": [
+      {
+        "target": "preview",
+        "approved": true,
+        "date": "2026-10-10",
+        "note": "Ahmad: push redesign branch, preview first"
+      }
+    ]
   },
   "pipeline": {
-    "stage": "qa",
+    "stage": "deliver",
     "completed": [
       "intake",
       "design",
       "build",
-      "polish"
+      "polish",
+      "qa"
     ],
-    "next_action": "Ahmad: QA verdict; then deliver: push branch redesign -> Vercel preview",
+    "next_action": "Ahmad: QA verdict + check preview in browser + run specs migration; then merge redesign -> main (production)",
     "blocked_on": [
-      "infra"
+      "qa_verdict",
+      "specs migration",
+      "client whatsapp number"
     ],
     "note": "redesign M1-M9 committed on branch redesign (54ad5ec..08d3fb6); build + lint pass 2026-10-10"
   }
