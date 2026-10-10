@@ -60,6 +60,40 @@ export async function getProducts(categorySlug?: string): Promise<Product[]> {
   return data ?? [];
 }
 
+const SEARCH_LIMIT = 48;
+
+/** Normalizes a visitor's search text: trimmed, single-spaced, max 80 chars. */
+export function normalizeSearchQuery(raw: string | string[] | undefined): string {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return (value ?? "").replace(/\s+/g, " ").trim().slice(0, 80);
+}
+
+// Case-insensitive name match in either language. Two parameterized ilike
+// queries instead of one `.or()` string, so commas or parentheses typed by a
+// visitor can't change the PostgREST filter; LIKE wildcards are escaped.
+export async function searchProducts(query: string): Promise<Product[]> {
+  const q = normalizeSearchQuery(query);
+  if (!q) return [];
+
+  if (!isSupabaseConfigured()) {
+    const needle = q.toLowerCase();
+    return placeholder.products
+      .filter((p) => p.name_ar.toLowerCase().includes(needle) || (p.name_en ?? "").toLowerCase().includes(needle))
+      .slice(0, SEARCH_LIMIT);
+  }
+
+  const pattern = `%${q.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+  const supabase = createPublicClient();
+  const [ar, en] = await Promise.all([
+    supabase.from("products").select("*").ilike("name_ar", pattern).order("sort_order").limit(SEARCH_LIMIT),
+    supabase.from("products").select("*").ilike("name_en", pattern).order("sort_order").limit(SEARCH_LIMIT),
+  ]);
+  const seen = new Set<string>();
+  return [...(ar.data ?? []), ...(en.data ?? [])]
+    .filter((p) => !seen.has(p.id) && seen.add(p.id))
+    .slice(0, SEARCH_LIMIT);
+}
+
 export async function getProductBySlug(slug: string): Promise<ProductWithRelations | null> {
   if (!isSupabaseConfigured()) {
     const product = placeholder.products.find((p) => p.slug === slug);
