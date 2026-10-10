@@ -265,11 +265,6 @@
       "item": "Revoke Supabase access token claude-pctech (it was pasted in chat) and delete SUPABASE_ACCESS_TOKEN from .env.local",
       "owner": "ahmad",
       "due": null
-    },
-    {
-      "item": "Delete temporary QA admin: node scripts/qa-admin.mjs delete",
-      "owner": "ahmad",
-      "due": null
     }
   ],
   "out_of_scope": [
