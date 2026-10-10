@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { updateCategory, deleteCategory } from "@/app/actions/categories";
 import { Icon, Spinner, buttonClass, inputClass, labelClass } from "@/components/dashboard/ui";
 import { useConfirm } from "@/components/dashboard/confirm-dialog";
+import { CategoryIcon } from "@/components/category-icon";
 import type { Category } from "@/lib/data";
 
 export function CategoryRow({ category, productCount }: { category: Category; productCount: number }) {
@@ -56,8 +57,8 @@ export function CategoryRow({ category, productCount }: { category: Category; pr
 
   return (
     <div className="flex items-center gap-3 p-3 sm:p-4">
-      <span className="grid h-10 w-10 shrink-0 place-items-center bg-[var(--color-primary)]/12 text-[var(--color-primary)]">
-        <Icon name="folder" />
+      <span className="grid h-11 w-11 shrink-0 place-items-center border border-[var(--color-border)] text-[var(--color-ink)]">
+        <CategoryIcon slug={category.slug} className="h-6 w-6" />
       </span>
       <Link href={`/dashboard/products?category=${category.slug}`} className="min-w-0 flex-1">
         <p className="truncate font-medium">

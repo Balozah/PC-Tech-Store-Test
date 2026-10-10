@@ -6,23 +6,26 @@ import { getCardExtras, getCategories, getProducts, getSiteSettings, isSupabaseC
 import { getPendingReviewCount } from "@/lib/data-admin";
 import { productImageUrl } from "@/lib/product-image";
 
-function Stat({ href, icon, label, value, tone }: { href: string; icon: IconName; label: string; value: number; tone?: "warning" | "danger" }) {
-  const toneClass =
-    tone === "warning"
-      ? "bg-[#b45309]/12 text-[#92400e]"
-      : tone === "danger"
-      ? "bg-[var(--color-destructive)]/12 text-[var(--color-destructive)]"
-      : "bg-[var(--color-primary)]/15 text-[var(--color-primary)]";
+// Blueprint cells like the storefront category grid: hairline grid, oversized
+// figures, hover inverts to ink. A count that needs attention gets a tag.
+function Stat({ href, icon, label, value, alert }: { href: string; icon: IconName; label: string; value: number; alert?: string }) {
   return (
     <Link
       href={href}
-      className="group border border-[var(--color-border)] bg-[var(--color-card)] p-4 transition-colors hover:border-[var(--color-primary)]/60"
+      className="group flex min-h-36 flex-col justify-between bg-[var(--color-background)] p-4 transition-colors duration-200 hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)] sm:p-5"
     >
-      <span className={`mb-3 grid h-10 w-10 place-items-center ${toneClass}`}>
-        <Icon name={icon} />
+      <span className="flex items-start justify-between gap-2">
+        <Icon name={icon} className="h-6 w-6 transition-transform duration-200 group-hover:-translate-y-0.5" />
+        {alert && value > 0 && (
+          <span className="bg-[var(--color-ink)] px-2 py-0.5 text-xs font-semibold text-[var(--color-paper)] group-hover:bg-[var(--color-paper)] group-hover:text-[var(--color-ink)]">
+            {alert}
+          </span>
+        )}
       </span>
-      <p className="text-3xl font-bold tabular-nums">{value}</p>
-      <p className="mt-0.5 text-sm text-[var(--color-muted-foreground)]">{label}</p>
+      <span>
+        <span className="font-display block text-[clamp(2.25rem,5vw,3rem)] leading-none tabular-nums">{value}</span>
+        <span className="mt-2 block text-sm text-[var(--color-ink-soft)] transition-colors group-hover:text-[var(--color-on-dark-soft)]">{label}</span>
+      </span>
     </Link>
   );
 }
@@ -66,11 +69,11 @@ export default async function DashboardOverview() {
       />
       {!configured && <SupabaseNotice />}
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-px border border-[var(--color-border)] bg-[var(--color-border)] lg:grid-cols-4">
         <Stat href="/dashboard/products" icon="box" label="منتج" value={products.length} />
         <Stat href="/dashboard/categories" icon="folder" label="قسم" value={categories.length} />
-        <Stat href="/dashboard/products" icon="alert" label="غير متوفر" value={unavailable} tone={unavailable ? "danger" : undefined} />
-        <Stat href="/dashboard/reviews" icon="star" label="تقييم بانتظارك" value={pending} tone={pending ? "warning" : undefined} />
+        <Stat href="/dashboard/products" icon="alert" label="غير متوفر" value={unavailable} alert="راجعها" />
+        <Stat href="/dashboard/reviews" icon="star" label="تقييم بانتظارك" value={pending} alert="جديد" />
       </div>
 
       {missing.length > 0 && (
@@ -93,15 +96,15 @@ export default async function DashboardOverview() {
             {setup.map((item) => (
               <li key={item.label} className="flex items-start gap-2 text-sm">
                 <span
-                  className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full ${
-                    item.done ? "bg-[var(--color-success)] text-white" : "border border-[var(--color-border)]"
+                  className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center ${
+                    item.done ? "bg-[var(--color-ink)] text-[var(--color-paper)]" : "border border-[var(--color-ink-soft)]"
                   }`}
                 >
                   {item.done && <Icon name="check" className="h-3 w-3" strokeWidth={3} />}
                 </span>
                 <span>
                   <span className={item.done ? "text-[var(--color-muted-foreground)] line-through" : ""}>{item.label}</span>
-                  {!item.done && item.hint && <span className="block text-xs text-[#92400e]">{item.hint}</span>}
+                  {!item.done && item.hint && <span className="block text-xs font-medium text-[var(--color-destructive)]">{item.hint}</span>}
                 </span>
               </li>
             ))}
@@ -112,8 +115,12 @@ export default async function DashboardOverview() {
       <Card
         title="آخر المنتجات"
         action={
-          <Link href="/dashboard/products" className="text-sm font-medium text-[var(--color-primary)] hover:underline">
+          <Link
+            href="/dashboard/products"
+            className="inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold text-[var(--color-primary)] hover:underline hover:underline-offset-4"
+          >
             عرض الكل
+            <Icon name="chevron" className="h-4 w-4" />
           </Link>
         }
       >
@@ -123,16 +130,16 @@ export default async function DashboardOverview() {
             return (
               <li key={p.id}>
                 <Link href={`/dashboard/products/${p.id}`} className="flex items-center gap-3 px-2 py-2.5 transition-colors hover:bg-[var(--color-muted)]">
-                  <span className="relative h-12 w-12 shrink-0 overflow-hidden bg-[var(--color-muted)]">
+                  <span className="relative h-12 w-12 shrink-0 overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)]">
                     {image ? (
-                      <Image src={productImageUrl(image.path)} alt="" fill sizes="48px" className="object-cover" />
+                      <Image src={productImageUrl(image.path)} alt="" fill sizes="48px" className="object-contain p-1" />
                     ) : (
                       <Icon name="image" className="absolute inset-0 m-auto text-[var(--color-muted-foreground)]" />
                     )}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-medium">{p.name_ar}</span>
-                    <span className="block text-xs text-[var(--color-muted-foreground)]">
+                    <span className="block text-xs font-semibold tabular-nums text-[var(--color-primary)]">
                       {formatAdminPrice(p.price_usd, p.price_syp, p.price_on_request)}
                     </span>
                   </span>

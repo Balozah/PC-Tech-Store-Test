@@ -20,11 +20,8 @@ export default function LoginPage() {
 
   return (
     <div className="w-full max-w-sm">
-      <div className="mb-6 flex flex-col items-center text-center">
-        <span className="mb-4 grid h-14 w-14 place-items-center bg-[var(--color-ink)] text-[var(--color-paper)]">
-          <Icon name="box" className="h-7 w-7" />
-        </span>
-        <h1 className="text-2xl font-bold">لوحة التحكم</h1>
+      <div className="mb-6 border-b border-[var(--color-border)] pb-5">
+        <h1 className="font-display text-[clamp(1.75rem,4vw,2.25rem)]">تسجيل الدخول</h1>
         <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">سجّل دخول لتدير منتجات المتجر</p>
       </div>
 
@@ -38,7 +35,7 @@ export default function LoginPage() {
           <input id="password" name="password" type="password" dir="ltr" autoComplete="current-password" required className={inputClass} />
         </div>
         {state?.error && (
-          <p role="alert" className="flex items-center gap-1.5 bg-[var(--color-destructive)]/10 px-3 py-2.5 text-sm text-[var(--color-destructive)]">
+          <p role="alert" className="flex items-center gap-1.5 border border-[var(--color-destructive)] px-3 py-2.5 text-sm font-medium text-[var(--color-destructive)]">
             <Icon name="alert" className="h-4 w-4" />
             {state.error}
           </p>

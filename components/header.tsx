@@ -6,18 +6,7 @@ import { SearchForm } from "@/components/search-form";
 import { SearchIcon } from "@/components/icons";
 import type { Category } from "@/lib/data";
 import type { Locale } from "@/i18n/routing";
-
-export function Wordmark({ name, className }: { name: string; className?: string }) {
-  // Text wordmark until the client's logo arrives (brief todo). The first word
-  // sits in an ink block, echoing the reference's inverted logotype.
-  const [first, ...rest] = name.split(" ");
-  return (
-    <span dir="ltr" className={`font-wordmark inline-flex items-center gap-1.5 text-lg leading-none ${className ?? ""}`}>
-      <span className="bg-[var(--color-foreground)] px-1.5 py-1 text-[var(--color-background)]">{first}</span>
-      {rest.length > 0 && <span>{rest.join(" ")}</span>}
-    </span>
-  );
-}
+import { Wordmark } from "@/components/wordmark";
 
 export function Header({ categories, locale }: { categories: Category[]; locale: Locale }) {
   const t = useTranslations();

@@ -91,16 +91,16 @@ export default async function ProductsPage({
             return (
               <li key={p.id} className={i > 0 ? "border-t border-[var(--color-border)]" : undefined}>
                 <Link href={`/dashboard/products/${p.id}`} className="flex items-center gap-3 p-3 transition-colors hover:bg-[var(--color-muted)] sm:gap-4 sm:p-4">
-                  <span className="relative h-16 w-16 shrink-0 overflow-hidden bg-[var(--color-muted)]">
+                  <span className="relative h-16 w-16 shrink-0 overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)]">
                     {image ? (
-                      <Image src={productImageUrl(image.path)} alt="" fill sizes="64px" className="object-cover" />
+                      <Image src={productImageUrl(image.path)} alt="" fill sizes="64px" className="object-contain p-1.5" />
                     ) : (
                       <Icon name="image" className="absolute inset-0 m-auto text-[var(--color-muted-foreground)]" />
                     )}
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="block truncate font-medium">{p.name_ar}</span>
-                    <span className="mt-0.5 block truncate text-sm text-[var(--color-muted-foreground)]">
+                    <span className="mt-0.5 block truncate text-sm font-semibold tabular-nums text-[var(--color-primary)]">
                       {formatAdminPrice(p.price_usd, p.price_syp, p.price_on_request)}
                     </span>
                     <span className="mt-1.5 flex flex-wrap gap-1.5">

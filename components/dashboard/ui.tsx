@@ -47,8 +47,9 @@ export function Icon({ name, className, ...props }: { name: IconName } & SVGProp
   );
 }
 
+// Same field as the storefront search: white surface, hairline, ink on focus.
 export const inputClass =
-  "w-full border border-[var(--color-border)] bg-[var(--color-background)] px-3.5 py-2.5 text-base text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)]/70 transition-colors focus:border-[var(--color-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/25 sm:text-sm";
+  "w-full border border-[var(--color-border)] bg-[var(--color-surface)] px-3.5 py-2.5 text-base text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)]/70 transition-colors hover:border-[var(--color-ink-soft)] focus:border-[var(--color-ink)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/25 sm:text-sm";
 
 export const labelClass = "mb-1.5 block text-sm font-medium text-[var(--color-foreground)]";
 export const hintClass = "mt-1.5 text-xs leading-relaxed text-[var(--color-muted-foreground)]";
@@ -58,12 +59,16 @@ const buttonBase =
 
 export const buttonClass = {
   primary: cn(buttonBase, "bg-[var(--color-ink)] text-[var(--color-paper)] hover:bg-[var(--color-primary)]"),
+  // Storefront secondary button: ink outline that fills on hover.
   secondary: cn(
     buttonBase,
-    "border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-foreground)] hover:border-[var(--color-ink)]"
+    "border border-[var(--color-ink)] bg-transparent text-[var(--color-foreground)] hover:bg-[var(--color-ink)] hover:text-[var(--color-paper)]"
   ),
   ghost: cn(buttonBase, "text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]"),
-  danger: cn(buttonBase, "bg-[var(--color-destructive)]/10 text-[var(--color-destructive)] hover:bg-[var(--color-destructive)]/20"),
+  danger: cn(
+    buttonBase,
+    "border border-[var(--color-destructive)] text-[var(--color-destructive)] hover:bg-[var(--color-destructive)] hover:text-white"
+  ),
   success: cn(buttonBase, "bg-[var(--color-success)] text-white hover:bg-[var(--color-success)]/90"),
 };
 
@@ -81,11 +86,11 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={cn(" border border-[var(--color-border)] bg-[var(--color-card)] p-4 sm:p-5", className)}>
+    <section className={cn("border border-[var(--color-border)] bg-[var(--color-card)] p-4 sm:p-5", className)}>
       {(title || action) && (
-        <div className="mb-4 flex items-start justify-between gap-3">
+        <div className="-mx-4 mb-4 flex items-start justify-between gap-3 border-b border-[var(--color-border)] px-4 pb-4 sm:-mx-5 sm:px-5">
           <div>
-            {title && <h2 className="text-base font-semibold">{title}</h2>}
+            {title && <h2 className="font-display text-lg">{title}</h2>}
             {description && <p className="mt-0.5 text-sm text-[var(--color-muted-foreground)]">{description}</p>}
           </div>
           {action}
@@ -97,15 +102,16 @@ export function Card({
 }
 
 export function Badge({ tone = "neutral", children }: { tone?: "neutral" | "success" | "danger" | "warning" | "info"; children: ReactNode }) {
+  // Square tags like the storefront's: outlined, the alarm state solid ink.
   const tones = {
-    neutral: "bg-[var(--color-muted)] text-[var(--color-muted-foreground)]",
-    success: "bg-[var(--color-success)]/12 text-[var(--color-success)]",
-    danger: "bg-[var(--color-destructive)]/12 text-[var(--color-destructive)]",
-    warning: "bg-[#b45309]/12 text-[#92400e]",
-    info: "bg-[var(--color-primary)]/10 text-[var(--color-primary)]",
+    neutral: "border-[var(--color-border)] text-[var(--color-muted-foreground)]",
+    success: "border-[var(--color-success)]/40 text-[var(--color-success)]",
+    danger: "border-[var(--color-ink)] bg-[var(--color-ink)] text-[var(--color-paper)]",
+    warning: "border-[var(--color-ink)] text-[var(--color-ink)]",
+    info: "border-[var(--color-primary)]/50 text-[var(--color-primary)]",
   };
   return (
-    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap px-2.5 py-0.5 text-xs font-medium", tones[tone])}>
+    <span className={cn("inline-flex items-center gap-1 whitespace-nowrap border px-2 py-0.5 text-xs font-semibold", tones[tone])}>
       {children}
     </span>
   );
@@ -125,7 +131,7 @@ export function PageHeader({
   actions?: ReactNode;
 }) {
   return (
-    <header className="mb-6">
+    <header className="mb-6 border-b border-[var(--color-border)] pb-5 md:mb-8">
       {backHref && (
         <Link
           href={backHref}
@@ -137,7 +143,7 @@ export function PageHeader({
       )}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="font-display text-2xl">{title}</h1>
+          <h1 className="font-display text-[clamp(1.75rem,4vw,2.5rem)]">{title}</h1>
           {description && <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">{description}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -149,7 +155,7 @@ export function PageHeader({
 export function EmptyState({ icon, title, description, action }: { icon: IconName; title: string; description?: string; action?: ReactNode }) {
   return (
     <div className="flex flex-col items-center border border-dashed border-[var(--color-border)] px-6 py-12 text-center">
-      <span className="mb-3 grid h-12 w-12 place-items-center bg-[var(--color-muted)] text-[var(--color-muted-foreground)]">
+      <span className="mb-3 grid h-12 w-12 place-items-center border border-[var(--color-border)] text-[var(--color-ink)]">
         <Icon name={icon} className="h-6 w-6" />
       </span>
       <p className="font-semibold">{title}</p>
@@ -186,7 +192,7 @@ export function Switch({
 }
 
 export function Spinner({ className }: { className?: string }) {
-  return <span aria-hidden="true" className={cn("h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent", className)} />;
+  return <span aria-hidden="true" className={cn("h-4 w-4 animate-spin border-2 border-current border-t-transparent", className)} />;
 }
 
 export function formatAdminPrice(usd: number | null, syp: number | null, onRequest: boolean) {

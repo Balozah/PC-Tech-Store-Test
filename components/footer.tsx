@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Wordmark } from "@/components/header";
+import { Wordmark } from "@/components/wordmark";
 import { WhatsAppIcon } from "@/components/icons";
 import type { Database } from "@/lib/database.types";
 import type { Category } from "@/lib/data";
