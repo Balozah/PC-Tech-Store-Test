@@ -54,7 +54,11 @@
     "latest": "أحدث المنتجات",
     "specs": "المواصفات",
     "breadcrumbHome": "الرئيسية",
-    "orderBarLabel": "اطلب هالمنتج"
+    "orderBarLabel": "اطلب هالمنتج",
+    "orderHint": "بيفتحلك واتساب برسالة جاهزة فيها المنتج والخيارات والسعر.",
+    "orderShort": "اطلب",
+    "description": "الوصف",
+    "writeReview": "اكتب تقييم"
   },
   "footer": {
     "contact": "تواصل معنا",

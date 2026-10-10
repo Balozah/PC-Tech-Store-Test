@@ -11,32 +11,37 @@ export function ProductGallery({ images, alt }: { images: ProductImage[]; alt: s
 
   return (
     <div>
-      <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-[var(--color-card-light)]">
+      <div className="relative aspect-square w-full overflow-hidden border border-[var(--color-border)] bg-[var(--color-surface)]">
         {current && (
           <Image
+            key={current.id}
             src={productImageUrl(current.path)}
             alt={alt}
             fill
             priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover"
+            sizes="(max-width: 768px) 100vw, 58vw"
+            className="enter object-contain p-6 sm:p-10"
           />
         )}
       </div>
       {images.length > 1 && (
-        <div className="mt-3 flex gap-2">
+        <ul className="mt-3 flex gap-2 overflow-x-auto pb-1 [scrollbar-width:thin]">
           {images.map((img, i) => (
-            <button
-              key={img.id}
-              onClick={() => setActive(i)}
-              className={`relative h-16 w-16 overflow-hidden rounded-lg border-2 transition-colors cursor-pointer ${
-                i === active ? "border-[var(--color-primary)]" : "border-transparent"
-              }`}
-            >
-              <Image src={productImageUrl(img.path)} alt="" fill sizes="64px" className="object-cover" />
-            </button>
+            <li key={img.id} className="shrink-0">
+              <button
+                type="button"
+                onClick={() => setActive(i)}
+                aria-label={`${alt} — ${i + 1}/${images.length}`}
+                aria-current={i === active}
+                className={`relative block size-16 cursor-pointer overflow-hidden border bg-[var(--color-surface)] transition-colors sm:size-20 ${
+                  i === active ? "border-[var(--color-ink)] outline outline-1 outline-[var(--color-ink)]" : "border-[var(--color-border)] hover:border-[var(--color-ink)]"
+                }`}
+              >
+                <Image src={productImageUrl(img.path)} alt="" fill sizes="80px" className="object-contain p-1.5" />
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </div>
   );

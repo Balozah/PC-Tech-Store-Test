@@ -18,7 +18,7 @@ export function ReviewForm({ productId }: { productId: string }) {
           setStatus(result.ok ? "sent" : result.error === "rate_limited" ? "rate_limited" : "error");
         });
       }}
-      className="mt-6 space-y-4 rounded-2xl border border-[var(--color-border)] p-5"
+      className="relative space-y-4 border border-[var(--color-border)] bg-[var(--color-surface)] p-5"
     >
       {/* Honeypot — hidden from real users via CSS, not display:none, to stay in the tab order trap for simple bots */}
       <input
@@ -26,12 +26,12 @@ export function ReviewForm({ productId }: { productId: string }) {
         name="company"
         tabIndex={-1}
         autoComplete="off"
-        className="absolute -left-[9999px] h-0 w-0 opacity-0"
+        className="absolute h-px w-px overflow-hidden opacity-0 [clip:rect(0,0,0,0)]"
         aria-hidden="true"
       />
       <input type="hidden" name="productId" value={productId} />
 
-      <h3 className="font-semibold">{t("addReview")}</h3>
+      <h3 className="text-lg">{t("addReview")}</h3>
 
       <div>
         <label htmlFor="authorName" className="mb-1 block text-sm font-medium">
@@ -43,7 +43,7 @@ export function ReviewForm({ productId }: { productId: string }) {
           required
           minLength={2}
           maxLength={60}
-          className="w-full rounded-lg border border-[var(--color-border)] bg-transparent px-3 py-2 text-sm"
+          className="min-h-11 w-full border border-[var(--color-border)] bg-transparent px-3 py-2 outline-none focus:border-[var(--color-ink)]"
         />
       </div>
 
@@ -57,8 +57,9 @@ export function ReviewForm({ productId }: { productId: string }) {
               type="button"
               role="radio"
               aria-checked={rating === n}
+              aria-label={`${n} / 5`}
               onClick={() => setRating(n)}
-              className="cursor-pointer p-1"
+              className="grid size-11 cursor-pointer place-items-center"
             >
               <svg
                 width={24}
@@ -84,26 +85,26 @@ export function ReviewForm({ productId }: { productId: string }) {
           name="comment"
           maxLength={1000}
           rows={3}
-          className="w-full rounded-lg border border-[var(--color-border)] bg-transparent px-3 py-2 text-sm"
+          className="w-full border border-[var(--color-border)] bg-transparent px-3 py-2 outline-none focus:border-[var(--color-ink)]"
         />
       </div>
 
       <button
         type="submit"
         disabled={isPending}
-        className="cursor-pointer rounded-full bg-[var(--color-primary)] px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+        className="min-h-12 cursor-pointer bg-[var(--color-ink)] px-6 font-semibold text-[var(--color-paper)] transition-colors hover:bg-[var(--color-primary)] active:scale-[0.98] disabled:opacity-60"
       >
         {t("reviewSubmit")}
       </button>
 
       {status === "sent" && (
-        <p className="text-sm text-[var(--color-success)]">{t("reviewSubmitted")}</p>
+        <p role="status" className="text-sm text-[var(--color-success)]">{t("reviewSubmitted")}</p>
       )}
       {status === "error" && (
-        <p className="text-sm text-[var(--color-destructive)]">{t("reviewError")}</p>
+        <p role="alert" className="text-sm text-[var(--color-destructive)]">{t("reviewError")}</p>
       )}
       {status === "rate_limited" && (
-        <p className="text-sm text-[var(--color-destructive)]">{t("reviewRateLimited")}</p>
+        <p role="alert" className="text-sm text-[var(--color-destructive)]">{t("reviewRateLimited")}</p>
       )}
     </form>
   );

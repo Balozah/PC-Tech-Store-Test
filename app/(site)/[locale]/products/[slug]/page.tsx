@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
+import { Breadcrumbs, type Crumb } from "@/components/breadcrumbs";
 import { ProductGallery } from "@/components/product-gallery";
 import { ProductOrder } from "@/components/product-order";
 import { StarRating } from "@/components/star-rating";
@@ -63,41 +65,67 @@ export default async function ProductPage({
   const name = locale === "ar" ? product.name_ar : product.name_en ?? product.name_ar;
   const description = locale === "ar" ? product.description_ar : product.description_en ?? product.description_ar;
   const rating = getProductRating(product.reviews);
+  const category = product.category;
+  const categoryName = category ? (locale === "ar" ? category.name_ar : category.name_en ?? category.name_ar) : null;
 
   const siteUrl = process.env.SITE_URL ?? "http://localhost:3000";
   const productUrl = `${siteUrl}/${locale}/products/${product.slug}`;
 
   const related = product.category_id
-    ? (await getProducts(product.category?.slug)).filter((p) => p.id !== product.id).slice(0, 4)
+    ? (await getProducts(category?.slug)).filter((p) => p.id !== product.id).slice(0, 4)
     : [];
   const relatedExtras = await getCardExtras(related);
 
+  const crumbs: Crumb[] = [
+    { label: t("breadcrumbHome"), href: "/" },
+    ...(category && categoryName ? [{ label: categoryName, href: `/categories/${category.slug}` }] : []),
+    { label: name },
+  ];
+
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-      <div className="grid gap-10 md:grid-cols-2">
-        <ProductGallery images={product.images} alt={name} />
+    <div className="mx-auto max-w-7xl px-4 pb-28 pt-6 sm:px-6 md:pb-20">
+      <Breadcrumbs items={crumbs} siteUrl={siteUrl} locale={locale} />
 
-        <div>
-          <h1 className="font-display text-3xl font-bold sm:text-4xl">{name}</h1>
+      <div className="mt-6 grid gap-8 md:grid-cols-12 md:gap-10">
+        <div className="md:col-span-7">
+          <ProductGallery images={product.images} alt={name} />
+        </div>
 
-          <div className="mt-3 flex items-center gap-3">
-            <StarRating value={rating.average} count={rating.count} />
-            {product.is_available ? (
-              <span className="rounded-full bg-[var(--color-success)]/15 px-2.5 py-1 text-xs font-semibold text-[var(--color-success)]">
-                {t("available")}
-              </span>
-            ) : (
-              <span className="rounded-full bg-[var(--color-destructive)]/15 px-2.5 py-1 text-xs font-semibold text-[var(--color-destructive)]">
-                {t("unavailable")}
-              </span>
+        <div className="md:col-span-5 md:self-start md:sticky md:top-24">
+          {category && categoryName && (
+            <Link
+              href={`/categories/${category.slug}`}
+              className="text-sm font-medium text-[var(--color-ink-soft)] transition-colors hover:text-[var(--color-ink)]"
+            >
+              {categoryName}
+            </Link>
+          )}
+          <h1 className="font-display mt-2 text-[clamp(1.75rem,3.6vw,2.75rem)]">{name}</h1>
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <span
+              className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-xs font-semibold ${
+                product.is_available
+                  ? "border-[var(--color-success)] text-[var(--color-success)]"
+                  : "border-[var(--color-destructive)] text-[var(--color-destructive)]"
+              }`}
+            >
+              <span
+                className={`size-1.5 ${product.is_available ? "bg-[var(--color-success)]" : "bg-[var(--color-destructive)]"}`}
+                aria-hidden="true"
+              />
+              {product.is_available ? t("available") : t("unavailable")}
+            </span>
+            {rating.count > 0 && (
+              <a href="#reviews" className="inline-flex min-h-8 items-center">
+                <StarRating value={rating.average} count={rating.count} size={14} />
+              </a>
             )}
           </div>
 
-          {description && (
-            <p className="mt-4 text-[var(--color-muted-foreground)]">{description}</p>
-          )}
+          {description && <p className="mt-5 text-[var(--color-ink-soft)]">{description}</p>}
 
-          <div className="mt-6">
+          <div className="mt-6 border-t border-[var(--color-border)] pt-6">
             <ProductOrder
               product={product}
               whatsappNumber={settings.whatsapp}
@@ -108,36 +136,45 @@ export default async function ProductPage({
         </div>
       </div>
 
-      <Reveal className="mt-16">
-        <section>
-        <h2 className="mb-4 font-display text-2xl font-bold">{t("reviews")}</h2>
-        {product.reviews.length === 0 ? (
-          <p className="text-[var(--color-muted-foreground)]">{t("noReviews")}</p>
-        ) : (
-          <ul className="space-y-4">
-            {product.reviews.map((r) => (
-              <li key={r.id} className="rounded-2xl border border-[var(--color-border)] p-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold">{r.author_name}</span>
-                  <StarRating value={r.rating} />
-                </div>
-                {r.comment && <p className="mt-2 text-sm text-[var(--color-muted-foreground)]">{r.comment}</p>}
-              </li>
-            ))}
-          </ul>
-        )}
-        <ReviewForm productId={product.id} />
-        </section>
-      </Reveal>
+      <section id="reviews" aria-labelledby="reviews-title" className="mt-20 scroll-mt-24 border-t border-[var(--color-border)] pt-10">
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-7">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <h2 id="reviews-title" className="font-display text-[clamp(1.5rem,3vw,2.25rem)]">
+                {t("reviews")}
+              </h2>
+              {rating.count > 0 && <StarRating value={rating.average} count={rating.count} />}
+            </div>
+            {product.reviews.length === 0 ? (
+              <p className="mt-4 text-[var(--color-ink-soft)]">{t("noReviews")}</p>
+            ) : (
+              <ul className="mt-6 border-t border-[var(--color-border)]">
+                {product.reviews.map((r) => (
+                  <li key={r.id} className="border-b border-[var(--color-border)] py-5">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <span className="font-semibold">{r.author_name}</span>
+                      <StarRating value={r.rating} size={14} />
+                    </div>
+                    {r.comment && <p className="mt-2 text-[var(--color-ink-soft)]">{r.comment}</p>}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div className="md:col-span-5">
+            <ReviewForm productId={product.id} />
+          </div>
+        </div>
+      </section>
 
       {related.length > 0 && (
-        <section className="mt-16">
-          <Reveal>
-            <h2 className="mb-4 font-display text-2xl font-bold">{t("related")}</h2>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <section aria-labelledby="related-title" className="mt-20">
+          <h2 id="related-title" className="font-display mb-8 text-[clamp(1.5rem,3vw,2.25rem)]">
+            {t("related")}
+          </h2>
+          <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
             {related.map((p, i) => (
-              <Reveal key={p.id} index={i}>
+              <Reveal as="li" key={p.id} index={i} step={60}>
                 <ProductCard
                   product={p}
                   image={relatedExtras[p.slug]?.image}
@@ -146,7 +183,7 @@ export default async function ProductPage({
                 />
               </Reveal>
             ))}
-          </div>
+          </ul>
         </section>
       )}
     </div>

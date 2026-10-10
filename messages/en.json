@@ -54,7 +54,11 @@
     "latest": "Latest products",
     "specs": "Specifications",
     "breadcrumbHome": "Home",
-    "orderBarLabel": "Order this product"
+    "orderBarLabel": "Order this product",
+    "orderHint": "Opens WhatsApp with a ready message: product, options and price.",
+    "orderShort": "Order",
+    "description": "Description",
+    "writeReview": "Write a review"
   },
   "footer": {
     "contact": "Contact us",
