@@ -470,14 +470,14 @@
         "env": "production",
         "url": "https://pc-tech-store-test.vercel.app",
         "deployment": null,
-        "commit": "00c5f9b",
+        "commit": "1b1df81",
         "date": "2026-10-11",
-        "status": "live; hero dither + Warp, dashboard restyle, QA fixes; live check OK (routes, 404, dashboard 307, headers, LH mobile home 81-90 / product 94-95, a11y/bp/seo 100)"
+        "status": "live; hero dither intro ends on clear photo (verified timeline desktop/mobile fast/slow), dashboard restyle, QA fixes"
       },
       {
         "env": "preview",
         "url": "https://pc-tech-store-test-git-redesign-balozah.vercel.app",
-        "commit": "00c5f9b",
+        "commit": "1b1df81",
         "date": "2026-10-11",
         "status": "ready (behind Vercel login); hero dither + category Warp"
       }
@@ -530,6 +530,12 @@
         "approved": true,
         "date": "2026-10-11",
         "note": "Ahmad: publish everything; Ahmad ran the push redesign:main himself"
+      },
+      {
+        "target": "production",
+        "approved": true,
+        "date": "2026-10-11",
+        "note": "Ahmad pushed redesign:main himself (hero intro fix 1b1df81)"
       }
     ]
   },
@@ -547,6 +553,6 @@
       "client whatsapp number",
       "client domain"
     ],
-    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review; 2026-10-11 dashboard restyle (98da352) + full QA ready_with_notes, 10 fixes (62cd624); not pushed yet; production 00c5f9b live 2026-10-11, live check passed"
+    "note": "dashboard E2E passed on production 2026-10-10; fixed new-product 404 regression, storage orphan leak, login email reset, price suffix overlap; 2026-10-11 post-delivery design tweak on branch redesign (commits 2bd4b53..): hero photo + dither shader, category Warp hover; build/lint OK, pushed to preview e4ba96a; production pending Ahmad's review; 2026-10-11 dashboard restyle (98da352) + full QA ready_with_notes, 10 fixes (62cd624); not pushed yet; production 00c5f9b live 2026-10-11, live check passed; production 1b1df81 (hero intro fix) live 2026-10-11"
   }
 }
