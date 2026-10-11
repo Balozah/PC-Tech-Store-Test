@@ -36,9 +36,9 @@ export function CategoryWarp({ index }: { index: number }) {
       {on && (
         <>
           <WarpHover index={index} className="shader-in absolute inset-0" />
-          {/* Keeps paper text and the soft count ≥4.5:1 over the brightest blue
-              (#7EA6FF under ink/75 ≈ #2A344C → count 4.8:1). */}
-          <span className="absolute inset-0 bg-[var(--color-ink)]/75" />
+          {/* Ink scrim under the name/count only (solid for the bottom 28%, where the text sits), so
+              text stays AA while the rest of the cell shows the full motion. */}
+          <span className="absolute inset-0 bg-linear-to-t from-[var(--color-ink)] from-28% via-[var(--color-ink)]/55 via-48% to-transparent to-72%" />
         </>
       )}
     </span>

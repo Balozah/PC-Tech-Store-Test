@@ -39,8 +39,8 @@ export default function WarpHover({ index = 0, className }: { index?: number; cl
       {...config}
       scale={1}
       rotation={0}
-      speed={0.6}
-      colors={[INK, ACCENT, INK, ACCENT_ON_DARK]}
+      speed={0.9}
+      colors={[ACCENT, ACCENT_ON_DARK, INK, ACCENT]}
       minPixelRatio={1}
       maxPixelCount={400_000}
     />

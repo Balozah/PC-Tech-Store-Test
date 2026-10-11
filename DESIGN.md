@@ -56,7 +56,7 @@ Exception (2026-10-11): Paper Shaders may render in ink / paper / line / accent 
 | Hero image (shader) | load / hover (mouse) | Intro only: on capable devices the photo is held before paint (`lib/hero-hold.ts`), an `ImageDithering` print (ink on paper, 4×4 Bayer, 1 step) develops pixel size 16→1.5, then fades out to the clear grayscale photo, which is the resting state. Skipped (photo shown at once) on slow connections or when the shader is late. Hover replays 7→1.5 and fades. No ambient layer, no tilt | 1300ms + 450ms fade; hover 650ms |
 | Featured band | in view | image rise, spec rows stagger | 500ms, 60ms |
 | Category grid | in view / hover | cells stagger; hover invert to ink + icon nudge | 40ms stagger; 200ms |
-| Category cell (shader) | hover / focus, fine pointer only | `Warp` (ink, accent, ink, accent-on-dark; checks/stripes per cell) under the content, `ink/70` overlay for text contrast | fade 500ms |
+| Category cell (shader) | hover / focus, fine pointer only | `Warp` (accent, accent-on-dark, ink, accent; checks/stripes per cell) fills the cell; an ink scrim (solid bottom 28% → clear by 72%) sits under the name/count only. Measured worst case: name 14.3:1, count 6.3:1. Functional scrim, the one gradient exception | fade 250ms |
 | Product card | hover / press | image scale 1.04, border ink; press .98 | 200ms |
 | Mobile menu | open | slide from inline-start, links stagger | 240ms |
 | Sticky order bar | main CTA out of view | slide up | 250ms |
